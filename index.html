@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+    <title>ImagiFix- Image editor web app</title>
+</head>
+
+<body>
+    <!-- the container for entire image editor -->
+    <div class="editor">
+        <div class="toolbar">
+
+            <div class="toolbar-item"> <!--to choose a file-->
+                <input type="file" name="ImageFile" id="imageFileInput">
+            </div>
+
+            <div class="toolbar-item">
+                <label class="tool-label" for="brightness">Exposure</label>
+                <!-- we have used 200 value because img ususally has 100 as default brightness so inorder to double the brightness we have used the value 200 -->
+                <input class="tool-input" type="range" id="brightness" min="0" max="200">
+            </div>
+
+            <div class="toolbar-item">
+                <label class="tool-label" for="saturation">Saturation</label>
+                <input class="tool-input" type="range" id="saturation" min="0" max="200">
+            </div>
+
+            <div class="toolbar-item">
+                <label class="tool-label" for="Contrast">Contrast</label>
+                <input class="tool-input" type="range" id="contrast" min="0" max="200">
+            </div>
+
+            <div class="toolbar-item">
+                <label class="tool-label" for="blur">Blur</label>
+                <input class="tool-input" type="range" id="blur" min="0" max="25">
+            </div>
+
+            <div class="toolbar-item">
+                <label class="tool-label" for="inversion">Inversion</label>
+                <input class="tool-input" type="range" id="inversion" min="0" max="100">
+            </div>
+        </div>
+
+        <!-- basically where the image will be -->
+        <div class="image-area">
+            <canvas id="canvas" height="500" width="500">
+
+            </canvas>
+
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+
+</html>
