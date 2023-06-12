@@ -46,6 +46,22 @@ body {
     /* border:2px solid tomato; */
 }
 
+#error-message {
+    font-family:'Times New Roman', Times, serif;
+    color: red;
+    display: flex;
+    position: fixed;
+    justify-content: center;
+    align-items: center;
+    /* border:2px solid red; */
+    font-size: 24px;
+    font-weight:600;
+    margin-top: 8px;
+ 
+  }
+  
+
+
 #canvas {
     max-width: 100%;
     max-height: 100%;

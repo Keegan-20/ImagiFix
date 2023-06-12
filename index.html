@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -18,40 +19,54 @@
             </div>
 
             <div class="toolbar-item">
-                <label class="tool-label" for="brightness">Exposure</label>
+                <label class="tool-label" for="brightness" >Exposure</label>
                 <!-- we have used 200 value because img ususally has 100 as default brightness so inorder to double the brightness we have used the value 200 -->
-                <input class="tool-input" type="range" id="brightness" min="0" max="200">
+                <input class="tool-input " type="range" id="brightness" min="0" max="200">
+                <output  id="brightnessValue"> </output>
+
+
             </div>
 
             <div class="toolbar-item">
                 <label class="tool-label" for="saturation">Saturation</label>
                 <input class="tool-input" type="range" id="saturation" min="0" max="200">
+                <output id="saturationValue" class="outputTag"></output>
+
+
             </div>
 
             <div class="toolbar-item">
                 <label class="tool-label" for="Contrast">Contrast</label>
                 <input class="tool-input" type="range" id="contrast" min="0" max="200">
+                <output id="contrastValue"></output>
             </div>
 
             <div class="toolbar-item">
                 <label class="tool-label" for="blur">Blur</label>
                 <input class="tool-input" type="range" id="blur" min="0" max="25">
+                <output id="blurValue"></output>
             </div>
 
             <div class="toolbar-item">
                 <label class="tool-label" for="inversion">Inversion</label>
                 <input class="tool-input" type="range" id="inversion" min="0" max="100">
+                <output id="inversionValue"></output>
+
             </div>
 
             <div class="toolbar-item">
                 <label class="tool-label" for="opacity">Opacity</label>
-                <input class="tool-input" type="range" id="opacity" min="0" max="100">
-             
+                <input class="tool-input" type="range" id="opacity" min="0" max="100" step="1">
+                <output id="opacityValue"></output>
             </div>
+
+
         </div>
 
         <!-- basically where the image will be -->
         <div class="image-area">
+            <!-- when no image is selected -->
+            <div id="error-message"></div>
             <canvas id="canvas" height="500" width="500">
 
             </canvas>
