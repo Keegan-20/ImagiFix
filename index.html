@@ -10,11 +10,18 @@
 </head>
 
 <body>
+
     <!-- the container for entire image editor -->
     <div class="editor">
+        <section id="sidebar">
+            <!-- Crop Feature -->
+            <div class="cropImg">
+                <button id="cropButton">Crop</button>
+            </div>
+        </section>
         <div class="toolbar">
 
-            <div class="toolbar-item"> <!--to choose a file-->
+            <div class="toolbar-item"> <!--to choose a  image file-->
                 <input type="file" name="ImageFile" id="imageFileInput">
             </div>
 
@@ -59,7 +66,7 @@
                 <input class="tool-input" type="range" id="opacity" min="0" max="100" step="1">
                 <output id="opacityValue"></output>
             </div>
-
+ 
 
         </div>
 
@@ -67,9 +74,10 @@
         <div class="image-area">
             <!-- when no image is selected -->
             <div id="error-message"></div>
-            <canvas id="canvas" height="500" width="500">
-
+            <canvas id="canvas" height="600" width="980">
+        
             </canvas>
+          
 
         </div>
     </div>

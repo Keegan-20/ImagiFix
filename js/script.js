@@ -8,7 +8,7 @@ const contrastInput = document.getElementById('contrast');
 const blurInput = document.getElementById('blur');
 const inversionInput = document.getElementById('inversion');
 const opacityInput = document.getElementById('opacity');
-
+const cropButton = document.getElementById('cropButton'); //crop feature
 //range input value
 const brightnessValue = document.getElementById('brightnessValue');
 const saturationValue = document.getElementById('saturationValue');
@@ -48,7 +48,7 @@ saturationInput.addEventListener('input', function () {
     saturationValue.textContent = saturationInput.value;
 });
 contrastInput.addEventListener('input', function () {
-    contrastValue.textContent = contrastInput.value;
+    contrastValue.textContent = contrastInput.value ;
 });
 blurInput.addEventListener('input', function () {
     blurValue.textContent = blurInput.value;
@@ -65,6 +65,13 @@ opacityInput.addEventListener("input", function () {
     var opacity = opacityInput.value / 100;
     opacityValue.textContent = opacity;
 });
+
+ //image placeholder preview
+const imgPlaceholder = new Image();
+imgPlaceholder.onload = function () {
+canvasContext.drawImage(imgPlaceholder, 0, 0, canvas.width, canvas.height);
+};
+imgPlaceholder.src = "./img/image-placeholder.svg";
 
 //updating the settings
 function updateSetting(key, value) {
@@ -129,6 +136,7 @@ fileInput.addEventListener("change", () => {
     image = new Image();
 
     image.addEventListener("load", () => {
+        
         resetSettings();
         renderImage();
 
@@ -146,4 +154,27 @@ fileInput.addEventListener("change", () => {
 });
 
 resetSettings();
+
+   // Implementing crop feature
+function cropImage() {
+  // Set the width and height of the cropped image
+  const cropWidth = 200;
+  const cropHeight = 200;
+
+  // Calculate the coordinates for cropping
+  const cropX = (image.width - cropWidth) / 2;
+  const cropY = (image.height - cropHeight) / 2;
+
+  // Set the canvas dimensions for the cropped image
+  canvas.width = cropWidth;
+  canvas.height = cropHeight;
+
+  // Draw the cropped image on the canvas
+ canvasContext.drawImage(image, cropX, cropY, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight);
+}
+
+
+// Attach the cropImage function to the button's click event
+cropButton.addEventListener('click', cropImage);
+
 
