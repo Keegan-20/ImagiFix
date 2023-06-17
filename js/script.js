@@ -49,7 +49,7 @@ saturationInput.addEventListener('input', function () {
     saturationValue.textContent = saturationInput.value;
 });
 contrastInput.addEventListener('input', function () {
-    contrastValue.textContent = contrastInput.value ;
+    contrastValue.textContent = contrastInput.value;
 });
 blurInput.addEventListener('input', function () {
     blurValue.textContent = blurInput.value;
@@ -67,10 +67,10 @@ opacityInput.addEventListener("input", function () {
     opacityValue.textContent = opacity;
 });
 
- //image placeholder preview
+//image placeholder preview
 const imgPlaceholder = new Image();
 imgPlaceholder.onload = function () {
-canvasContext.drawImage(imgPlaceholder, 0, 0, canvas.width, canvas.height);
+    canvasContext.drawImage(imgPlaceholder, 0, 0, canvas.width, canvas.height);
 };
 imgPlaceholder.src = "./img/image-placeholder.svg";
 
@@ -116,12 +116,22 @@ function generateFilter() {
         blur, inversion, opacity } = settings;
     return `brightness(${brightness}%) saturate(${saturation}%) contrast(${contrast}%) blur(${blur}px) invert(${inversion}%) opacity(${opacity}%)`;
 }
-
 function renderImage() {
-    canvas.width = image.width;
-    canvas.height = image.height;
-    canvasContext.filter = generateFilter();
-    canvasContext.drawImage(image, 0, 0);
+    const { brightness, saturation, contrast, blur, inversion, opacity } = settings;
+
+    canvas.width = Math.abs(Math.cos(rotationAngle * Math.PI / 180) * image.width) + Math.abs(Math.sin(rotationAngle * Math.PI / 180) * image.height);
+    canvas.height = Math.abs(Math.sin(rotationAngle * Math.PI / 180) * image.width) + Math.abs(Math.cos(rotationAngle * Math.PI / 180) * image.height);
+
+    canvasContext.clearRect(0, 0, canvas.width, canvas.height);
+
+    canvasContext.save();
+    canvasContext.translate(canvas.width / 2, canvas.height / 2);
+    canvasContext.rotate((rotationAngle * Math.PI) / 180);
+    canvasContext.drawImage(image, -image.width / 2, -image.height / 2);
+    canvasContext.restore();
+
+    canvasContext.filter = `brightness(${brightness}%) saturate(${saturation}%) contrast(${contrast}%) blur(${blur}px) invert(${inversion}%) opacity(${opacity}%)`;
+    canvasContext.drawImage(canvas, 0, 0, canvas.width, canvas.height);
 }
 
 //updating and saving the values given by the user
@@ -137,7 +147,7 @@ fileInput.addEventListener("change", () => {
     image = new Image();
 
     image.addEventListener("load", () => {
-        
+
         resetSettings();
         renderImage();
 
@@ -164,35 +174,36 @@ const tempContext = tempCanvas.getContext('2d');
 let rotationAngle = 0;
 
 function rotateImage(angle) {
-  if (!image) {
-    return displayErrorMessage("Please select an image to begin editing!!");
-  }
+    renderImage
+    if (!image) {
+        return displayErrorMessage("Please select an image to begin editing!!");
+    }
 
-  rotationAngle += angle;
-  if (rotationAngle >= 360) {
-    rotationAngle %= 360;
-  } else if (rotationAngle < 0) {
-    rotationAngle = (rotationAngle % 360) + 360;
-  }
+    rotationAngle += angle;
+    if (rotationAngle >= 360) {
+        rotationAngle %= 360;
+    } else if (rotationAngle < 0) {
+        rotationAngle = (rotationAngle % 360) + 360;
+    }
 
 
-  tempCanvas.width = Math.max(image.width, image.height);
-  tempCanvas.height = Math.max(image.width, image.height);
+    tempCanvas.width = Math.max(image.width, image.height);
+    tempCanvas.height = Math.max(image.width, image.height);
 
-  tempContext.save();
-  tempContext.translate(tempCanvas.width / 2, tempCanvas.height / 2);
-  tempContext.rotate((rotationAngle * Math.PI) / 180);
-  tempContext.drawImage(
-    image,
-    -image.width / 2,
-    -image.height / 2
-  );
-  tempContext.restore();
-
-  canvasContext.clearRect(0, 0, canvas.width, canvas.height);
-  canvas.width = tempCanvas.width;
-  canvas.height = tempCanvas.height;
-  canvasContext.drawImage(tempCanvas, 0, 0, tempCanvas.width, tempCanvas.height, 0, 0, canvas.width, canvas.height);
+    tempContext.save();
+    tempContext.translate(tempCanvas.width / 2, tempCanvas.height / 2);
+    tempContext.rotate((rotationAngle * Math.PI) / 180);
+    tempContext.drawImage(
+        image,
+        -image.width / 2,
+        -image.height / 2
+    );
+    tempContext.restore();
+    canvasContext.clearRect(0, 0, canvas.width, canvas.height);
+    canvas.width = tempCanvas.width;
+    canvas.height = tempCanvas.height;
+    canvasContext.drawImage(tempCanvas, 0, 0, tempCanvas.width, tempCanvas.height, 0, 0, canvas.width, canvas.height);
+    renderImage();
 }
 
 rotateLeftButton.addEventListener('click', () => rotateImage(-90));
