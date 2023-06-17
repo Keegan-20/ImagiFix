@@ -9,6 +9,7 @@ const blurInput = document.getElementById('blur');
 const inversionInput = document.getElementById('inversion');
 const opacityInput = document.getElementById('opacity');
 const cropButton = document.getElementById('cropButton'); //crop feature
+const cropArea = document.querySelector("#cropArea");
 //range input value
 const brightnessValue = document.getElementById('brightnessValue');
 const saturationValue = document.getElementById('saturationValue');
@@ -155,26 +156,44 @@ fileInput.addEventListener("change", () => {
 
 resetSettings();
 
-   // Implementing crop feature
-function cropImage() {
-  // Set the width and height of the cropped image
-  const cropWidth = 200;
-  const cropHeight = 200;
+//rotate Image feature
+const rotateLeftButton = document.getElementById('rotateLeftButton');
+const rotateRightButton = document.getElementById('rotateRightButton');
+const tempCanvas = document.createElement('canvas');
+const tempContext = tempCanvas.getContext('2d');
+let rotationAngle = 0;
 
-  // Calculate the coordinates for cropping
-  const cropX = (image.width - cropWidth) / 2;
-  const cropY = (image.height - cropHeight) / 2;
+function rotateImage(angle) {
+  if (!image) {
+    return displayErrorMessage("Please select an image to begin editing!!");
+  }
 
-  // Set the canvas dimensions for the cropped image
-  canvas.width = cropWidth;
-  canvas.height = cropHeight;
+  rotationAngle += angle;
+  if (rotationAngle >= 360) {
+    rotationAngle %= 360;
+  } else if (rotationAngle < 0) {
+    rotationAngle = (rotationAngle % 360) + 360;
+  }
 
-  // Draw the cropped image on the canvas
- canvasContext.drawImage(image, cropX, cropY, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight);
+
+  tempCanvas.width = Math.max(image.width, image.height);
+  tempCanvas.height = Math.max(image.width, image.height);
+
+  tempContext.save();
+  tempContext.translate(tempCanvas.width / 2, tempCanvas.height / 2);
+  tempContext.rotate((rotationAngle * Math.PI) / 180);
+  tempContext.drawImage(
+    image,
+    -image.width / 2,
+    -image.height / 2
+  );
+  tempContext.restore();
+
+  canvasContext.clearRect(0, 0, canvas.width, canvas.height);
+  canvas.width = tempCanvas.width;
+  canvas.height = tempCanvas.height;
+  canvasContext.drawImage(tempCanvas, 0, 0, tempCanvas.width, tempCanvas.height, 0, 0, canvas.width, canvas.height);
 }
 
-
-// Attach the cropImage function to the button's click event
-cropButton.addEventListener('click', cropImage);
-
-
+rotateLeftButton.addEventListener('click', () => rotateImage(-90));
+rotateRightButton.addEventListener('click', () => rotateImage(90));

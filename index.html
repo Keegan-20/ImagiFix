@@ -15,9 +15,11 @@
     <div class="editor">
         <section id="sidebar">
             <!-- Crop Feature -->
-            <div class="cropImg">
-                <button id="cropButton">Crop</button>
-            </div>
+            <div id="cropArea"> </div>
+            <button id="cropButton">Crop</button>
+            <button id="rotateLeftButton">Rotate Left</button>
+            <button id="rotateRightButton">Rotate Right</button>
+
         </section>
         <div class="toolbar">
 
@@ -26,10 +28,10 @@
             </div>
 
             <div class="toolbar-item">
-                <label class="tool-label" for="brightness" >Exposure</label>
+                <label class="tool-label" for="brightness">Exposure</label>
                 <!-- we have used 200 value because img ususally has 100 as default brightness so inorder to double the brightness we have used the value 200 -->
                 <input class="tool-input " type="range" id="brightness" min="0" max="200">
-                <output  id="brightnessValue"> </output>
+                <output id="brightnessValue"> </output>
 
 
             </div>
@@ -66,8 +68,8 @@
                 <input class="tool-input" type="range" id="opacity" min="0" max="100" step="1">
                 <output id="opacityValue"></output>
             </div>
- 
 
+            <!-- <button id="reset" onclick="resetSettings()">Reset</button> -->
         </div>
 
         <!-- basically where the image will be -->
@@ -75,9 +77,9 @@
             <!-- when no image is selected -->
             <div id="error-message"></div>
             <canvas id="canvas" height="600" width="980">
-        
+
             </canvas>
-          
+
 
         </div>
     </div>
