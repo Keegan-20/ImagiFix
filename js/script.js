@@ -1,4 +1,4 @@
-//creating letiables
+//creating variables
 const fileInput = document.querySelector("#imageFileInput");
 const canvas = document.querySelector("#canvas");
 const canvasContext = canvas.getContext("2d");
@@ -11,17 +11,17 @@ const opacityInput = document.getElementById('opacity');
 const cropButton = document.getElementById('cropButton'); //crop feature
 const cropArea = document.querySelector("#cropArea");
 //range input value
-const brightnessValue = document.getElementById('brightnessValue');
-const saturationValue = document.getElementById('saturationValue');
-const contrastValue = document.getElementById('contrastValue');
-const blurValue = document.getElementById('blurValue');
-const inversionValue = document.getElementById('inversionValue');
-const opacityValue = document.getElementById('opacityValue');
+const brightnessRangeValue = document.getElementById('brightnessValue');
+const saturationRangeValue = document.getElementById('saturationValue');
+const contrastRangeValue = document.getElementById('contrastValue');
+const blurRangeValue = document.getElementById('blurValue');
+const inversionRangeValue = document.getElementById('inversionValue');
+const opacityRangeValue = document.getElementById('opacityValue');
 let outputTags = document.getElementsByTagName("output");
 let inputTags = document.getElementsByTagName("input");
 
 const settings = {}; // this empty object  will store all the user inputs for brightness,blur ,saturation etc.
-let image = null; //will store the currently selected image by default when page load  the user has not selected an image so its Null
+let image = null; //will store the currently selected image by default when page load  the user has not selected any image so its deafult value is  Null
 
 //reseting the filters
 function resetSettings() {
@@ -43,28 +43,25 @@ function resetSettings() {
 
 // dispalying range input values according to user input
 brightnessInput.addEventListener('input', function () {
-    brightnessValue.textContent = brightnessInput.value;
+    brightnessRangeValue.textContent = brightnessInput.value;
 });
 saturationInput.addEventListener('input', function () {
-    saturationValue.textContent = saturationInput.value;
+    saturationRangeValue.textContent = saturationInput.value;
 });
 contrastInput.addEventListener('input', function () {
-    contrastValue.textContent = contrastInput.value;
+    contrastRangeValue.textContent = contrastInput.value;
 });
 blurInput.addEventListener('input', function () {
-    blurValue.textContent = blurInput.value;
+    blurRangeValue.textContent = blurInput.value;
 });
 inversionInput.addEventListener('input', function () {
-    inversionValue.textContent = inversionInput.value;
-});
-opacityInput.addEventListener('input', function () {
-    opacityValue.textContent = opacityInput.value;
+    inversionRangeValue.textContent = inversionInput.value;
 });
 
 //opacity filter 0 to 1
 opacityInput.addEventListener("input", function () {
-    var opacity = opacityInput.value / 100;
-    opacityValue.textContent = opacity;
+   let opacity = opacityInput.value / 100;
+   opacityRangeValue.textContent = opacity;
 });
 
 //image placeholder preview
@@ -79,7 +76,7 @@ function updateSetting(key, value) {
     if (!image) {
         displayErrorMessage("Please select an image to begin editing!!");
 
-        for (let i = 0; i < outputTags.length; i++) {
+        for (let i = 0; i < outputTags.length ; i++) {
             outputTags[i].textContent = "";
             outputTags[i].disabled = true;
         }
@@ -109,18 +106,11 @@ function displayErrorMessage(message) {
 fileInput.addEventListener("change", () => {
     displayErrorMessage(" ");
 })
-
-
-function generateFilter() {
-    const { brightness, saturation, contrast,
-        blur, inversion, opacity } = settings;
-    return `brightness(${brightness}%) saturate(${saturation}%) contrast(${contrast}%) blur(${blur}px) invert(${inversion}%) opacity(${opacity}%)`;
-}
 function renderImage() {
-    const { brightness, saturation, contrast, blur, inversion, opacity } = settings;
-
-    canvas.width = Math.abs(Math.cos(rotationAngle * Math.PI / 180) * image.width) + Math.abs(Math.sin(rotationAngle * Math.PI / 180) * image.height);
-    canvas.height = Math.abs(Math.sin(rotationAngle * Math.PI / 180) * image.width) + Math.abs(Math.cos(rotationAngle * Math.PI / 180) * image.height);
+     //taking the maximum height and width depending on image, such that  entire image is dispalyed without getting cut off. 
+    const maxDimension = Math.max(image.width, image.height);
+    canvas.width = maxDimension;
+    canvas.height = maxDimension;
 
     canvasContext.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -130,8 +120,14 @@ function renderImage() {
     canvasContext.drawImage(image, -image.width / 2, -image.height / 2);
     canvasContext.restore();
 
-    canvasContext.filter = `brightness(${brightness}%) saturate(${saturation}%) contrast(${contrast}%) blur(${blur}px) invert(${inversion}%) opacity(${opacity}%)`;
+    canvasContext.filter = generateFilter();    
     canvasContext.drawImage(canvas, 0, 0, canvas.width, canvas.height);
+}
+
+function generateFilter() {
+    const { brightness, saturation, contrast,
+        blur, inversion, opacity } = settings;
+    return `brightness(${brightness}%) saturate(${saturation}%) contrast(${contrast}%) blur(${blur}px) invert(${inversion}%) opacity(${opacity}%)`;
 }
 
 //updating and saving the values given by the user
@@ -145,7 +141,6 @@ opacityInput.addEventListener("change", () => updateSetting("opacity", opacityIn
 //selection of a file using fileInput element
 fileInput.addEventListener("change", () => {
     image = new Image();
-
     image.addEventListener("load", () => {
 
         resetSettings();
@@ -174,12 +169,12 @@ const tempContext = tempCanvas.getContext('2d');
 let rotationAngle = 0;
 
 function rotateImage(angle) {
-    renderImage
     if (!image) {
         return displayErrorMessage("Please select an image to begin editing!!");
     }
 
     rotationAngle += angle;
+    //checking if rotatiom angle is within 0 to 359
     if (rotationAngle >= 360) {
         rotationAngle %= 360;
     } else if (rotationAngle < 0) {
@@ -191,8 +186,8 @@ function rotateImage(angle) {
     tempCanvas.height = Math.max(image.width, image.height);
 
     tempContext.save();
-    tempContext.translate(tempCanvas.width / 2, tempCanvas.height / 2);
-    tempContext.rotate((rotationAngle * Math.PI) / 180);
+    tempContext.translate(tempCanvas.width / 2, tempCanvas.height / 2); //endering context to the center of the canvas
+    tempContext.rotate((rotationAngle * Math.PI) / 180); // The angle is converted from degrees to radians
     tempContext.drawImage(
         image,
         -image.width / 2,
