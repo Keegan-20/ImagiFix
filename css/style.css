@@ -43,8 +43,8 @@ output{
     border:2px solid red;
     color:#ffff;
     background-color: tomato;
-
 }
+
 .tool-input {
     width: 100%;
 }
@@ -78,6 +78,9 @@ output{
     max-width: 100%;
     max-height: 100%;
 }
+
+
+
 
 /* 
 #cropArea {

@@ -10,6 +10,8 @@ const inversionInput = document.getElementById('inversion');
 const opacityInput = document.getElementById('opacity');
 const cropButton = document.getElementById('cropButton'); //crop feature
 const cropArea = document.querySelector("#cropArea");
+const tempCanvas = document.createElement('canvas');
+const tempContext = tempCanvas.getContext('2d');
 //range input value
 const brightnessRangeValue = document.getElementById('brightnessValue');
 const saturationRangeValue = document.getElementById('saturationValue');
@@ -22,7 +24,8 @@ let inputTags = document.getElementsByTagName("input");
 
 const settings = {}; // this empty object  will store all the user inputs for brightness,blur ,saturation etc.
 let image = null; //will store the currently selected image by default when page load  the user has not selected any image so its deafult value is  Null
-
+let flipHorizontal = false;
+let flipVertical = false;
 //reseting the filters
 function resetSettings() {
     settings.brightness = "100";
@@ -31,6 +34,8 @@ function resetSettings() {
     settings.blur = "0";
     settings.inversion = "0";
     settings.opacity = "100";
+    // settings.flipHorizontal = false;
+    // settings.flipVertical = false;
     //to restore to default values when we select a new image
     brightnessInput.value = settings.brightness;
     saturationInput.value = settings.saturation;
@@ -38,7 +43,6 @@ function resetSettings() {
     blurInput.value = settings.blur;
     inversionInput.value = settings.inversion;
     opacityInput.value = settings.opacity;
-
 }
 
 // dispalying range input values according to user input
@@ -60,8 +64,8 @@ inversionInput.addEventListener('input', function () {
 
 //opacity filter 0 to 1
 opacityInput.addEventListener("input", function () {
-   let opacity = opacityInput.value / 100;
-   opacityRangeValue.textContent = opacity;
+    let opacity = opacityInput.value / 100;
+    opacityRangeValue.textContent = opacity;
 });
 
 //image placeholder preview
@@ -76,7 +80,7 @@ function updateSetting(key, value) {
     if (!image) {
         displayErrorMessage("Please select an image to begin editing!!");
 
-        for (let i = 0; i < outputTags.length ; i++) {
+        for (let i = 0; i < outputTags.length; i++) {
             outputTags[i].textContent = "";
             outputTags[i].disabled = true;
         }
@@ -90,8 +94,6 @@ function updateSetting(key, value) {
 
         return;
     }
-
-
     settings[key] = value;
     renderImage();
 }
@@ -106,8 +108,8 @@ function displayErrorMessage(message) {
 fileInput.addEventListener("change", () => {
     displayErrorMessage(" ");
 })
+// Rendering the image
 function renderImage() {
-     //taking the maximum height and width depending on image, such that  entire image is dispalyed without getting cut off. 
     const maxDimension = Math.max(image.width, image.height);
     canvas.width = maxDimension;
     canvas.height = maxDimension;
@@ -117,26 +119,35 @@ function renderImage() {
     canvasContext.save();
     canvasContext.translate(canvas.width / 2, canvas.height / 2);
     canvasContext.rotate((rotationAngle * Math.PI) / 180);
+
+    //flip image feature
+    if (flipHorizontal) {
+        canvasContext.scale(-1, 1);  //width turned to opposite value
+    }
+    if (flipVertical) {
+        canvasContext.scale(1, -1); //height turned to opposite value
+    }
+
     canvasContext.drawImage(image, -image.width / 2, -image.height / 2);
     canvasContext.restore();
 
-    canvasContext.filter = generateFilter();    
+    canvasContext.filter = generateFilter();
     canvasContext.drawImage(canvas, 0, 0, canvas.width, canvas.height);
 }
 
 function generateFilter() {
     const { brightness, saturation, contrast,
         blur, inversion, opacity } = settings;
-    return `brightness(${brightness}%) saturate(${saturation}%) contrast(${contrast}%) blur(${blur}px) invert(${inversion}%) opacity(${opacity}%)`;
+    return `brightness(${brightness}% ) saturate(${saturation}%) contrast(${contrast}%) blur(${blur}px) invert(${inversion}%) opacity(${opacity}%)`;
 }
 
 //updating and saving the values given by the user
-brightnessInput.addEventListener("change", () => updateSetting("brightness", brightnessInput.value));
-saturationInput.addEventListener("change", () => updateSetting("saturation", saturationInput.value));
-contrastInput.addEventListener("change", () => updateSetting("contrast", contrastInput.value));
-blurInput.addEventListener("change", () => updateSetting("blur", blurInput.value));
-inversionInput.addEventListener("change", () => updateSetting("inversion", inversionInput.value));
-opacityInput.addEventListener("change", () => updateSetting("opacity", opacityInput.value));
+brightnessInput.addEventListener("input", () => updateSetting("brightness", brightnessInput.value));
+saturationInput.addEventListener("input", () => updateSetting("saturation", saturationInput.value));
+contrastInput.addEventListener("input", () => updateSetting("contrast", contrastInput.value));
+blurInput.addEventListener("input", () => updateSetting("blur", blurInput.value));
+inversionInput.addEventListener("input", () => updateSetting("inversion", inversionInput.value));
+opacityInput.addEventListener("input", () => updateSetting("opacity", opacityInput.value));
 
 //selection of a file using fileInput element
 fileInput.addEventListener("change", () => {
@@ -164,8 +175,7 @@ resetSettings();
 //rotate Image feature
 const rotateLeftButton = document.getElementById('rotateLeftButton');
 const rotateRightButton = document.getElementById('rotateRightButton');
-const tempCanvas = document.createElement('canvas');
-const tempContext = tempCanvas.getContext('2d');
+
 let rotationAngle = 0;
 
 function rotateImage(angle) {
@@ -181,13 +191,13 @@ function rotateImage(angle) {
         rotationAngle = (rotationAngle % 360) + 360;
     }
 
-
     tempCanvas.width = Math.max(image.width, image.height);
     tempCanvas.height = Math.max(image.width, image.height);
 
     tempContext.save();
     tempContext.translate(tempCanvas.width / 2, tempCanvas.height / 2); //endering context to the center of the canvas
     tempContext.rotate((rotationAngle * Math.PI) / 180); // The angle is converted from degrees to radians
+
     tempContext.drawImage(
         image,
         -image.width / 2,
@@ -203,3 +213,17 @@ function rotateImage(angle) {
 
 rotateLeftButton.addEventListener('click', () => rotateImage(-90));
 rotateRightButton.addEventListener('click', () => rotateImage(90));
+
+//Flip Image feature
+const flipHorizontalButton = document.getElementById("flipHorizontal");
+flipHorizontalButton.addEventListener("click", () => {
+    flipHorizontal = !flipHorizontal;
+    renderImage();
+});
+
+// Flip Vertical button click event
+const flipVerticalButton = document.getElementById("flipVertical");
+flipVerticalButton.addEventListener("click", () => {
+    flipVertical = !flipVertical;
+    renderImage();
+});
