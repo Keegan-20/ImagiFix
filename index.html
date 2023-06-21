@@ -24,6 +24,20 @@
              <!-- Flip Feature  -->
              <button id="flipHorizontal">Flip Horizontal</button>
             <button id="flipVertical">Flip Vertical</button>
+              <!-- Add Text Overlay Feature -->
+              <div id="textOverlay">
+                <button id="textOverlayButton">Add Text</button>
+                <div id="textOverlayOptions" class="text-overlay-options">
+                  <input type="text" id="textContent" placeholder="Enter text content">
+                  <input type="color" id="textColor" value="#000000">
+                  <input type="range" id="textSize" min="4" max="60" >
+                  <output id="textSizeValue"></output>
+                  <button id="addTextButton">Add Text</button>
+                </div>
+              </div>
+              <!-- Add a container for text overlays -->
+             <div id="textOverlaysContainer"></div>
+  
       
         </section>
         <div class="toolbar">
@@ -43,7 +57,7 @@
             <div class="toolbar-item">
                 <label class="tool-label" for="saturation">Saturation</label>
                 <input class="tool-input" type="range" id="saturation" min="0" max="200">
-                <output id="saturationValue" class="outputTag"></output>
+                <output id="saturationValue"></output>
 
 
             </div>
@@ -80,7 +94,7 @@
         <div class="image-area">
             <!-- when no image is selected -->
             <div id="error-message"></div>
-            <canvas id="canvas" height="600" width="980">
+            <canvas id="canvas" height="600" width="980" >
 
             </canvas>
 

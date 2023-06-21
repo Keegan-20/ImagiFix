@@ -108,8 +108,12 @@ function displayErrorMessage(message) {
 fileInput.addEventListener("change", () => {
     displayErrorMessage(" ");
 })
-// Rendering the image
+// Rendering the image on the canvas
 function renderImage() {
+    if (!image) {
+        return displayErrorMessage("Please select an image to begin editing!!");
+    }
+    
     const maxDimension = Math.max(image.width, image.height);
     canvas.width = maxDimension;
     canvas.height = maxDimension;
@@ -216,6 +220,7 @@ rotateRightButton.addEventListener('click', () => rotateImage(90));
 
 //Flip Image feature
 const flipHorizontalButton = document.getElementById("flipHorizontal");
+
 flipHorizontalButton.addEventListener("click", () => {
     flipHorizontal = !flipHorizontal;
     renderImage();
@@ -227,3 +232,53 @@ flipVerticalButton.addEventListener("click", () => {
     flipVertical = !flipVertical;
     renderImage();
 });
+
+
+   // Add Text Feature
+const textOverlayButton = document.getElementById("textOverlayButton");
+const textOverlayOptions = document.getElementById("textOverlayOptions");
+
+const textSizeInput = document.getElementById("textSize");
+const textSizeValue = document.getElementById("textSizeValue");
+
+// Toggle the add text icon
+textOverlayButton.addEventListener("click", () => {
+  textOverlayButton.classList.toggle("active");
+});
+
+// Update text size value
+textSizeInput.addEventListener("input", () => {
+  textSizeValue.textContent = textSizeInput.value;
+});
+
+const addTextButton = document.getElementById("addTextButton");
+addTextButton.addEventListener("click", () => {
+  const textContent = document.getElementById("textContent").value;
+  const textColor = document.getElementById("textColor").value;
+  const textSize = document.getElementById("textSize").value;
+
+  canvas.addEventListener('click', function(event) {
+    const rect = canvas.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+
+    drawTextOverlay(textContent, textColor, textSize, x, y);
+}, { once: true });
+});
+
+function drawTextOverlay(content, color, size, x, y) {
+  if (!image) {
+    return displayErrorMessage("Please select an image to begin editing!!");
+  }
+  
+  tempCanvas.width = canvas.width;
+  tempCanvas.height = canvas.height;
+  tempContext.drawImage(canvas, 0, 0);
+
+  canvasContext.clearRect(0, 0, canvas.width, canvas.height);
+  canvasContext.drawImage(tempCanvas, 0, 0);
+  textContent.value =" ";
+  canvasContext.fillStyle = color;
+  canvasContext.font = `${size}px Arial`;
+  canvasContext.fillText(content, x, y);
+}
