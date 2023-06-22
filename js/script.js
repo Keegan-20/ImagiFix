@@ -75,6 +75,7 @@ imgPlaceholder.onload = function () {
 };
 imgPlaceholder.src = "./img/image-placeholder.svg";
 
+
 //updating the settings
 function updateSetting(key, value) {
     if (!image) {
@@ -98,6 +99,7 @@ function updateSetting(key, value) {
     renderImage();
 }
 
+
 //displaying an error message
 function displayErrorMessage(message) {
     const errorMessage = document.getElementById("error-message");
@@ -113,7 +115,8 @@ function renderImage() {
     if (!image) {
         return displayErrorMessage("Please select an image to begin editing!!");
     }
-    
+     
+
     const maxDimension = Math.max(image.width, image.height);
     canvas.width = maxDimension;
     canvas.height = maxDimension;
@@ -233,13 +236,12 @@ flipVerticalButton.addEventListener("click", () => {
     renderImage();
 });
 
-
-   // Add Text Feature
+// Add Text Feature
 const textOverlayButton = document.getElementById("textOverlayButton");
-const textOverlayOptions = document.getElementById("textOverlayOptions");
-
+const textOverlayOptions = document.getElementById("textOverlayOptions"); //add text options : colors,text size
 const textSizeInput = document.getElementById("textSize");
 const textSizeValue = document.getElementById("textSizeValue");
+const addTextButton = document.getElementById("addTextButton");
 
 // Toggle the add text icon
 textOverlayButton.addEventListener("click", () => {
@@ -251,34 +253,44 @@ textSizeInput.addEventListener("input", () => {
   textSizeValue.textContent = textSizeInput.value;
 });
 
-const addTextButton = document.getElementById("addTextButton");
 addTextButton.addEventListener("click", () => {
-  const textContent = document.getElementById("textContent").value;
-  const textColor = document.getElementById("textColor").value;
-  const textSize = document.getElementById("textSize").value;
-
-  canvas.addEventListener('click', function(event) {
+    const textContent = document.getElementById("textContent").value;
+    const textColor = document.getElementById("textColor").value;
+    const textSize = document.getElementById("textSize").value;
+  
+    canvas.addEventListener('click', function(event) {
     const rect = canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
 
     drawTextOverlay(textContent, textColor, textSize, x, y);
-}, { once: true });
+   });
 });
 
-function drawTextOverlay(content, color, size, x, y) {
-  if (!image) {
-    return displayErrorMessage("Please select an image to begin editing!!");
+ function drawTextOverlay(content, color, size, x, y) {
+    if (!image) {
+      return displayErrorMessage("Please select an image to begin editing!!");
+    }
+  
+    // Set canvas dimensions based on the image's aspect ratio
+    if (image.height > image.width) {
+      canvas.width = canvas.offsetWidth; // Set canvas width to match the displayed size
+      canvas.height = canvas.offsetHeight; // Set canvas height to match the displayed size
+    } else {
+      canvas.width = image.width;
+      canvas.height = image.height;
+    }
+  
+    canvasContext.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+  
+    // Draw the image on the canvas
+    canvasContext.drawImage(image, 0, 0, canvas.width, canvas.height);
+  
+    // Draw the text overlay
+    textContent.value = "";
+    canvasContext.fillStyle = color;
+    canvasContext.font = `${size}px Arial`;
+  
+    canvasContext.fillText(content, x, y);
   }
   
-  tempCanvas.width = canvas.width;
-  tempCanvas.height = canvas.height;
-  tempContext.drawImage(canvas, 0, 0);
-
-  canvasContext.clearRect(0, 0, canvas.width, canvas.height);
-  canvasContext.drawImage(tempCanvas, 0, 0);
-  textContent.value =" ";
-  canvasContext.fillStyle = color;
-  canvasContext.font = `${size}px Arial`;
-  canvasContext.fillText(content, x, y);
-}
