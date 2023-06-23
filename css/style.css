@@ -84,20 +84,56 @@ output{
     position: absolute;
     background-color: #fff;
     padding: 1rem;
-    width:25%;
+    width:23%;
     border-radius:8px;
     z-index: 1;
   }
   
   #textOverlayButton{
     display: block;
-    
   }
+
   #textContent {
     width: 50%;
     margin:0.5rem 0.6rem 0 1rem;
+    outline:none;
+    border-radius: 8px;
+    padding:0.3rem;
+  }
+
+  #textColor{
+    margin-left:1rem;
   }
   
+  #closeButton{
+    position: absolute;
+    top: 3%;
+    right: 0%;
+    background-color: #978d8d;
+    cursor: pointer;
+    padding: 0.2rem 0.5rem;
+    border: none;
+    font-weight: 700;
+    outline: none;
+   border-radius: 50%;
+  }
+
+  #closeButton:hover{
+    background-color: red;
+    color:#fff;
+  }
+  #closeButton:hover::before {
+    content: 'Close';
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    white-space: nowrap;
+  }
   #addTextButton{
     display: block;
     text-align: center;
