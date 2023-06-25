@@ -112,8 +112,6 @@ fileInput.addEventListener("change", () => {
 })
 
 // Rendering the image on the canvas
-// Rendering the image on the canvas
-// Rendering the image on the canvas
 function renderImage() {
     if (!image) {
         return displayErrorMessage("Please select an image to begin editing!!");
@@ -123,6 +121,16 @@ function renderImage() {
     canvas.width = maxDimension;
     canvas.height = maxDimension;
 
+
+    
+    if (image.height > image.width) {
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+      } else {
+        canvas.width = image.width;
+        canvas.height = image.height;
+      }
+      
     canvasContext.clearRect(0, 0, canvas.width, canvas.height);
     canvasContext.save();
     canvasContext.translate(canvas.width / 2, canvas.height / 2);
@@ -137,10 +145,18 @@ function renderImage() {
     }
 
     canvasContext.drawImage(image, -image.width / 2, -image.height / 2);
-    canvasContext.restore();
-    canvasContext.filter = generateFilter();
-    canvasContext.drawImage(canvas, 0, 0, canvas.width, canvas.height);
+ 
+  // Apply text overlay
+  canvasContext.fillStyle = textOverlay.color;
+  canvasContext.font = `${textOverlay.size}px Arial`;
+  canvasContext.fillText(textOverlay.content, textOverlay.x, textOverlay.y);
+
+  canvasContext.restore();
+  canvasContext.filter = generateFilter();
+  canvasContext.drawImage(canvas, 0, 0, canvas.width, canvas.height);
 }
+
+
 
 function generateFilter() {
     const {
@@ -260,41 +276,41 @@ textSizeInput.addEventListener("input", () => {
     textSizeValue.textContent = textSizeInput.value;
 });
 
-addTextButton.addEventListener("click", () => {
+
+
+// Global variable declaration
+let textOverlay = {
+    content: "",
+    color: "#000000",
+    size: 12,
+    x: 0,
+    y: 0
+  };
+  
+  
+  // Function to update text overlay and trigger rendering
+  function drawTextOverlay(content, color, size, x, y) {
+    textOverlay.content = content;
+    textOverlay.color = color;
+    textOverlay.size = size;
+    textOverlay.x = x;
+    textOverlay.y = y; 
+
+    
+    renderImage();
+  }
+  
+  addTextButton.addEventListener("click", () => {
     const textContent = document.getElementById("textContent").value;
     const textColor = document.getElementById("textColor").value;
-    const textSize = document.getElementById("textSize").value;
-   
-    //selecting co-ordinates depending on user click
-    canvas.addEventListener('click', function (event) {
+    const textSize = parseInt(textSizeInput.value);
+  
+      //selecting co-ordinates depending on user click
+      canvas.addEventListener('click', function (event) {
         const rect = canvas.getBoundingClientRect();
         const x = event.clientX - rect.left;
         const y = event.clientY - rect.top;
      drawTextOverlay(textContent, textColor, textSize, x, y);
     });
-});
-
-function drawTextOverlay(content, color, size, x, y) {
-    if (!image) {
-        return displayErrorMessage();
-    }
-    // Set canvas dimensions based on the image's aspect ratio
-    if (image.height > image.width) {
-        canvas.width = canvas.offsetWidth; // Set canvas width to match the displayed size
-        canvas.height = canvas.offsetHeight; // Set canvas height to match the displayed size
-    } else {
-        canvas.width = image.width;
-        canvas.height = image.height;
-    }
-    // Clear the canvas
-    canvasContext.clearRect(0, 0, canvas.width, canvas.height);
-    
-    // Apply filters to the canvas
-    canvasContext.filter = generateFilter();
-    canvasContext.drawImage(image, 0, 0, canvas.width, canvas.height);
-    
-    // Draw the text overlay
-    canvasContext.fillStyle = color;
-    canvasContext.font = `${size}px Arial`;
-    canvasContext.fillText(content, x, y);
-}
+  });
+  
