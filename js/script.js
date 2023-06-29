@@ -121,17 +121,9 @@ function renderImage() {
     canvas.width = maxDimension;
     canvas.height = maxDimension;
 
-
-    
-    if (image.height > image.width) {
-        canvas.width = canvas.offsetWidth;
-        canvas.height = canvas.offsetHeight;
-      } else {
-        canvas.width = image.width;
-        canvas.height = image.height;
-      }
-      
     canvasContext.clearRect(0, 0, canvas.width, canvas.height);
+    
+
     canvasContext.save();
     canvasContext.translate(canvas.width / 2, canvas.height / 2);
     canvasContext.rotate((rotationAngle * Math.PI) / 180);
@@ -144,8 +136,15 @@ function renderImage() {
         canvasContext.scale(1, -1); //height turned to opposite value
     }
 
+// Apply crop area
+if (startX !== undefined && startY !== undefined && endX !== undefined && endY !== undefined) {
+    const width = endX - startX;
+    const height = endY - startY;
+    canvasContext.drawImage(image, startX, startY, width, height, -width / 2, -height / 2, width, height);
+  } else {
     canvasContext.drawImage(image, -image.width / 2, -image.height / 2);
- 
+  }
+
   // Apply text overlay
   canvasContext.fillStyle = textOverlay.color;
   canvasContext.font = `${textOverlay.size}px Arial`;
@@ -294,9 +293,7 @@ let textOverlay = {
     textOverlay.color = color;
     textOverlay.size = size;
     textOverlay.x = x;
-    textOverlay.y = y; 
-
-    
+    textOverlay.y = y;
     renderImage();
   }
   
@@ -313,4 +310,117 @@ let textOverlay = {
      drawTextOverlay(textContent, textColor, textSize, x, y);
     });
   });
+ 
+  //Crop
+  let startX, startY, endX, endY;
+let isCropMode = false; // Flag to indicate if the crop mode is enabled
+
+// Function to handle mouse down event
+function handleMouseDown(event) {
+  if (isCropMode) {
+    const rect = canvas.getBoundingClientRect();
+    startX = event.clientX - rect.left;
+    startY = event.clientY - rect.top;
+  }
+}
+
+// Function to handle mouse move event
+function handleMouseMove(event) {
+  if (isCropMode && startX !== undefined && startY !== undefined) {
+    const rect = canvas.getBoundingClientRect();
+    endX = event.clientX - rect.left;
+    endY = event.clientY - rect.top;
+    drawCrosshair(startX, startY, endX, endY);
+    
+  }
+}
+
+// Function to handle mouse up event
+function handleMouseUp() {
+  if (isCropMode && startX !== undefined && startY !== undefined && endX !== undefined && endY !== undefined) {
+    cropImage(startX, startY, endX, endY);
+    startX = startY = endX = endY = undefined;
+    canvas.style.cursor = 'crosshair';
+  }
+}
+
+// Function to draw the crop area
+function drawCrosshair(startX, startY, endX, endY) {
+    canvasContext.clearRect(0, 0, canvas.width, canvas.height);
+     canvasContext.drawImage(image, 0, 0);
+     canvasContext.beginPath();
+     canvasContext.moveTo(startX, 0);
+     canvasContext.lineTo(startX, canvas.height);
+     canvasContext.moveTo(0, startY);
+     canvasContext.lineTo(canvas.width, startY);
+     canvasContext.strokeStyle = 'red';
+     canvasContext.lineWidth = 1;
+     canvasContext.stroke();
+     canvasContext.fillStyle = 'rgba(255, 0, 0, 0.2)';
+     canvasContext.fillRect(startX, startY, endX - startX, endY - startY);
+  }
   
+// Function to crop the image
+function cropImage(startX, startY, endX, endY) {
+
+    let tempCanvas = document.createElement('canvas');
+    let tempContext = tempCanvas.getContext('2d');
+    let width = endX - startX;
+    let height = endY - startY;
+  
+    tempCanvas.width = width;
+    tempCanvas.height = height;
+  
+    // Apply transformations and filters to the temporary canvas
+    tempContext.save();
+    tempContext.translate(tempCanvas.width / 2, tempCanvas.height / 2);
+    tempContext.rotate((rotationAngle * Math.PI) / 180);
+    
+    if (flipHorizontal) {
+      tempContext.scale(-1, 1);
+    }
+    if (flipVertical) {
+      tempContext.scale(1, -1);
+    }
+    
+    tempContext.drawImage(
+      image,
+      startX, startY, width, height,
+      -width / 2, -height / 2, width, height
+    );
+    tempContext.restore();
+    tempContext.filter = generateFilter();
+    tempContext.drawImage(tempCanvas, 0, 0, tempCanvas.width, tempCanvas.height);
+  
+    // Convert the resulting image data to a data URL and create a new image
+    let croppedImage = new Image();
+    croppedImage.onload = function() {
+      resetSettings();
+      renderImage();
+    };
+    croppedImage.src = tempCanvas.toDataURL();
+  
+    // Update the image variable with the cropped image
+    image = croppedImage;
+  }
+  
+  // Event listener for crop button click
+cropButton.addEventListener('click', function() {
+  isCropMode = !isCropMode; // Toggle the value of isCropMode
+  if (isCropMode) {
+    cropButton.textContent = "Save Crop";
+    canvas.style.cursor = 'crosshair';
+  }
+else {
+    cropButton.textContent = "Crop";
+    canvas.style.cursor = 'auto';
+    startX = startY = endX = endY = undefined; // Reset the crop area
+    renderImage();
+  }
+});
+
+
+// Add event listeners for mouse events
+canvas.addEventListener('mousedown', handleMouseDown);
+canvas.addEventListener('mousemove', handleMouseMove);
+canvas.addEventListener('mouseup', handleMouseUp);
