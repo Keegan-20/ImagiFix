@@ -114,49 +114,84 @@ fileInput.addEventListener("change", () => {
 // Rendering the image on the canvas
 function renderImage() {
     if (!image) {
-        return displayErrorMessage("Please select an image to begin editing!!");
+      return displayErrorMessage("Please select an image to begin editing!");
     }
+  
+    const canvasWidth = canvas.width;
+    const canvasHeight = canvas.height;
+  
+    const imageAspectRatio = image.width / image.height;
+    const canvasAspectRatio = canvasWidth / canvasHeight;
+  
+    let renderWidth, renderHeight, offsetX, offsetY;
+  
+    if (imageAspectRatio > canvasAspectRatio) {
+      renderWidth = canvasWidth;
+      renderHeight = renderWidth / imageAspectRatio;
+      offsetX = 0;
+      offsetY = (canvasHeight - renderHeight) / 2;
+    } else {
+      renderHeight = canvasHeight;
+      renderWidth = renderHeight * imageAspectRatio;
+      offsetY = 0;
+      offsetX = (canvasWidth - renderWidth) / 2;
+    }
+  
+    canvasContext.clearRect(0, 0, canvasWidth, canvasHeight);
     
-    const maxDimension = Math.max(image.width, image.height);
-    canvas.width = maxDimension;
-    canvas.height = maxDimension;
-
-    canvasContext.clearRect(0, 0, canvas.width, canvas.height);
-    
-
     canvasContext.save();
-    canvasContext.translate(canvas.width / 2, canvas.height / 2);
+    canvasContext.translate(canvasWidth / 2, canvasHeight / 2);
     canvasContext.rotate((rotationAngle * Math.PI) / 180);
-
-    //flip image feature
+    
+    // Flip image feature
     if (flipHorizontal) {
-        canvasContext.scale(-1, 1);  //width turned to opposite value
+      canvasContext.scale(-1, 1); // Width turned to opposite value
     }
     if (flipVertical) {
-        canvasContext.scale(1, -1); //height turned to opposite value
+      canvasContext.scale(1, -1); // Height turned to opposite value
     }
-
-// Apply crop area
-if (startX !== undefined && startY !== undefined && endX !== undefined && endY !== undefined) {
-    const width = endX - startX;
-    const height = endY - startY;
-    canvasContext.drawImage(image, startX, startY, width, height, -width / 2, -height / 2, width, height);
-  } else {
-    canvasContext.drawImage(image, -image.width / 2, -image.height / 2);
+  
+    // Apply crop area
+    if (
+      startX !== undefined &&
+      startY !== undefined &&
+      endX !== undefined &&
+      endY !== undefined
+    ) {
+      const width = endX - startX;
+      const height = endY - startY;
+      canvasContext.drawImage(
+        image,
+        startX,
+        startY,
+        width,
+        height,
+        -renderWidth / 2,
+        -renderHeight / 2,
+        renderWidth,
+        renderHeight
+      );
+    } else {
+      canvasContext.drawImage(
+        image,
+        -renderWidth / 2,
+        -renderHeight / 2,
+        renderWidth,
+        renderHeight
+      );
+    }
+    
+    canvasContext.restore();
+  
+    // Apply text overlay
+    canvasContext.fillStyle = textOverlay.color;
+    canvasContext.font = `${textOverlay.size}px Arial`;
+    canvasContext.fillText(textOverlay.content, textOverlay.x, textOverlay.y);
+  
+    canvasContext.filter = generateFilter();
+    canvasContext.drawImage(canvas, 0, 0, canvasWidth, canvasHeight);
   }
-
-  // Apply text overlay
-  canvasContext.fillStyle = textOverlay.color;
-  canvasContext.font = `${textOverlay.size}px Arial`;
-  canvasContext.fillText(textOverlay.content, textOverlay.x, textOverlay.y);
-
-  canvasContext.restore();
-  canvasContext.filter = generateFilter();
-  canvasContext.drawImage(canvas, 0, 0, canvas.width, canvas.height);
-}
-
-
-
+  
 function generateFilter() {
     const {
         brightness, saturation,
@@ -418,7 +453,6 @@ else {
     renderImage();
   }
 });
-
 
 // Add event listeners for mouse events
 canvas.addEventListener('mousedown', handleMouseDown);
