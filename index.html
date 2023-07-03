@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/style.css">
-    <title>ImagiFix- Image editor Web App</title>
+    <link rel="stylesheet" href="css/style.css">    
+  <script src="https://kit.fontawesome.com/4f2459a64d.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
+    <title>ImagiFix- Image Editor Web App</title>
 </head>
 
 <body>
@@ -15,17 +17,32 @@
         <section id="sidebar">
             <!-- Crop Feature -->
            
-            <div id="cropArea"> </div>
-            <button id="cropButton">Crop</button>
+            <div id="cropArea"> 
+
+            <button id="cropButton" class="toolbarButtons">
+                <box-icon name='crop'></box-icon></button>
+            </div>
             <!-- Rotate Feature -->
-            <button id="rotateLeftButton">Rotate Left</button>
-            <button id="rotateRightButton">Rotate Right</button>
+            <button id="rotateLeftButton" class="toolbarButtons">
+         <i class="fa-sharp fa-solid fa-rotate-left" id="rotateLeftButton" ></i> </button>
+
+            <button id="rotateRightButton" class="toolbarButtons">
+                <i class="fa-sharp fa-solid fa-rotate-right"></i></button>
              <!-- Flip Feature  -->
-             <button id="flipHorizontal">Flip Horizontal</button>
-            <button id="flipVertical">Flip Vertical</button>
+             <button id="flipHorizontal" class="toolbarButtons">
+              <box-icon name='reflect-vertical' ></box-icon>
+             </button>
+            <button id="flipVertical" class="toolbarButtons" >
+                <box-icon name='reflect-horizontal'></box-icon>
+
+            </button>
+
               <!-- Add Text Overlay Feature -->
             <div id="textOverlay">
-                <button id="textOverlayButton">Add Text</button>
+                <button id="textOverlayButton"  class="toolbarButtons">
+                    <box-icon name='text'></box-icon>
+                </button>
+
                 <div id="textOverlayOptions" class="text-overlay-options">
                     <input type="text" id="textContent" placeholder="Enter text content">
                     <input type="color" id="textColor" value="#000000">
@@ -54,8 +71,6 @@
                 <label class="tool-label" for="saturation">Saturation</label>
                 <input class="tool-input" type="range" id="saturation" min="0" max="200">
                 <output id="saturationValue"></output>
-
-
             </div>
 
             <div class="toolbar-item">
@@ -73,8 +88,7 @@
             <div class="toolbar-item">
                 <label class="tool-label" for="inversion">Inversion</label>
                 <input class="tool-input" type="range" id="inversion" min="0" max="100">
-                <output id="inversionValue"></output>
-
+               <output id="inversionValue"></output>
             </div>
 
             <div class="toolbar-item">
@@ -85,9 +99,14 @@
             
             <!-- <button id="reset" onclick="resetSettings()">Reset</button> -->
         </div>
-
+          
         <!-- basically where the image will be -->
         <div class="image-area">
+            <div class="saveImage">
+                <button id="saveButton">Save Image</button>
+    
+                </div>
+
             <!-- when no image is selected -->
             <div id="error-message"></div>
             

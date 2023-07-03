@@ -28,6 +28,10 @@ const settings = {}; // this empty object  will store all the user inputs for br
 let image = null; //will store the currently selected image by default when page load  the user has not selected any image so its deafult value is  Null
 let flipHorizontal = false;
 let flipVertical = false;
+//crop feature variables
+let startX, startY, endX, endY;
+let isCropMode = false; // Flag to indicate if the crop mode is enabled
+let renderWidth, renderHeight, offsetX, offsetY;
 
 //reseting the filters
 function resetSettings() {
@@ -114,7 +118,7 @@ fileInput.addEventListener("change", () => {
 // Rendering the image on the canvas
 function renderImage() {
     if (!image) {
-      return displayErrorMessage("Please select an image to begin editing!");
+      return displayErrorMessage();
     }
   
     const canvasWidth = canvas.width;
@@ -123,7 +127,6 @@ function renderImage() {
     const imageAspectRatio = image.width / image.height;
     const canvasAspectRatio = canvasWidth / canvasHeight;
   
-    let renderWidth, renderHeight, offsetX, offsetY;
   
     if (imageAspectRatio > canvasAspectRatio) {
       renderWidth = canvasWidth;
@@ -310,8 +313,6 @@ textSizeInput.addEventListener("input", () => {
     textSizeValue.textContent = textSizeInput.value;
 });
 
-
-
 // Global variable declaration
 let textOverlay = {
     content: "",
@@ -346,10 +347,7 @@ let textOverlay = {
     });
   });
  
-  //Crop
-  let startX, startY, endX, endY;
-let isCropMode = false; // Flag to indicate if the crop mode is enabled
-
+                //Crop Image Feature
 // Function to handle mouse down event
 function handleMouseDown(event) {
   if (isCropMode) {
@@ -379,24 +377,26 @@ function handleMouseUp() {
   }
 }
 
-// Function to draw the crop area
+// Function to draw the crop area rectangle based on userclick
 function drawCrosshair(startX, startY, endX, endY) {
     canvasContext.clearRect(0, 0, canvas.width, canvas.height);
-     canvasContext.drawImage(image, 0, 0);
-     canvasContext.beginPath();
-     canvasContext.moveTo(startX, 0);
-     canvasContext.lineTo(startX, canvas.height);
-     canvasContext.moveTo(0, startY);
-     canvasContext.lineTo(canvas.width, startY);
-     canvasContext.strokeStyle = 'red';
-     canvasContext.lineWidth = 1;
-     canvasContext.stroke();
-     canvasContext.fillStyle = 'rgba(255, 0, 0, 0.2)';
-     canvasContext.fillRect(startX, startY, endX - startX, endY - startY);
+    canvasContext.drawImage(image, 0, 0);
+    canvasContext.beginPath();
+    canvasContext.moveTo(startX, startY);
+    canvasContext.lineTo(endX, startY);
+    canvasContext.lineTo(endX, endY);
+    canvasContext.lineTo(startX, endY);
+    canvasContext.closePath();
+    canvasContext.strokeStyle = 'blue';
+    canvasContext.lineWidth = 1;
+    canvasContext.stroke();
+    canvasContext.fillStyle = 'rgba(0, 0, 255, 0.2)';
+    canvasContext.fillRect(startX, startY, endX - startX, endY - startY);
   }
   
+  
 // Function to crop the image
-function cropImage(startX, startY, endX, endY) {
+function cropImage(startX, startY, endX, endY,) {
 
     let tempCanvas = document.createElement('canvas');
     let tempContext = tempCanvas.getContext('2d');
@@ -405,7 +405,7 @@ function cropImage(startX, startY, endX, endY) {
   
     tempCanvas.width = width;
     tempCanvas.height = height;
-  
+
     // Apply transformations and filters to the temporary canvas
     tempContext.save();
     tempContext.translate(tempCanvas.width / 2, tempCanvas.height / 2);
@@ -458,3 +458,52 @@ else {
 canvas.addEventListener('mousedown', handleMouseDown);
 canvas.addEventListener('mousemove', handleMouseMove);
 canvas.addEventListener('mouseup', handleMouseUp);
+
+//Save Image
+const saveButton = document.getElementById("saveButton");
+saveButton.addEventListener("click", saveImage);
+
+function saveImage() {
+  if (!image) {
+    displayErrorMessage();
+    return;
+  }
+
+  // Create a new canvas element to hold the edited image
+  const saveCanvas = document.createElement("canvas");
+  const saveContext = saveCanvas.getContext("2d");
+  saveCanvas.width = canvas.width;
+  saveCanvas.height = canvas.height;
+
+  // Apply the same transformations and filters to the saveCanvas
+  saveContext.save();
+  saveContext.translate(saveCanvas.width / 2, saveCanvas.height / 2);
+  saveContext.rotate((rotationAngle * Math.PI) / 180);
+  
+  if (flipHorizontal) {
+    saveContext.scale(-1, 1);
+  }
+  if (flipVertical) {
+    saveContext.scale(1, -1);
+  }
+
+  saveContext.filter = generateFilter();
+  saveContext.drawImage(
+    image,
+    -renderWidth / 2,
+    -renderHeight / 2,
+    renderWidth,
+    renderHeight
+  );
+
+  saveContext.restore();
+
+  // Convert the canvas image to a data URL
+  const dataURL = saveCanvas.toDataURL();
+
+  // Create a temporary link element to trigger the download
+  const link = document.createElement("a");
+  link.href = dataURL;
+  link.download = "edited_image.png";
+  link.click();
+}
