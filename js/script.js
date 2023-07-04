@@ -141,7 +141,6 @@ function renderImage() {
     }
   
     canvasContext.clearRect(0, 0, canvasWidth, canvasHeight);
-    
     canvasContext.save();
     canvasContext.translate(canvasWidth / 2, canvasHeight / 2);
     canvasContext.rotate((rotationAngle * Math.PI) / 180);
@@ -190,7 +189,6 @@ function renderImage() {
     canvasContext.fillStyle = textOverlay.color;
     canvasContext.font = `${textOverlay.size}px Arial`;
     canvasContext.fillText(textOverlay.content, textOverlay.x, textOverlay.y);
-  
     canvasContext.filter = generateFilter();
     canvasContext.drawImage(canvas, 0, 0, canvasWidth, canvasHeight);
   }
@@ -469,7 +467,7 @@ if (!image) {
 displayErrorMessage();
 return;
 }
-// Create a new canvas element to hold the edited image
+
 const saveCanvas = document.createElement("canvas");
 const saveContext = saveCanvas.getContext("2d");
 saveCanvas.width = canvas.width;
@@ -477,6 +475,7 @@ saveCanvas.height = canvas.height;
 saveContext.save();
 saveContext.translate(saveCanvas.width / 2, saveCanvas.height / 2);
 saveContext.rotate((rotationAngle * Math.PI) / 180);
+
 if (flipHorizontal) {
 saveContext.scale(-1, 1);
 
@@ -484,8 +483,8 @@ saveContext.scale(-1, 1);
 if (flipVertical) {
 saveContext.scale(1, -1);
 }
-
 saveContext.filter = generateFilter();
+
 saveContext.drawImage(
 image,
 -renderWidth / 2,
@@ -494,7 +493,11 @@ renderWidth,
 renderHeight
 );
 saveContext.restore();
-  saveContext.restore();
+
+// Draw text overlay
+saveContext.fillStyle = textOverlay.color;
+saveContext.font = `${textOverlay.size}px Arial`;
+saveContext.fillText(textOverlay.content, textOverlay.x, textOverlay.y);
 
   // Convert the canvas image to a data URL
   const dataURL = saveCanvas.toDataURL();
