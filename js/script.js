@@ -195,6 +195,7 @@ function renderImage() {
     canvasContext.drawImage(canvas, 0, 0, canvasWidth, canvasHeight);
   }
   
+  //generating filters
 function generateFilter() {
     const {
         brightness, saturation,
@@ -459,51 +460,58 @@ canvas.addEventListener('mousedown', handleMouseDown);
 canvas.addEventListener('mousemove', handleMouseMove);
 canvas.addEventListener('mouseup', handleMouseUp);
 
-//Save Image
+// Save Image
 const saveButton = document.getElementById("saveButton");
 saveButton.addEventListener("click", saveImage);
 
 function saveImage() {
-  if (!image) {
-    displayErrorMessage();
-    return;
-  }
+if (!image) {
+displayErrorMessage();
+return;
+}
+// Create a new canvas element to hold the edited image
+const saveCanvas = document.createElement("canvas");
+const saveContext = saveCanvas.getContext("2d");
+saveCanvas.width = canvas.width;
+saveCanvas.height = canvas.height;
+saveContext.save();
+saveContext.translate(saveCanvas.width / 2, saveCanvas.height / 2);
+saveContext.rotate((rotationAngle * Math.PI) / 180);
+if (flipHorizontal) {
+saveContext.scale(-1, 1);
 
-  // Create a new canvas element to hold the edited image
-  const saveCanvas = document.createElement("canvas");
-  const saveContext = saveCanvas.getContext("2d");
-  saveCanvas.width = canvas.width;
-  saveCanvas.height = canvas.height;
+}
+if (flipVertical) {
+saveContext.scale(1, -1);
+}
 
-  // Apply the same transformations and filters to the saveCanvas
-  saveContext.save();
-  saveContext.translate(saveCanvas.width / 2, saveCanvas.height / 2);
-  saveContext.rotate((rotationAngle * Math.PI) / 180);
-  
-  if (flipHorizontal) {
-    saveContext.scale(-1, 1);
-  }
-  if (flipVertical) {
-    saveContext.scale(1, -1);
-  }
-
-  saveContext.filter = generateFilter();
-  saveContext.drawImage(
-    image,
-    -renderWidth / 2,
-    -renderHeight / 2,
-    renderWidth,
-    renderHeight
-  );
-
+saveContext.filter = generateFilter();
+saveContext.drawImage(
+image,
+-renderWidth / 2,
+-renderHeight / 2,
+renderWidth,
+renderHeight
+);
+saveContext.restore();
   saveContext.restore();
 
   // Convert the canvas image to a data URL
   const dataURL = saveCanvas.toDataURL();
 
-  // Create a temporary link element to trigger the download
+  // Prompt the user for a filename
+  const filename = prompt("Save Image As :", "edited_image.png");
+
+  // If the user clicked "Cancel", then don't download the file
+  if (filename === null) {
+    return;
+  }
   const link = document.createElement("a");
+
+  // Set the download filename to the user-entered filename
+  link.download = filename; 
+
+  // Create a temporary link element to trigger the download
   link.href = dataURL;
-  link.download = "edited_image.png";
   link.click();
 }
