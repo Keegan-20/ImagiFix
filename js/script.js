@@ -26,6 +26,7 @@ let inputTags = document.getElementsByTagName("input");
 
 const settings = {}; // this empty object  will store all the user inputs for brightness,blur ,saturation etc.
 let image = null; //will store the currently selected image by default when page load  the user has not selected any image so its deafult value is  Null
+let rotationAngle = 0;
 let flipHorizontal = false;
 let flipVertical = false;
 //crop feature variables
@@ -35,12 +36,15 @@ let renderWidth, renderHeight, offsetX, offsetY;
 
 //reseting the filters
 function resetSettings() {
-    settings.brightness = "100";
-    settings.saturation = "100";
-    settings.contrast = "100";
-    settings.blur = "0";
-    settings.inversion = "0";
-    settings.opacity = "100";
+  const filters = ['brightness', 'saturation', 'contrast', 'blur', 'inversion', 'opacity'];
+  filters.forEach(filter => {
+    if (filter === 'blur' || filter === 'inversion') {
+      settings[filter] = '0'; // Reset the blur and inversion filters to '0'
+    }
+     else {
+      settings[filter] = '100'; // Reset other filters to '100'
+    }
+  });
     //to restore to default values when we select a new image
     brightnessInput.value = settings.brightness;
     saturationInput.value = settings.saturation;
@@ -48,8 +52,15 @@ function resetSettings() {
     blurInput.value = settings.blur;
     inversionInput.value = settings.inversion;
     opacityInput.value = settings.opacity;
-}
 
+    // Update range value display to default
+  brightnessRangeValue.textContent = settings.brightness;
+  saturationRangeValue.textContent = settings.saturation;
+  contrastRangeValue.textContent = settings.contrast;
+  blurRangeValue.textContent = settings.blur;
+  inversionRangeValue.textContent = settings.inversion;
+}
+ 
 // displaying range input values according to user input
 brightnessInput.addEventListener('input', function () {
     brightnessRangeValue.textContent = brightnessInput.value;
@@ -101,6 +112,7 @@ function updateSetting(key, value) {
         return;
     }
     settings[key] = value;
+
     renderImage();
 }
 
@@ -148,7 +160,7 @@ function renderImage() {
     // Flip image feature
     if (flipHorizontal) {
       canvasContext.scale(-1, 1); // Width turned to opposite value
-    }
+    } 
     if (flipVertical) {
       canvasContext.scale(1, -1); // Height turned to opposite value
     }
@@ -218,6 +230,7 @@ fileInput.addEventListener("change", () => {
     image.addEventListener("load", () => {
 
         resetSettings();
+        resetAllFilters();
         renderImage();
 
         // Image is selected, enable the filters
@@ -238,7 +251,6 @@ resetSettings();
 //rotate Image feature
 const rotateLeftButton = document.getElementById('rotateLeftButton');
 const rotateRightButton = document.getElementById('rotateRightButton');
-let rotationAngle = 0;
 
 function rotateImage(angle) {
     if (!image) {
@@ -313,7 +325,7 @@ textSizeInput.addEventListener("input", () => {
 });
 
 // Global variable declaration
-let textOverlay = {
+var textOverlay = {
     content: "",
     color: "#000000",
     size: 12,
@@ -458,7 +470,7 @@ canvas.addEventListener('mousedown', handleMouseDown);
 canvas.addEventListener('mousemove', handleMouseMove);
 canvas.addEventListener('mouseup', handleMouseUp);
 
-// Save Image
+// Saving the Image
 const saveButton = document.getElementById("saveButton");
 saveButton.addEventListener("click", saveImage);
 
@@ -517,4 +529,37 @@ saveContext.fillText(textOverlay.content, textOverlay.x, textOverlay.y);
   // Create a temporary link element to trigger the download
   link.href = dataURL;
   link.click();
+}
+
+//Resetting filters and transformation applied
+const resetButton = document.getElementById('resetButton');
+resetButton.addEventListener('click', resetAllFilters);
+
+function resetAllFilters() {
+  resetSettings();
+ 
+  // Reset flip values
+  flipHorizontal = false;
+  flipVertical = false;
+
+  // Reset rotation angle
+  rotationAngle = 0;
+
+  // Reset crop variables
+  startX = undefined;
+  startY = undefined;
+  endX = undefined;
+  endY = undefined;
+  isCropMode = false;
+
+  // Reset text overlay values
+   textOverlay = {
+    content: "",
+    color: "#000000",
+    size: 12,
+    x: 0,
+    y: 0
+  };
+  
+  renderImage();
 }
