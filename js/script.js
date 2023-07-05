@@ -1,7 +1,7 @@
 //creating variables
 const fileInput = document.querySelector("#imageFileInput");
 const canvas = document.querySelector("#canvas");
-const canvasContext = canvas.getContext("2d");
+const canvasContext = canvas.getContext("2d" , { willReadFrequently: true });
 const brightnessInput = document.getElementById('brightness');//user inputs
 const saturationInput = document.getElementById('saturation');
 const contrastInput = document.getElementById('contrast');
@@ -26,6 +26,8 @@ let inputTags = document.getElementsByTagName("input");
 
 const settings = {}; // this empty object  will store all the user inputs for brightness,blur ,saturation etc.
 let image = null; //will store the currently selected image by default when page load  the user has not selected any image so its deafult value is  Null
+const undoStack = [];
+const redoStack = [];
 let rotationAngle = 0;
 let flipHorizontal = false;
 let flipVertical = false;
@@ -112,7 +114,6 @@ function updateSetting(key, value) {
         return;
     }
     settings[key] = value;
-
     renderImage();
 }
 
@@ -160,7 +161,7 @@ function renderImage() {
     // Flip image feature
     if (flipHorizontal) {
       canvasContext.scale(-1, 1); // Width turned to opposite value
-    } 
+    }
     if (flipVertical) {
       canvasContext.scale(1, -1); // Height turned to opposite value
     }
@@ -194,17 +195,18 @@ function renderImage() {
         renderHeight
       );
     }
-    
     canvasContext.restore();
-  
-    // Apply text overlay
-    canvasContext.fillStyle = textOverlay.color;
-    canvasContext.font = `${textOverlay.size}px Arial`;
-    canvasContext.fillText(textOverlay.content, textOverlay.x, textOverlay.y);
-    canvasContext.filter = generateFilter();
-    canvasContext.drawImage(canvas, 0, 0, canvasWidth, canvasHeight);
-  }
-  
+   // Apply text overlay
+   canvasContext.fillStyle = textOverlay.color;
+   canvasContext.font = `${textOverlay.size}px Arial`;
+   canvasContext.fillText(textOverlay.content, textOverlay.x, textOverlay.y);
+   canvasContext.filter = generateFilter();
+   canvasContext.drawImage(canvas, 0, 0, canvasWidth, canvasHeight);
+ 
+   // Save the current canvas state for undo
+ saveCanvasState();
+}
+
   //generating filters
 function generateFilter() {
     const {
@@ -230,7 +232,6 @@ fileInput.addEventListener("change", () => {
     image.addEventListener("load", () => {
 
         resetSettings();
-        resetAllFilters();
         renderImage();
 
         // Image is selected, enable the filters
@@ -319,6 +320,7 @@ closeButton.addEventListener("click", () => {
     textOverlayButton.classList.remove("active");
 })
 
+
    // Update text size value
 textSizeInput.addEventListener("input", () => {
     textSizeValue.textContent = textSizeInput.value;
@@ -333,7 +335,7 @@ var textOverlay = {
     y: 0
   };
   
-  
+
   // Function to update text overlay and trigger rendering
   function drawTextOverlay(content, color, size, x, y) {
     textOverlay.content = content;
@@ -357,7 +359,6 @@ var textOverlay = {
      drawTextOverlay(textContent, textColor, textSize, x, y);
     });
   });
- 
                 //Crop Image Feature
 // Function to handle mouse down event
 function handleMouseDown(event) {
@@ -470,6 +471,72 @@ canvas.addEventListener('mousedown', handleMouseDown);
 canvas.addEventListener('mousemove', handleMouseMove);
 canvas.addEventListener('mouseup', handleMouseUp);
 
+
+// undo and redo feature
+// Save the current canvas state for undo
+function saveCanvasState() {
+  const imageData = canvasContext.getImageData(
+    0,
+    0,
+    canvas.width,
+    canvas.height
+  );
+
+  const currentState = {
+    imageData: imageData,
+    settings: { ...settings },
+    rotationAngle: rotationAngle,
+    flipHorizontal: flipHorizontal,
+    flipVertical: flipVertical,
+    textOverlay: { ...textOverlay },
+    startX: startX,
+    startY: startY,
+    endX: endX,
+    endY: endY,
+  };
+  undoStack.push(currentState);
+  }
+// Undo the last canvas state
+function undo() {
+  if (undoStack.length > 0) {
+    const lastState = undoStack.pop();
+    redoStack.push(lastState);
+    restoreCanvasState();
+  }
+}
+
+// Redo the last undo operation
+function redo() {
+  if (redoStack.length > 0) {
+    const nextState = redoStack.pop();
+    undoStack.push(nextState);
+    restoreCanvasState();
+  }
+}
+
+// Restore the canvas state from the undo/redo stack
+function restoreCanvasState() {
+  if (undoStack.length > 0) {
+    const lastState = undoStack[undoStack.length - 1];
+    canvasContext.putImageData(lastState.imageData, 0, 0);
+    settings = { ...lastState.settings };
+    rotationAngle = lastState.rotationAngle;
+    flipHorizontal = lastState.flipHorizontal;
+    flipVertical = lastState.flipVertical;
+    textOverlay = { ...lastState.textOverlay };
+    startX = lastState.startX;
+    startY = lastState.startY;
+    endX = lastState.endX;
+    endY = lastState.endY;
+  }
+}
+
+// Undo button event listener
+document.getElementById('undoButton').addEventListener('click', undo);
+
+// Redo button event listener
+document.getElementById('redoButton').addEventListener('click', redo);
+
 // Saving the Image
 const saveButton = document.getElementById("saveButton");
 saveButton.addEventListener("click", saveImage);
@@ -531,13 +598,14 @@ saveContext.fillText(textOverlay.content, textOverlay.x, textOverlay.y);
   link.click();
 }
 
+
 //Resetting filters and transformation applied
 const resetButton = document.getElementById('resetButton');
 resetButton.addEventListener('click', resetAllFilters);
 
 function resetAllFilters() {
   resetSettings();
- 
+
   // Reset flip values
   flipHorizontal = false;
   flipVertical = false;
@@ -560,6 +628,6 @@ function resetAllFilters() {
     x: 0,
     y: 0
   };
-  
+
   renderImage();
 }
