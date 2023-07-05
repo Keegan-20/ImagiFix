@@ -15,10 +15,12 @@ body {
 }
 
 .toolbar {
+  
     width: 250px;
-    /* border:2px solid red; */
+    border-left:2px solid black;
     background-color: #333;
-    color:#fff;
+    color:#fff; 
+    
 }
 
 .toolbar-item {
@@ -58,14 +60,12 @@ output{
 }
 
 .image-area {
-    /* flex grow will take the remaining space in the displayed flex item*/
     flex-grow: 1;
     display: flex;
     justify-content: center;
     align-items: center;
    padding: 0.8rem 0;
     background-color: wheat;
-    /* border:2px solid tomato; */
 }
 
 #error-message {
@@ -185,9 +185,45 @@ margin-top: 0.3rem;
   .canvas-focus {
     outline: 2px dashed #000;
   }
-  
-  .saveImage{
-    display: flex;
-    flex-direction:column ;
-    border:2px solid red;
+
+  /* undo-redo */
+  .recover{
+    position:fixed;
+    margin: 0.5rem;
+    top: -1%;
+    left: 21%;
+    padding: 0.4rem 0.2rem;
+    background-color:#333;
+    width: 78.4%;
+  }
+
+  .image-area {
+    margin-top: 2rem; 
+  }
+
+  #redoButton, #undoButton{
+    background-color: #fff;
+    padding: 0.2rem;
+    border-radius: 8px;
+  }
+
+  #undoButton{
+    margin-right: 1rem;
+  }
+
+  #saveButton{
+    padding: 0.3rem;
+    position: absolute;
+    right:8px;
+    border: none;
+    outline: none;
+    border-radius: 8px;
+  }
+
+  #resetButton {
+    width: 84%;
+    border-radius: 5px;
+    margin: 1.2rem 0.8rem;
+    padding: 0.5rem;
+    border: none;
   }
