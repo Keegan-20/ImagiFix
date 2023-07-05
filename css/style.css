@@ -5,6 +5,7 @@
 }
 
 body {
+  background-color: wheat;
     font-family: sans-serif;
 }
 
@@ -189,8 +190,8 @@ margin-top: 0.3rem;
   /* undo-redo */
   .recover{
     position:fixed;
-    margin: 0.5rem;
-    top: -1%;
+    margin: 0.4rem;
+    top: -8px;
     left: 21%;
     padding: 0.4rem 0.2rem;
     background-color:#333;
@@ -208,9 +209,37 @@ margin-top: 0.3rem;
   }
 
   #undoButton{
-    margin-right: 1rem;
+    margin:0 1.5rem 0 3rem;
   }
+#undoButton:hover,#redoButton:hover{
+  background-color:tomato;
+  color:white;
+}
+  #undoButton:hover::before{
+      content: 'Undo';
+      position: absolute;
+      top: 35px;
+      left: 5%;
+      transform: translateX(-50%);
+      background-color: #333;
+      color: #fff;
+      padding: 5px 10px;
+      border-radius: 5px;
+      white-space: nowrap;
+    }
 
+  #redoButton:hover::before{
+      content: 'Redo';
+      position: absolute;
+      top: 35px;
+      left: 12%;
+      transform: translateX(-50%);
+      background-color: #333;
+      color: #fff;
+      padding: 5px 10px;
+      border-radius: 5px;
+      white-space: nowrap;
+    }
   #saveButton{
     padding: 0.3rem;
     position: absolute;
@@ -227,3 +256,4 @@ margin-top: 0.3rem;
     padding: 0.5rem;
     border: none;
   }
+

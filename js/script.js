@@ -196,11 +196,12 @@ function renderImage() {
       );
     }
     canvasContext.restore();
+
    // Apply text overlay
    canvasContext.fillStyle = textOverlay.color;
    canvasContext.font = `${textOverlay.size}px Arial`;
-   canvasContext.fillText(textOverlay.content, textOverlay.x, textOverlay.y);
    canvasContext.filter = generateFilter();
+   canvasContext.fillText(textOverlay.content, textOverlay.x, textOverlay.y);
    canvasContext.drawImage(canvas, 0, 0, canvasWidth, canvasHeight);
  
    // Save the current canvas state for undo
@@ -319,8 +320,6 @@ textOverlayButton.addEventListener("click", () => {
 closeButton.addEventListener("click", () => {
     textOverlayButton.classList.remove("active");
 })
-
-
    // Update text size value
 textSizeInput.addEventListener("input", () => {
     textSizeValue.textContent = textSizeInput.value;
@@ -605,7 +604,7 @@ resetButton.addEventListener('click', resetAllFilters);
 
 function resetAllFilters() {
   resetSettings();
-
+ 
   // Reset flip values
   flipHorizontal = false;
   flipVertical = false;
