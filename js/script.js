@@ -1,7 +1,7 @@
 //creating variables
 const fileInput = document.querySelector("#imageFileInput");
 const canvas = document.querySelector("#canvas");
-const canvasContext = canvas.getContext("2d" , { willReadFrequently: true });
+const canvasContext = canvas.getContext("2d", { willReadFrequently: true });
 const brightnessInput = document.getElementById('brightness');//user inputs
 const saturationInput = document.getElementById('saturation');
 const contrastInput = document.getElementById('contrast');
@@ -26,6 +26,7 @@ let inputTags = document.getElementsByTagName("input");
 
 const settings = {}; // this empty object  will store all the user inputs for brightness,blur ,saturation etc.
 let image = null; //will store the currently selected image by default when page load  the user has not selected any image so its deafult value is  Null
+let prevSettings = {};
 const undoStack = [];
 const redoStack = [];
 let rotationAngle = 0;
@@ -43,180 +44,201 @@ function resetSettings() {
     if (filter === 'blur' || filter === 'inversion') {
       settings[filter] = '0'; // Reset the blur and inversion filters to '0'
     }
-     else {
+    else {
       settings[filter] = '100'; // Reset other filters to '100'
     }
   });
-    //to restore to default values when we select a new image
-    brightnessInput.value = settings.brightness;
-    saturationInput.value = settings.saturation;
-    contrastInput.value = settings.contrast;
-    blurInput.value = settings.blur;
-    inversionInput.value = settings.inversion;
-    opacityInput.value = settings.opacity;
 
-    // Update range value display to default
+  //to restore to default values when we select a new image
+  brightnessInput.value = settings.brightness;
+  saturationInput.value = settings.saturation;
+  contrastInput.value = settings.contrast;
+  blurInput.value = settings.blur;
+  inversionInput.value = settings.inversion;
+  opacityInput.value = settings.opacity;
+
+  // Update range value display to default
   brightnessRangeValue.textContent = settings.brightness;
   saturationRangeValue.textContent = settings.saturation;
   contrastRangeValue.textContent = settings.contrast;
   blurRangeValue.textContent = settings.blur;
   inversionRangeValue.textContent = settings.inversion;
+
+  // Updating the canvasContext.filter with the reset values
+  canvasContext.filter = generateFilter();
 }
- 
+
 // displaying range input values according to user input
 brightnessInput.addEventListener('input', function () {
-    brightnessRangeValue.textContent = brightnessInput.value;
+  brightnessRangeValue.textContent = brightnessInput.value;
 });
 saturationInput.addEventListener('input', function () {
-    saturationRangeValue.textContent = saturationInput.value;
+  saturationRangeValue.textContent = saturationInput.value;
 });
 contrastInput.addEventListener('input', function () {
-    contrastRangeValue.textContent = contrastInput.value;
+  contrastRangeValue.textContent = contrastInput.value;
 });
 blurInput.addEventListener('input', function () {
-    blurRangeValue.textContent = blurInput.value;
+  blurRangeValue.textContent = blurInput.value;
 });
 inversionInput.addEventListener('input', function () {
-    inversionRangeValue.textContent = inversionInput.value;
+  inversionRangeValue.textContent = inversionInput.value;
 });
 
 //opacity filter to keep value between  0 to 1
 opacityInput.addEventListener("input", function () {
-    let opacity = opacityInput.value / 100;
-    opacityRangeValue.textContent = opacity;
+  let opacity = opacityInput.value / 100;
+  opacityRangeValue.textContent = opacity;
 });
+
 
 // Iitial image placeholder preview
 const imgPlaceholder = new Image();
 imgPlaceholder.onload = function () {
-    canvasContext.drawImage(imgPlaceholder, 0, 0, canvas.width, canvas.height);
+  canvasContext.drawImage(imgPlaceholder, 0, 0, canvas.width, canvas.height);
 };
 imgPlaceholder.src = "./img/image-placeholder.svg";
 
 
 //updating the settings
 function updateSetting(key, value) {
-    if (!image) {
-        displayErrorMessage();
+  if (!image) {
+    displayErrorMessage();
 
-        for (let i = 0; i < outputTags.length; i++) {
-            outputTags[i].textContent = "";
-            outputTags[i].disabled = true;
-        }
-
-
-        for (let i = 0; i < inputTags.length; i++) {
-            if (inputTags[i].type === "range") {
-                inputTags[i].disabled = true;
-            }
-        }
-
-        return;
+    for (let i = 0; i < outputTags.length; i++) {
+      outputTags[i].textContent = "";
+      outputTags[i].disabled = true;
     }
-    settings[key] = value;
-    renderImage();
+
+
+    for (let i = 0; i < inputTags.length; i++) {
+      if (inputTags[i].type === "range") {
+        inputTags[i].disabled = true;
+      }
+    }
+
+    return;
+  }
+  settings[key] = value;
+  renderImage();
 }
 
 
 //displaying an error message
 function displayErrorMessage() {
-    errorMessage.textContent = "Please select an image to begin editing!!";
+  errorMessage.textContent = "Please select an image to begin editing!!";
 }
 
 // Clear any existing error message after selecting the image
 fileInput.addEventListener("change", () => {
-    errorMessage.textContent = "";
+  errorMessage.textContent = "";
 })
 
 // Rendering the image on the canvas
 function renderImage() {
-    if (!image) {
-      return displayErrorMessage();
-    }
-  
-    const canvasWidth = canvas.width;
-    const canvasHeight = canvas.height;
-  
-    const imageAspectRatio = image.width / image.height;
-    const canvasAspectRatio = canvasWidth / canvasHeight;
-  
-  
-    if (imageAspectRatio > canvasAspectRatio) {
-      renderWidth = canvasWidth;
-      renderHeight = renderWidth / imageAspectRatio;
-      offsetX = 0;
-      offsetY = (canvasHeight - renderHeight) / 2;
-    } else {
-      renderHeight = canvasHeight;
-      renderWidth = renderHeight * imageAspectRatio;
-      offsetY = 0;
-      offsetX = (canvasWidth - renderWidth) / 2;
-    }
-  
-    canvasContext.clearRect(0, 0, canvasWidth, canvasHeight);
-    canvasContext.save();
-    canvasContext.translate(canvasWidth / 2, canvasHeight / 2);
-    canvasContext.rotate((rotationAngle * Math.PI) / 180);
-    
-    // Flip image feature
-    if (flipHorizontal) {
-      canvasContext.scale(-1, 1); // Width turned to opposite value
-    }
-    if (flipVertical) {
-      canvasContext.scale(1, -1); // Height turned to opposite value
-    }
-  
-    // Apply crop area
-    if (
-      startX !== undefined &&
-      startY !== undefined &&
-      endX !== undefined &&
-      endY !== undefined
-    ) {
-      const width = endX - startX;
-      const height = endY - startY;
-      canvasContext.drawImage(
-        image,
-        startX,
-        startY,
-        width,
-        height,
-        -renderWidth / 2,
-        -renderHeight / 2,
-        renderWidth,
-        renderHeight
-      );
-    } else {
-      canvasContext.drawImage(
-        image,
-        -renderWidth / 2,
-        -renderHeight / 2,
-        renderWidth,
-        renderHeight
-      );
-    }
-    canvasContext.restore();
+  if (!image) {
+    return displayErrorMessage();
+  }
 
-   // Apply text overlay
-   canvasContext.fillStyle = textOverlay.color;
-   canvasContext.font = `${textOverlay.size}px Arial`;
-   canvasContext.filter = generateFilter();
-   canvasContext.fillText(textOverlay.content, textOverlay.x, textOverlay.y);
-   canvasContext.drawImage(canvas, 0, 0, canvasWidth, canvasHeight);
- 
-   // Save the current canvas state for undo
- saveCanvasState();
+  // /Checking if any setting has changed before applying the filter
+  let settingsChanged = false;
+
+  for (let key in settings) {
+    if (settings[key] !== prevSettings[key]) {
+      settingsChanged = true;
+      break;
+    }
+  }
+
+  if (settingsChanged) {
+    canvasContext.filter = generateFilter();
+  }
+  // Update previous settings 
+  prevSettings = { ...settings };
+
+  const canvasWidth = canvas.width;
+  const canvasHeight = canvas.height;
+
+  const imageAspectRatio = image.width / image.height;
+  const canvasAspectRatio = canvasWidth / canvasHeight;
+
+
+  if (imageAspectRatio > canvasAspectRatio) {
+    renderWidth = canvasWidth;
+    renderHeight = renderWidth / imageAspectRatio;
+    offsetX = 0;
+    offsetY = (canvasHeight - renderHeight) / 2;
+  } else {
+    renderHeight = canvasHeight;
+    renderWidth = renderHeight * imageAspectRatio;
+    offsetY = 0;
+    offsetX = (canvasWidth - renderWidth) / 2;
+  }
+
+  canvasContext.clearRect(0, 0, canvasWidth, canvasHeight);
+  canvasContext.save();
+  canvasContext.translate(canvasWidth / 2, canvasHeight / 2);
+  canvasContext.rotate((rotationAngle * Math.PI) / 180);
+
+  // Flip image feature
+  if (flipHorizontal) {
+    canvasContext.scale(-1, 1); // Width turned to opposite value
+  }
+  if (flipVertical) {
+    canvasContext.scale(1, -1); // Height turned to opposite value
+  }
+
+  // Apply crop area
+  if (
+    startX !== undefined &&
+    startY !== undefined &&
+    endX !== undefined &&
+    endY !== undefined
+  ) {
+    const width = endX - startX;
+    const height = endY - startY;
+    canvasContext.drawImage(
+      image,
+      startX,
+      startY,
+      width,
+      height,
+      -renderWidth / 2,
+      -renderHeight / 2,
+      renderWidth,
+      renderHeight
+    );
+  } else {
+    canvasContext.drawImage(
+      image,
+      -renderWidth / 2,
+      -renderHeight / 2,
+      renderWidth,
+      renderHeight
+    );
+  }
+  canvasContext.restore();
+
+  // Apply text overlay
+  canvasContext.fillStyle = textOverlay.color;
+  canvasContext.font = `${textOverlay.size}px Arial`;
+  canvasContext.filter = generateFilter();
+  canvasContext.fillText(textOverlay.content, textOverlay.x, textOverlay.y);
+  canvasContext.drawImage(canvas, 0, 0, canvasWidth, canvasHeight);
+
+  // Save the current canvas state for undo
+  saveCanvasState();
 }
 
-  //generating filters
+//generating filters
 function generateFilter() {
-    const {
-        brightness, saturation,
-        contrast, blur,
-        inversion, opacity
-    } = settings;
+  const {
+    brightness, saturation,
+    contrast, blur,
+    inversion, opacity
+  } = settings;
 
-    return `brightness(${brightness}% ) saturate(${saturation}%) contrast(${contrast}%) blur(${blur}px) invert(${inversion}%) opacity(${opacity}%)`;
+  return `brightness(${brightness}% ) saturate(${saturation}%) contrast(${contrast}%) blur(${blur}px) invert(${inversion}%) opacity(${opacity}%)`;
 }
 
 //updating and saving the values given by the user
@@ -229,23 +251,23 @@ opacityInput.addEventListener("input", () => updateSetting("opacity", opacityInp
 
 //selection of a file using fileInput element
 fileInput.addEventListener("change", () => {
-    image = new Image();
-    image.addEventListener("load", () => {
+  image = new Image();
+  image.addEventListener("load", () => {
 
-        resetSettings();
-        renderImage();
+    resetSettings();
+    renderImage();
 
-        // Image is selected, enable the filters
-        for (let i = 0; i < outputTags.length; i++) {
-            outputTags[i].disabled = false;
-        }
+    // Image is selected, enable the filters
+    for (let i = 0; i < outputTags.length; i++) {
+      outputTags[i].disabled = false;
+    }
 
-        for (let i = 0; i < inputTags.length; i++) {
-            inputTags[i].disabled = false;
-        }
+    for (let i = 0; i < inputTags.length; i++) {
+      inputTags[i].disabled = false;
+    }
 
-    });
-    image.src = URL.createObjectURL(fileInput.files[0]);
+  });
+  image.src = URL.createObjectURL(fileInput.files[0]);
 });
 
 resetSettings();
@@ -255,37 +277,37 @@ const rotateLeftButton = document.getElementById('rotateLeftButton');
 const rotateRightButton = document.getElementById('rotateRightButton');
 
 function rotateImage(angle) {
-    if (!image) {
-        return displayErrorMessage();
-    }
-    rotationAngle += angle;
+  if (!image) {
+    return displayErrorMessage();
+  }
+  rotationAngle += angle;
 
-    //checking if rotatiom angle is within 0 to 359
-    if (rotationAngle >= 360) {
-        rotationAngle %= 360;
-    }
-    else if (rotationAngle < 0) {
-        rotationAngle = (rotationAngle % 360) + 360;
-    }
+  //checking if rotatiom angle is within 0 to 359
+  if (rotationAngle >= 360) {
+    rotationAngle %= 360;
+  }
+  else if (rotationAngle < 0) {
+    rotationAngle = (rotationAngle % 360) + 360;
+  }
 
-    tempCanvas.width = Math.max(image.width, image.height);
-    tempCanvas.height = Math.max(image.width, image.height);
+  tempCanvas.width = Math.max(image.width, image.height);
+  tempCanvas.height = Math.max(image.width, image.height);
 
-    tempContext.save();
-    tempContext.translate(tempCanvas.width / 2, tempCanvas.height / 2); //rendering context to the center of the canvas
-    tempContext.rotate((rotationAngle * Math.PI) / 180); // The angle is converted from degrees to radians
+  tempContext.save();
+  tempContext.translate(tempCanvas.width / 2, tempCanvas.height / 2); //rendering context to the center of the canvas
+  tempContext.rotate((rotationAngle * Math.PI) / 180); // The angle is converted from degrees to radians
 
-    tempContext.drawImage(
-        image,
-        -image.width / 2,
-        -image.height / 2
-    );
-    tempContext.restore();
-    canvasContext.clearRect(0, 0, canvas.width, canvas.height);
-    canvas.width = tempCanvas.width;
-    canvas.height = tempCanvas.height;
-    canvasContext.drawImage(tempCanvas, 0, 0, tempCanvas.width, tempCanvas.height, 0, 0, canvas.width, canvas.height);
-    renderImage();
+  tempContext.drawImage(
+    image,
+    -image.width / 2,
+    -image.height / 2
+  );
+  tempContext.restore();
+  canvasContext.clearRect(0, 0, canvas.width, canvas.height);
+  canvas.width = tempCanvas.width;
+  canvas.height = tempCanvas.height;
+  canvasContext.drawImage(tempCanvas, 0, 0, tempCanvas.width, tempCanvas.height, 0, 0, canvas.width, canvas.height);
+  renderImage();
 }
 rotateLeftButton.addEventListener('click', () => rotateImage(-90));
 rotateRightButton.addEventListener('click', () => rotateImage(90));
@@ -294,18 +316,18 @@ rotateRightButton.addEventListener('click', () => rotateImage(90));
 //Flip Image feature
 const flipHorizontalButton = document.getElementById("flipHorizontal");
 flipHorizontalButton.addEventListener("click", () => {
-    flipHorizontal = !flipHorizontal;
-    renderImage();
+  flipHorizontal = !flipHorizontal;
+  renderImage();
 });
 
 // Flip Vertical button click event
 const flipVerticalButton = document.getElementById("flipVertical");
 flipVerticalButton.addEventListener("click", () => {
-    flipVertical = !flipVertical;
-    renderImage();
+  flipVertical = !flipVertical;
+  renderImage();
 });
 
-       // Add Text Feature
+// Add Text Feature
 const textOverlayButton = document.getElementById("textOverlayButton");
 const textOverlayOptions = document.getElementById("textOverlayOptions");
 const textSizeInput = document.getElementById("textSize");
@@ -314,51 +336,51 @@ const addTextButton = document.getElementById("addTextButton");
 
 // Toggle the add text icon
 textOverlayButton.addEventListener("click", () => {
-    textOverlayButton.classList.toggle("active");
+  textOverlayButton.classList.toggle("active");
 });
 
 closeButton.addEventListener("click", () => {
-    textOverlayButton.classList.remove("active");
+  textOverlayButton.classList.remove("active");
 })
-   // Update text size value
+// Update text size value
 textSizeInput.addEventListener("input", () => {
-    textSizeValue.textContent = textSizeInput.value;
+  textSizeValue.textContent = textSizeInput.value;
 });
 
 // Global variable declaration
 var textOverlay = {
-    content: "",
-    color: "#000000",
-    size: 12,
-    x: 0,
-    y: 0
-  };
-  
+  content: "",
+  color: "#000000",
+  size: 12,
+  x: 0,
+  y: 0
+};
 
-  // Function to update text overlay and trigger rendering
-  function drawTextOverlay(content, color, size, x, y) {
-    textOverlay.content = content;
-    textOverlay.color = color;
-    textOverlay.size = size;
-    textOverlay.x = x;
-    textOverlay.y = y;
-    renderImage();
-  }
-  
-  addTextButton.addEventListener("click", () => {
-    const textContent = document.getElementById("textContent").value;
-    const textColor = document.getElementById("textColor").value;
-    const textSize = parseInt(textSizeInput.value);
-  
-      //selecting co-ordinates depending on user click
-      canvas.addEventListener('click', function (event) {
-        const rect = canvas.getBoundingClientRect();
-        const x = event.clientX - rect.left;
-        const y = event.clientY - rect.top;
-     drawTextOverlay(textContent, textColor, textSize, x, y);
-    });
+
+// Function to update text overlay and trigger rendering
+function drawTextOverlay(content, color, size, x, y) {
+  textOverlay.content = content;
+  textOverlay.color = color;
+  textOverlay.size = size;
+  textOverlay.x = x;
+  textOverlay.y = y;
+  renderImage();
+}
+
+addTextButton.addEventListener("click", () => {
+  const textContent = document.getElementById("textContent").value;
+  const textColor = document.getElementById("textColor").value;
+  const textSize = parseInt(textSizeInput.value);
+
+  //selecting co-ordinates depending on user click
+  canvas.addEventListener('click', function (event) {
+    const rect = canvas.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    drawTextOverlay(textContent, textColor, textSize, x, y);
   });
-                //Crop Image Feature
+});
+//Crop Image Feature
 // Function to handle mouse down event
 function handleMouseDown(event) {
   if (isCropMode) {
@@ -375,7 +397,7 @@ function handleMouseMove(event) {
     endX = event.clientX - rect.left;
     endY = event.clientY - rect.top;
     drawCrosshair(startX, startY, endX, endY);
-    
+
   }
 }
 
@@ -390,74 +412,74 @@ function handleMouseUp() {
 
 // Function to draw the crop area rectangle based on userclick
 function drawCrosshair(startX, startY, endX, endY) {
-    canvasContext.clearRect(0, 0, canvas.width, canvas.height);
-    canvasContext.drawImage(image, 0, 0);
-    canvasContext.beginPath();
-    canvasContext.moveTo(startX, startY);
-    canvasContext.lineTo(endX, startY);
-    canvasContext.lineTo(endX, endY);
-    canvasContext.lineTo(startX, endY);
-    canvasContext.closePath();
-    canvasContext.strokeStyle = 'blue';
-    canvasContext.lineWidth = 1;
-    canvasContext.stroke();
-    canvasContext.fillStyle = 'rgba(0, 0, 255, 0.2)';
-    canvasContext.fillRect(startX, startY, endX - startX, endY - startY);
-  }
-  
-  
+  canvasContext.clearRect(0, 0, canvas.width, canvas.height);
+  canvasContext.drawImage(image, 0, 0);
+  canvasContext.beginPath();
+  canvasContext.moveTo(startX, startY);
+  canvasContext.lineTo(endX, startY);
+  canvasContext.lineTo(endX, endY);
+  canvasContext.lineTo(startX, endY);
+  canvasContext.closePath();
+  canvasContext.strokeStyle = 'blue';
+  canvasContext.lineWidth = 1;
+  canvasContext.stroke();
+  canvasContext.fillStyle = 'rgba(0, 0, 255, 0.2)';
+  canvasContext.fillRect(startX, startY, endX - startX, endY - startY);
+}
+
+
 // Function to crop the image
 function cropImage(startX, startY, endX, endY,) {
 
-    let tempCanvas = document.createElement('canvas');
-    let tempContext = tempCanvas.getContext('2d');
-    let width = endX - startX;
-    let height = endY - startY;
-  
-    tempCanvas.width = width;
-    tempCanvas.height = height;
+  let tempCanvas = document.createElement('canvas');
+  let tempContext = tempCanvas.getContext('2d');
+  let width = endX - startX;
+  let height = endY - startY;
 
-    // Apply transformations and filters to the temporary canvas
-    tempContext.save();
-    tempContext.translate(tempCanvas.width / 2, tempCanvas.height / 2);
-    tempContext.rotate((rotationAngle * Math.PI) / 180);
-    
-    if (flipHorizontal) {
-      tempContext.scale(-1, 1);
-    }
-    if (flipVertical) {
-      tempContext.scale(1, -1);
-    }
-    
-    tempContext.drawImage(
-      image,
-      startX, startY, width, height,
-      -width / 2, -height / 2, width, height
-    );
-    tempContext.restore();
-    tempContext.filter = generateFilter();
-    tempContext.drawImage(tempCanvas, 0, 0, tempCanvas.width, tempCanvas.height);
-  
-    // Convert the resulting image data to a data URL and create a new image
-    let croppedImage = new Image();
-    croppedImage.onload = function() {
-      resetSettings();
-      renderImage();
-    };
-    croppedImage.src = tempCanvas.toDataURL();
-  
-    // Update the image variable with the cropped image
-    image = croppedImage;
+  tempCanvas.width = width;
+  tempCanvas.height = height;
+
+  // Apply transformations and filters to the temporary canvas
+  tempContext.save();
+  tempContext.translate(tempCanvas.width / 2, tempCanvas.height / 2);
+  tempContext.rotate((rotationAngle * Math.PI) / 180);
+
+  if (flipHorizontal) {
+    tempContext.scale(-1, 1);
   }
-  
-  // Event listener for crop button click
-cropButton.addEventListener('click', function() {
+  if (flipVertical) {
+    tempContext.scale(1, -1);
+  }
+
+  tempContext.drawImage(
+    image,
+    startX, startY, width, height,
+    -width / 2, -height / 2, width, height
+  );
+  tempContext.restore();
+  tempContext.filter = generateFilter();
+  tempContext.drawImage(tempCanvas, 0, 0, tempCanvas.width, tempCanvas.height);
+
+  // Convert the resulting image data to a data URL and create a new image
+  let croppedImage = new Image();
+  croppedImage.onload = function () {
+    resetSettings();
+    renderImage();
+  };
+  croppedImage.src = tempCanvas.toDataURL();
+
+  // Update the image variable with the cropped image
+  image = croppedImage;
+}
+
+// Event listener for crop button click
+cropButton.addEventListener('click', function () {
   isCropMode = !isCropMode; // Toggle the value of isCropMode
   if (isCropMode) {
     cropButton.textContent = "Save Crop";
     canvas.style.cursor = 'crosshair';
   }
-else {
+  else {
     cropButton.textContent = "Crop";
     canvas.style.cursor = 'auto';
     startX = startY = endX = endY = undefined; // Reset the crop area
@@ -494,7 +516,7 @@ function saveCanvasState() {
     endY: endY,
   };
   undoStack.push(currentState);
-  }
+}
 // Undo the last canvas state
 function undo() {
   if (undoStack.length > 0) {
@@ -541,41 +563,41 @@ const saveButton = document.getElementById("saveButton");
 saveButton.addEventListener("click", saveImage);
 
 function saveImage() {
-if (!image) {
-displayErrorMessage();
-return;
-}
+  if (!image) {
+    displayErrorMessage();
+    return;
+  }
 
-const saveCanvas = document.createElement("canvas");
-const saveContext = saveCanvas.getContext("2d");
-saveCanvas.width = canvas.width;
-saveCanvas.height = canvas.height;
-saveContext.save();
-saveContext.translate(saveCanvas.width / 2, saveCanvas.height / 2);
-saveContext.rotate((rotationAngle * Math.PI) / 180);
+  const saveCanvas = document.createElement("canvas");
+  const saveContext = saveCanvas.getContext("2d");
+  saveCanvas.width = canvas.width;
+  saveCanvas.height = canvas.height;
+  saveContext.save();
+  saveContext.translate(saveCanvas.width / 2, saveCanvas.height / 2);
+  saveContext.rotate((rotationAngle * Math.PI) / 180);
 
-if (flipHorizontal) {
-saveContext.scale(-1, 1);
+  if (flipHorizontal) {
+    saveContext.scale(-1, 1);
 
-}
-if (flipVertical) {
-saveContext.scale(1, -1);
-}
-saveContext.filter = generateFilter();
+  }
+  if (flipVertical) {
+    saveContext.scale(1, -1);
+  }
+  saveContext.filter = generateFilter();
 
-saveContext.drawImage(
-image,
--renderWidth / 2,
--renderHeight / 2,
-renderWidth,
-renderHeight
-);
-saveContext.restore();
+  saveContext.drawImage(
+    image,
+    -renderWidth / 2,
+    -renderHeight / 2,
+    renderWidth,
+    renderHeight
+  );
+  saveContext.restore();
 
-// Draw text overlay
-saveContext.fillStyle = textOverlay.color;
-saveContext.font = `${textOverlay.size}px Arial`;
-saveContext.fillText(textOverlay.content, textOverlay.x, textOverlay.y);
+  // Draw text overlay
+  saveContext.fillStyle = textOverlay.color;
+  saveContext.font = `${textOverlay.size}px Arial`;
+  saveContext.fillText(textOverlay.content, textOverlay.x, textOverlay.y);
 
   // Convert the canvas image to a data URL
   const dataURL = saveCanvas.toDataURL();
@@ -590,7 +612,7 @@ saveContext.fillText(textOverlay.content, textOverlay.x, textOverlay.y);
   const link = document.createElement("a");
 
   // Set the download filename to the user-entered filename
-  link.download = filename; 
+  link.download = filename;
 
   // Create a temporary link element to trigger the download
   link.href = dataURL;
@@ -599,12 +621,10 @@ saveContext.fillText(textOverlay.content, textOverlay.x, textOverlay.y);
 
 
 //Resetting filters and transformation applied
-const resetButton = document.getElementById('resetButton');
-resetButton.addEventListener('click', resetAllFilters);
 
 function resetAllFilters() {
   resetSettings();
- 
+  console.log(settings);
   // Reset flip values
   flipHorizontal = false;
   flipVertical = false;
@@ -620,7 +640,7 @@ function resetAllFilters() {
   isCropMode = false;
 
   // Reset text overlay values
-   textOverlay = {
+  textOverlay = {
     content: "",
     color: "#000000",
     size: 12,
@@ -630,3 +650,6 @@ function resetAllFilters() {
 
   renderImage();
 }
+
+const resetButton = document.getElementById('resetButton');
+resetButton.addEventListener('click', resetAllFilters);
