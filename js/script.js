@@ -549,6 +549,7 @@ function restoreCanvasState() {
 
     // Update the range input values
     const inputElements = [brightnessInput, saturationInput, contrastInput, blurInput, inversionInput, opacityInput];
+    
     const rangeValueElements = [brightnessRangeValue, saturationRangeValue, contrastRangeValue, blurRangeValue, inversionRangeValue, opacityRangeValue];
 
     for (let i = 0; i < inputElements.length; i++) {
