@@ -24,7 +24,7 @@ const opacityRangeValue = document.getElementById('opacityValue');
 let outputTags = document.getElementsByTagName("output");
 let inputTags = document.getElementsByTagName("input");
 
-const settings = {}; // this empty object  will store all the user inputs for brightness,blur ,saturation etc.
+let settings = {}; // this empty object  will store all the user inputs for brightness,blur ,saturation etc.
 let image = null; //will store the currently selected image by default when page load  the user has not selected any image so its deafult value is  Null
 let prevSettings = {};
 const undoStack = [];
@@ -49,20 +49,16 @@ function resetSettings() {
     }
   });
 
-  //to restore to default values when we select a new image
-  brightnessInput.value = settings.brightness;
-  saturationInput.value = settings.saturation;
-  contrastInput.value = settings.contrast;
-  blurInput.value = settings.blur;
-  inversionInput.value = settings.inversion;
-  opacityInput.value = settings.opacity;
+// Update the range input values
+const inputElements = [brightnessInput, saturationInput, contrastInput, blurInput, inversionInput, opacityInput];
+const rangeValueElements = [brightnessRangeValue, saturationRangeValue, contrastRangeValue, blurRangeValue, inversionRangeValue, opacityRangeValue];
 
-  // Update range value display to default
-  brightnessRangeValue.textContent = settings.brightness;
-  saturationRangeValue.textContent = settings.saturation;
-  contrastRangeValue.textContent = settings.contrast;
-  blurRangeValue.textContent = settings.blur;
-  inversionRangeValue.textContent = settings.inversion;
+for (let i = 0; i < inputElements.length; i++) {
+  const input = inputElements[i];
+  const rangeValueElement = rangeValueElements[i];
+  input.value = settings[input.id];
+  rangeValueElement.textContent = input.value;
+}
 
   // Updating the canvasContext.filter with the reset values
   canvasContext.filter = generateFilter();
@@ -507,6 +503,7 @@ function saveCanvasState() {
     imageData: imageData,
     settings: { ...settings },
     rotationAngle: rotationAngle,
+
     flipHorizontal: flipHorizontal,
     flipVertical: flipVertical,
     textOverlay: { ...textOverlay },
@@ -540,7 +537,7 @@ function restoreCanvasState() {
   if (undoStack.length > 0) {
     const lastState = undoStack[undoStack.length - 1];
     canvasContext.putImageData(lastState.imageData, 0, 0);
-    settings = { ...lastState.settings };
+    Object.assign(settings, lastState.settings); // Update the properties of the `settings` object
     rotationAngle = lastState.rotationAngle;
     flipHorizontal = lastState.flipHorizontal;
     flipVertical = lastState.flipVertical;
@@ -549,7 +546,20 @@ function restoreCanvasState() {
     startY = lastState.startY;
     endX = lastState.endX;
     endY = lastState.endY;
+
+    // Update the range input values
+    const inputElements = [brightnessInput, saturationInput, contrastInput, blurInput, inversionInput, opacityInput];
+    const rangeValueElements = [brightnessRangeValue, saturationRangeValue, contrastRangeValue, blurRangeValue, inversionRangeValue, opacityRangeValue];
+
+    for (let i = 0; i < inputElements.length; i++) {
+      const input = inputElements[i];
+      const rangeValueElement = rangeValueElements[i];
+      input.value = settings[input.id];
+      rangeValueElement.textContent = input.value;
+    }
+
   }
+
 }
 
 // Undo button event listener
@@ -623,7 +633,8 @@ function saveImage() {
 //Resetting filters and transformation applied
 
 function resetAllFilters() {
-  resetSettings();
+
+  resetSettings(); //resetting all filter values
   console.log(settings);
   // Reset flip values
   flipHorizontal = false;
