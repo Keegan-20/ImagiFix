@@ -409,7 +409,7 @@ function handleMouseUp() {
 // Function to draw the crop area rectangle based on userclick
 function drawCrosshair(startX, startY, endX, endY) {
   canvasContext.clearRect(0, 0, canvas.width, canvas.height);
-  canvasContext.drawImage(image, 0, 0);
+  canvasContext.drawImage(image, offsetX, offsetY, renderWidth, renderHeight);
   canvasContext.beginPath();
   canvasContext.moveTo(startX, startY);
   canvasContext.lineTo(endX, startY);
@@ -549,8 +549,12 @@ function restoreCanvasState() {
 
     // Update the range input values
     const inputElements = [brightnessInput, saturationInput, contrastInput, blurInput, inversionInput, opacityInput];
-    
-    const rangeValueElements = [brightnessRangeValue, saturationRangeValue, contrastRangeValue, blurRangeValue, inversionRangeValue, opacityRangeValue];
+
+    const rangeValueElements = [
+      brightnessRangeValue, saturationRangeValue,
+       contrastRangeValue,blurRangeValue, 
+       inversionRangeValue, opacityRangeValue
+      ];
 
     for (let i = 0; i < inputElements.length; i++) {
       const input = inputElements[i];
