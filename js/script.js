@@ -409,7 +409,11 @@ function handleMouseUp() {
 // Function to draw the crop area rectangle based on userclick
 function drawCrosshair(startX, startY, endX, endY) {
   canvasContext.clearRect(0, 0, canvas.width, canvas.height);
-  canvasContext.drawImage(image, offsetX, offsetY, renderWidth, renderHeight);
+  tempContext.translate(tempCanvas.width / 2, tempCanvas.height / 2); 
+  //rendering context to the center of the canvas
+  
+  canvasContext.drawImage(image, 0, 0,renderWidth,renderHeight);
+  // canvasContext.drawImage(image, 0, 0); //will work but resizes and need to comment translate method
   canvasContext.beginPath();
   canvasContext.moveTo(startX, startY);
   canvasContext.lineTo(endX, startY);
