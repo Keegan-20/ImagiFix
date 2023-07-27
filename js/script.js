@@ -29,6 +29,7 @@ let image = null; //will store the currently selected image by default when page
 let prevSettings = {};
 const undoStack = [];
 const redoStack = [];
+let imageId = 0; // A unique identifier for the current image loaded
 let rotationAngle = 0;
 let flipHorizontal = false;
 let flipVertical = false;
@@ -49,16 +50,16 @@ function resetSettings() {
     }
   });
 
-// Update the range input values
-const inputElements = [brightnessInput, saturationInput, contrastInput, blurInput, inversionInput, opacityInput];
-const rangeValueElements = [brightnessRangeValue, saturationRangeValue, contrastRangeValue, blurRangeValue, inversionRangeValue, opacityRangeValue];
+  // Update the range input values
+  const inputElements = [brightnessInput, saturationInput, contrastInput, blurInput, inversionInput, opacityInput];
+  const rangeValueElements = [brightnessRangeValue, saturationRangeValue, contrastRangeValue, blurRangeValue, inversionRangeValue, opacityRangeValue];
 
-for (let i = 0; i < inputElements.length; i++) {
-  const input = inputElements[i];
-  const rangeValueElement = rangeValueElements[i];
-  input.value = settings[input.id];
-  rangeValueElement.textContent = input.value;
-}
+  for (let i = 0; i < inputElements.length; i++) {
+    const input = inputElements[i];
+    const rangeValueElement = rangeValueElements[i];
+    input.value = settings[input.id];
+    rangeValueElement.textContent = input.value;
+  }
 
   // Updating the canvasContext.filter with the reset values
   canvasContext.filter = generateFilter();
@@ -249,8 +250,11 @@ opacityInput.addEventListener("input", () => updateSetting("opacity", opacityInp
 fileInput.addEventListener("change", () => {
   image = new Image();
   image.addEventListener("load", () => {
-
-    resetSettings();
+    // Clear undo and redo stacks when a new image is selected
+    undoStack.length = 0;
+    redoStack.length = 0;
+    imageId++;
+    resetAllFilters();
     renderImage();
 
     // Image is selected, enable the filters
@@ -263,7 +267,14 @@ fileInput.addEventListener("change", () => {
     }
 
   });
-  image.src = URL.createObjectURL(fileInput.files[0]);
+
+  if (fileInput.files[0]) {
+    try {
+      image.src = URL.createObjectURL(fileInput.files[0]);
+    } catch (error) {
+      displayErrorMessage("Failed to load the image. The image resolution may be too high.");
+    }
+  }
 });
 
 resetSettings();
@@ -409,10 +420,10 @@ function handleMouseUp() {
 // Function to draw the crop area rectangle based on userclick
 function drawCrosshair(startX, startY, endX, endY) {
   canvasContext.clearRect(0, 0, canvas.width, canvas.height);
-  tempContext.translate(tempCanvas.width / 2, tempCanvas.height / 2); 
+  tempContext.translate(tempCanvas.width / 2, tempCanvas.height / 2);
   //rendering context to the center of the canvas
-  
-  canvasContext.drawImage(image, 0, 0,renderWidth,renderHeight);
+
+  canvasContext.drawImage(image, 0, 0, renderWidth, renderHeight);
   // canvasContext.drawImage(image, 0, 0); //will work but resizes and need to comment translate method
   canvasContext.beginPath();
   canvasContext.moveTo(startX, startY);
@@ -504,6 +515,7 @@ function saveCanvasState() {
   );
 
   const currentState = {
+    imageId: imageId,
     imageData: imageData,
     settings: { ...settings },
     rotationAngle: rotationAngle,
@@ -540,35 +552,45 @@ function redo() {
 function restoreCanvasState() {
   if (undoStack.length > 0) {
     const lastState = undoStack[undoStack.length - 1];
-    canvasContext.putImageData(lastState.imageData, 0, 0);
-    Object.assign(settings, lastState.settings); // Update the properties of the `settings` object
-    rotationAngle = lastState.rotationAngle;
-    flipHorizontal = lastState.flipHorizontal;
-    flipVertical = lastState.flipVertical;
-    textOverlay = { ...lastState.textOverlay };
-    startX = lastState.startX;
-    startY = lastState.startY;
-    endX = lastState.endX;
-    endY = lastState.endY;
+    if (lastState.imageId === imageId) {
+      canvasContext.putImageData(lastState.imageData, 0, 0);
+      Object.assign(settings, lastState.settings);
+      rotationAngle = lastState.rotationAngle;
+      flipHorizontal = lastState.flipHorizontal;
+      flipVertical = lastState.flipVertical;
+      textOverlay = { ...lastState.textOverlay };
+      startX = lastState.startX;
+      startY = lastState.startY;
+      endX = lastState.endX;
+      endY = lastState.endY;
 
-    // Update the range input values
-    const inputElements = [brightnessInput, saturationInput, contrastInput, blurInput, inversionInput, opacityInput];
-
-    const rangeValueElements = [
-      brightnessRangeValue, saturationRangeValue,
-       contrastRangeValue,blurRangeValue, 
-       inversionRangeValue, opacityRangeValue
+      // Update the range input values
+      const inputElements = [
+        brightnessInput,
+        saturationInput,
+        contrastInput,
+        blurInput,
+        inversionInput,
+        opacityInput,
       ];
 
-    for (let i = 0; i < inputElements.length; i++) {
-      const input = inputElements[i];
-      const rangeValueElement = rangeValueElements[i];
-      input.value = settings[input.id];
-      rangeValueElement.textContent = input.value;
+      const rangeValueElements = [
+        brightnessRangeValue,
+        saturationRangeValue,
+        contrastRangeValue,
+        blurRangeValue,
+        inversionRangeValue,
+        opacityRangeValue,
+      ];
+
+      for (let i = 0; i < inputElements.length; i++) {
+        const input = inputElements[i];
+        const rangeValueElement = rangeValueElements[i];
+        input.value = settings[input.id];
+        rangeValueElement.textContent = input.value;
+      }
     }
-
   }
-
 }
 
 // Undo button event listener
@@ -644,7 +666,6 @@ function saveImage() {
 function resetAllFilters() {
 
   resetSettings(); //resetting all filter values
-  console.log(settings);
   // Reset flip values
   flipHorizontal = false;
   flipVertical = false;
