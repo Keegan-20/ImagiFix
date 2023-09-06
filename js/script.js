@@ -419,7 +419,6 @@ function handleMouseUp() {
 }
 
 // Function to draw the crop area rectangle based on userclick
-// Function to draw the crop area rectangle based on user click
 function drawCrosshair(startX, startY, endX, endY) {
   // Calculate x and y coordinates to center the image on the canvas
   const x = (canvas.width - renderWidth) / 2;
@@ -445,14 +444,13 @@ function drawCrosshair(startX, startY, endX, endY) {
   canvasContext.fillRect(startX, startY, endX - startX, endY - startY);
 }
 
-
-
 // Function to crop the image
 function cropImage() {
   // Convert canvas-relative coordinates to image-relative coordinates for the end coordinates
   let xScale = image.width / renderWidth;
   let yScale = image.height / renderHeight;
-  if (image.height > image.width) {
+
+  if (image.height > image.width) {  //handling image aspect ratio
     xScale = image.height / renderHeight;
     yScale = image.width / renderWidth;
   } else {
