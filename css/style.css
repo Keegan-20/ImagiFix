@@ -7,6 +7,7 @@
 body {
   background-color: wheat;
     font-family: sans-serif;
+    max-height: 100%;
 }
 
 .editor {
@@ -80,7 +81,6 @@ output{
     font-size: 26px;
     font-weight:600;
     margin-top: 3rem;
- 
   }
 
 #canvas{
@@ -195,6 +195,7 @@ margin-top: 0.3rem;
     left: 21%;
     padding: 0.4rem 0.2rem;
     background-color:#333;
+    color: wheat;
     width: 78.4%;
   }
 
@@ -256,4 +257,93 @@ margin-top: 0.3rem;
     padding: 0.5rem;
     border: none;
   }
+ /* range input field customiozation */
+ 
+    input[type="range"] {
+        width: 100%;
+        -webkit-appearance: none;
+        appearance: none;
+        height: 10px;
+        border-radius: 5px;
+        background: wheat;
+        outline: none;
+        margin: 10px 0;
+    }
 
+    /* Styling the track */
+    input[type="range"]::-webkit-slider-runnable-track {
+        width: 100%;
+        height: 2px;
+        background: #95156a;
+    }
+
+    /* Styling the thumb (slider handle) */
+    input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 15px;
+        height: 15px;
+        background: #b03737;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+    
+
+    /* Additional styles for Firefox */
+    input[type="range"]::-moz-range-track {
+        width: 100%;
+        height: 2px;
+        background: #777;
+    }
+
+    input[type="range"]::-moz-range-thumb {
+        width: 15px;
+        height: 15px;
+        background: #333;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+
+
+
+/* Media Queries */
+@media (max-width: 768px) {
+  .editor {
+      flex-direction: column-reverse;
+  }
+
+  /* .toolbar {
+    display: none;
+      max-width: none;
+  } */
+
+  #sidebar {
+    flex-direction: row;
+      width: 100%;
+  }
+  .recover {
+    margin: 0;
+    padding: 0.5rem;
+    top: 0;
+    left: 0;
+    width:100%;
+  }
+
+  .text-overlay-options {
+    top: 50px;
+    left: 100px; 
+    width:64%;
+}
+.flipped-vertical {
+  top: auto;
+  bottom: 50px; /* Adjust this value as needed */
+}
+#textContent {
+  width: 82%;
+  margin: 0.8rem -0.4rem 0 0rem;
+  outline: none;
+  border-radius: 8px;
+  padding: 0.3rem;
+}
+
+}

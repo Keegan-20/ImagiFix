@@ -8,12 +8,26 @@
   <script src="https://kit.fontawesome.com/4f2459a64d.js" crossorigin="anonymous"></script>
   <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
     <title>ImagiFix- Image Editor Web App</title>
-</head>
+</head> 
 
 <body>
+    <section id="header">
+        <div class="horizontal-bar">
+            
+          <div class="recover">
+            <!--to choose a  image file-->
+            <input type="file" name="ImageFile" id="imageFileInput" accept="image/*">
+            <!-- Add your buttons here -->
+            <box-icon name='undo' id="undoButton"></box-icon>
+             <box-icon name='redo' id="redoButton"></box-icon>
+            <button id="saveButton">Save Image</button>
 
-    <!-- the container for entire image editor -->
+          </div>
+
+        </div>
+      </section>
     <div class="editor">
+    
         <section id="sidebar">
             <!-- Crop Feature -->
            
@@ -43,7 +57,7 @@
                     <box-icon name='text'></box-icon>
                 </button>
 
-                <div id="textOverlayOptions" class="text-overlay-options">
+                <div id="textOverlayOptions" class="text-overlay-options flipped-vertical">
                     <input type="text" id="textContent" placeholder="Enter text content">
                     <input type="color" id="textColor" value="#000000">
                     <button id="closeButton">X</button>
@@ -56,9 +70,6 @@
         </section>
         <div class="toolbar">
 
-            <div class="toolbar-item"> <!--to choose a  image file-->
-                <input type="file" name="ImageFile" id="imageFileInput" accept="image/*">
-            </div>
 
             <div class="toolbar-item">
                 <label class="tool-label" for="brightness">Exposure</label>
@@ -97,22 +108,9 @@
                 <input class="tool-input" type="range" id="opacity" min="0" max="100" step="1">
                 <output id="opacityValue"></output>
             </div>
-    
               <button id="resetButton">Reset</button>
-    
         </div>
-        <section id="undoRedo">
-            <div class="horizontal-bar">
-              <div class="recover">
-                <!-- Add your buttons here -->
-                <box-icon name='undo' id="undoButton"></box-icon>
-                <box-icon name='redo' id="redoButton"></box-icon>
-                <button id="saveButton">Save Image</button>
-
-              </div>
-
-            </div>
-          </section>
+       
           
         <!-- basically where the image will be -->
         <div class="image-area">

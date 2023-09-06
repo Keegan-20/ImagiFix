@@ -387,6 +387,7 @@ addTextButton.addEventListener("click", () => {
     drawTextOverlay(textContent, textColor, textSize, x, y);
   });
 });
+
 //Crop Image Feature
 // Function to handle mouse down event
 function handleMouseDown(event) {
@@ -418,13 +419,19 @@ function handleMouseUp() {
 }
 
 // Function to draw the crop area rectangle based on userclick
+// Function to draw the crop area rectangle based on user click
 function drawCrosshair(startX, startY, endX, endY) {
+  // Calculate x and y coordinates to center the image on the canvas
+  const x = (canvas.width - renderWidth) / 2;
+  const y = (canvas.height - renderHeight) / 2;
+
   canvasContext.clearRect(0, 0, canvas.width, canvas.height);
   tempContext.translate(tempCanvas.width / 2, tempCanvas.height / 2);
   //rendering context to the center of the canvas
 
-  canvasContext.drawImage(image, 0, 0, renderWidth, renderHeight);
-  // canvasContext.drawImage(image, 0, 0); //will work but resizes and need to comment translate method
+  // Draw the image onto the canvas at position (x, y)
+  canvasContext.drawImage(image, x, y, renderWidth, renderHeight);
+
   canvasContext.beginPath();
   canvasContext.moveTo(startX, startY);
   canvasContext.lineTo(endX, startY);
@@ -439,49 +446,70 @@ function drawCrosshair(startX, startY, endX, endY) {
 }
 
 
+
 // Function to crop the image
-function cropImage(startX, startY, endX, endY,) {
-
-  let tempCanvas = document.createElement('canvas');
-  let tempContext = tempCanvas.getContext('2d');
-  let width = endX - startX;
-  let height = endY - startY;
-
-  tempCanvas.width = width;
-  tempCanvas.height = height;
-
-  // Apply transformations and filters to the temporary canvas
-  tempContext.save();
-  tempContext.translate(tempCanvas.width / 2, tempCanvas.height / 2);
-  tempContext.rotate((rotationAngle * Math.PI) / 180);
-
-  if (flipHorizontal) {
-    tempContext.scale(-1, 1);
+function cropImage() {
+  // Convert canvas-relative coordinates to image-relative coordinates for the end coordinates
+  let xScale = image.width / renderWidth;
+  let yScale = image.height / renderHeight;
+  if (image.height > image.width) {
+    xScale = image.height / renderHeight;
+    yScale = image.width / renderWidth;
+  } else {
+    xScale = image.width / renderWidth;
+    yScale = image.height / renderHeight;
   }
-  if (flipVertical) {
-    tempContext.scale(1, -1);
-  }
+  const xOffset = offsetX;
+  const yOffset = offsetY;
 
-  tempContext.drawImage(
-    image,
-    startX, startY, width, height,
-    -width / 2, -height / 2, width, height
-  );
-  tempContext.restore();
-  tempContext.filter = generateFilter();
-  tempContext.drawImage(tempCanvas, 0, 0, tempCanvas.width, tempCanvas.height);
+  // Convert canvas-relative coordinates to image-relative coordinates
+  const imageStartX = (startX - xOffset) * xScale;
+  const imageStartY = (startY - yOffset) * yScale;
+  const imageEndX = (endX - xOffset) * xScale;
+  const imageEndY = (endY - yOffset) * yScale;
 
-  // Convert the resulting image data to a data URL and create a new image
-  let croppedImage = new Image();
-  croppedImage.onload = function () {
-    resetSettings();
-    renderImage();
-  };
-  croppedImage.src = tempCanvas.toDataURL();
-
-  // Update the image variable with the cropped image
-  image = croppedImage;
-}
+  // Calculate cropped width and height
+  const croppedWidth = imageEndX - imageStartX;
+  const croppedHeight = imageEndY - imageStartY;
+   // Create a temporary canvas for cropping
+   let tempCanvas = document.createElement('canvas');
+   let tempContext = tempCanvas.getContext('2d');
+   tempCanvas.width = croppedWidth;
+   tempCanvas.height = croppedHeight;
+ 
+   // Apply transformations and filters to the temporary canvas
+   tempContext.save();
+   tempContext.translate(tempCanvas.width / 2, tempCanvas.height / 2);
+   tempContext.rotate((rotationAngle * Math.PI) / 180);
+   
+   if (flipHorizontal) {
+     tempContext.scale(-1, 1);
+   }
+   if (flipVertical) {
+     tempContext.scale(1, -1);
+   }
+   
+   // Draw the cropped portion of the image onto the temporary canvas
+   tempContext.drawImage(
+     image,
+     imageStartX, imageStartY, croppedWidth, croppedHeight,
+     -croppedWidth / 2, -croppedHeight / 2, croppedWidth, croppedHeight
+   );
+   tempContext.restore();
+   tempContext.filter = generateFilter();
+   tempContext.drawImage(tempCanvas, 0, 0, tempCanvas.width, tempCanvas.height);
+ 
+   // Convert the resulting image data to a data URL and create a new image
+   let croppedImage = new Image();
+   croppedImage.onload = function () {
+     resetSettings();
+     renderImage();
+   };
+   croppedImage.src = tempCanvas.toDataURL();
+ 
+   // Update the image variable with the cropped image
+   image = croppedImage;
+ }
 
 // Event listener for crop button click
 cropButton.addEventListener('click', function () {
