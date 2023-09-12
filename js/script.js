@@ -295,10 +295,10 @@ function rotateImage(angle) {
   }
   else if (rotationAngle < 0) {
     rotationAngle = (rotationAngle % 360) + 360;
-  }
-
-  tempCanvas.width = Math.max(image.width, image.height);
-  tempCanvas.height = Math.max(image.width, image.height);
+  }  
+  
+    tempCanvas.width = Math.max(image.width, image.height);
+    tempCanvas.height = Math.max(image.width, image.height);
 
   tempContext.save();
   tempContext.translate(tempCanvas.width / 2, tempCanvas.height / 2); //rendering context to the center of the canvas
@@ -309,6 +309,7 @@ function rotateImage(angle) {
     -image.width / 2,
     -image.height / 2
   );
+
   tempContext.restore();
   canvasContext.clearRect(0, 0, canvas.width, canvas.height);
   canvas.width = tempCanvas.width;
@@ -449,7 +450,7 @@ function cropImage() {
   // Convert canvas-relative coordinates to image-relative coordinates for the end coordinates
   let xScale = image.width / renderWidth;
   let yScale = image.height / renderHeight;
-
+  saveCanvasState();
   if (image.height > image.width) {  //handling image aspect ratio
     xScale = image.height / renderHeight;
     yScale = image.width / renderWidth;
@@ -478,35 +479,25 @@ function cropImage() {
    // Apply transformations and filters to the temporary canvas
    tempContext.save();
    tempContext.translate(tempCanvas.width / 2, tempCanvas.height / 2);
-   tempContext.rotate((rotationAngle * Math.PI) / 180);
-   
-   if (flipHorizontal) {
-     tempContext.scale(-1, 1);
-   }
-   if (flipVertical) {
-     tempContext.scale(1, -1);
-   }
-   
    // Draw the cropped portion of the image onto the temporary canvas
    tempContext.drawImage(
      image,
      imageStartX, imageStartY, croppedWidth, croppedHeight,
      -croppedWidth / 2, -croppedHeight / 2, croppedWidth, croppedHeight
    );
+   
    tempContext.restore();
-   tempContext.filter = generateFilter();
-   tempContext.drawImage(tempCanvas, 0, 0, tempCanvas.width, tempCanvas.height);
  
    // Convert the resulting image data to a data URL and create a new image
    let croppedImage = new Image();
    croppedImage.onload = function () {
      resetSettings();
+     image = croppedImage; // Update the image variable with the cropped image
      renderImage();
    };
+   // Save the state after cropping
+    saveCanvasState();
    croppedImage.src = tempCanvas.toDataURL();
- 
-   // Update the image variable with the cropped image
-   image = croppedImage;
  }
 
 // Event listener for crop button click
