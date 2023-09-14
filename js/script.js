@@ -245,6 +245,8 @@ contrastInput.addEventListener("input", () => updateSetting("contrast", contrast
 blurInput.addEventListener("input", () => updateSetting("blur", blurInput.value));
 inversionInput.addEventListener("input", () => updateSetting("inversion", inversionInput.value));
 opacityInput.addEventListener("input", () => updateSetting("opacity", opacityInput.value));
+inversionInput.addEventListener("input", () => updateSetting("inversion", inversionInput.value));
+opacityInput.addEventListener("input", () => updateSetting("opacity", opacityInput.value));
 
 //selection of a file using fileInput element
 fileInput.addEventListener("change", () => {
@@ -288,6 +290,9 @@ function rotateImage(angle) {
     return displayErrorMessage();
   }
   rotationAngle += angle;
+  
+  tempCanvas.width = Math.max(image.width, image.height);
+  tempCanvas.height = Math.max(image.width, image.height);
 
   //checking if rotatiom angle is within 0 to 359
   if (rotationAngle >= 360) {
@@ -296,14 +301,11 @@ function rotateImage(angle) {
   else if (rotationAngle < 0) {
     rotationAngle = (rotationAngle % 360) + 360;
   }  
-  
-    tempCanvas.width = Math.max(image.width, image.height);
-    tempCanvas.height = Math.max(image.width, image.height);
 
   tempContext.save();
   tempContext.translate(tempCanvas.width / 2, tempCanvas.height / 2); //rendering context to the center of the canvas
   tempContext.rotate((rotationAngle * Math.PI) / 180); // The angle is converted from degrees to radians
-
+ 
   tempContext.drawImage(
     image,
     -image.width / 2,
@@ -311,15 +313,21 @@ function rotateImage(angle) {
   );
 
   tempContext.restore();
+
   canvasContext.clearRect(0, 0, canvas.width, canvas.height);
-  canvas.width = tempCanvas.width;
-  canvas.height = tempCanvas.height;
-  canvasContext.drawImage(tempCanvas, 0, 0, tempCanvas.width, tempCanvas.height, 0, 0, canvas.width, canvas.height);
+
+  if (image.width > image.height) {
+    canvas.width = tempCanvas.width;
+    canvas.height = tempCanvas.height;
+    canvasContext.drawImage(tempCanvas, 0, 0, tempCanvas.width, tempCanvas.height, 0, 0, canvas.width, canvas.height);
+  } else {
+    canvasContext.drawImage(tempCanvas, 0, 0);
+  }
+
   renderImage();
 }
 rotateLeftButton.addEventListener('click', () => rotateImage(-90));
 rotateRightButton.addEventListener('click', () => rotateImage(90));
-
 
 //Flip Image feature
 const flipHorizontalButton = document.getElementById("flipHorizontal");
@@ -450,7 +458,7 @@ function cropImage() {
   // Convert canvas-relative coordinates to image-relative coordinates for the end coordinates
   let xScale = image.width / renderWidth;
   let yScale = image.height / renderHeight;
-  saveCanvasState();
+
   if (image.height > image.width) {  //handling image aspect ratio
     xScale = image.height / renderHeight;
     yScale = image.width / renderWidth;
@@ -503,6 +511,7 @@ function cropImage() {
 // Event listener for crop button click
 cropButton.addEventListener('click', function () {
   isCropMode = !isCropMode; // Toggle the value of isCropMode
+  saveCanvasState();
   if (isCropMode) {
     cropButton.textContent = "Save Crop";
     canvas.style.cursor = 'crosshair';
@@ -544,9 +553,19 @@ function saveCanvasState() {
     startY: startY,
     endX: endX,
     endY: endY,
+
+    crop: {
+      isCropMode: isCropMode,
+      startX: startX,
+      startY: startY,
+      endX: endX,
+      endY: endY
+    }
   };
   undoStack.push(currentState);
 }
+
+
 // Undo the last canvas state
 function undo() {
   if (undoStack.length > 0) {
@@ -570,16 +589,56 @@ function restoreCanvasState() {
   if (undoStack.length > 0) {
     const lastState = undoStack[undoStack.length - 1];
     if (lastState.imageId === imageId) {
+      // Clear the canvas
+      canvasContext.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Restore the rotation angle
+      rotationAngle = lastState.rotationAngle;
+      
+
       canvasContext.putImageData(lastState.imageData, 0, 0);
       Object.assign(settings, lastState.settings);
+
       rotationAngle = lastState.rotationAngle;
+
       flipHorizontal = lastState.flipHorizontal;
       flipVertical = lastState.flipVertical;
       textOverlay = { ...lastState.textOverlay };
-      startX = lastState.startX;
-      startY = lastState.startY;
-      endX = lastState.endX;
-      endY = lastState.endY;
+
+      isCropMode = lastState.isCropMode; // Restore isCropMode
+
+      
+      // Reset canvas dimensions if rotation angle is back to default state
+      if (rotationAngle === 0 || rotationAngle === 360) {
+        canvasContext.clearRect(0, 0, tempCanvas.width, tempCanvas.height);
+  
+        tempCanvas.width = Math.max(image.width, image.height);
+        tempCanvas.height = Math.max(image.width, image.height);
+     tempContext.translate(tempCanvas.width / 2, tempCanvas.height / 2); //rendering context to the center of the canvas
+        canvasContext.drawImage(image,0, 0);
+         
+      }
+
+        else if(image.width < image.height) { 
+        canvasContext.clearRect(0, 0, tempCanvas.width, tempCanvas.height);
+         canvas.height = tempCanvas.height
+      }
+
+
+      if (isCropMode) {
+        cropButton.textContent = "Save Crop";
+        canvas.style.cursor = 'crosshair';
+      } else {
+        cropButton.textContent = "Crop";
+        canvas.style.cursor = 'auto';
+      }
+      // Restore crop area coordinates
+
+      startX = lastState.crop.startX;
+      startY = lastState.crop.startY;
+      endX = lastState.crop.endX;
+      endY = lastState.crop.endY;
+
 
       // Update the range input values
       const inputElements = [
