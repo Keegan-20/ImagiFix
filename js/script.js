@@ -36,6 +36,7 @@ let flipVertical = false;
 //crop feature variables
 let startX, startY, endX, endY;
 let isCropMode = false; // Flag to indicate if the crop mode is enabled
+let cropStartX, cropStartY, cropEndX, cropEndY;
 let renderWidth, renderHeight, offsetX, offsetY;
 
 //reseting the filters
@@ -321,6 +322,7 @@ function rotateImage(angle) {
     canvas.height = tempCanvas.height;
     canvasContext.drawImage(tempCanvas, 0, 0, tempCanvas.width, tempCanvas.height, 0, 0, canvas.width, canvas.height);
   } else {
+    canvasContext.clearRect(0, 0, tempCanvas.width, tempCanvas.height);
     canvasContext.drawImage(tempCanvas, 0, 0);
   }
 
@@ -421,7 +423,12 @@ function handleMouseMove(event) {
 // Function to handle mouse up event
 function handleMouseUp() {
   if (isCropMode && startX !== undefined && startY !== undefined && endX !== undefined && endY !== undefined) {
-    cropImage(startX, startY, endX, endY);
+    // Store the coordinates of the cropping rectangle
+    cropStartX = startX;
+    cropStartY = startY;
+    cropEndX = endX;
+    cropEndY = endY;
+
     startX = startY = endX = endY = undefined;
     canvas.style.cursor = 'crosshair';
   }
@@ -462,31 +469,34 @@ function cropImage() {
   if (image.height > image.width) {  //handling image aspect ratio
     xScale = image.height / renderHeight;
     yScale = image.width / renderWidth;
-  } else {
+  } 
+  else {
     xScale = image.width / renderWidth;
     yScale = image.height / renderHeight;
   }
   const xOffset = offsetX;
   const yOffset = offsetY;
 
-  // Convert canvas-relative coordinates to image-relative coordinates
-  const imageStartX = (startX - xOffset) * xScale;
-  const imageStartY = (startY - yOffset) * yScale;
-  const imageEndX = (endX - xOffset) * xScale;
-  const imageEndY = (endY - yOffset) * yScale;
+// Convert canvas-relative coordinates to image-relative coordinates
+const imageStartX = (cropStartX - xOffset) * xScale; 
+const imageStartY = (cropStartY - yOffset) * yScale; 
+const imageEndX = (cropEndX - xOffset) * xScale; 
+const imageEndY = (cropEndY - yOffset) * yScale; 
+
 
   // Calculate cropped width and height
   const croppedWidth = imageEndX - imageStartX;
   const croppedHeight = imageEndY - imageStartY;
-   // Create a temporary canvas for cropping
-   let tempCanvas = document.createElement('canvas');
-   let tempContext = tempCanvas.getContext('2d');
+
+//using the temporary canvas for cropping
    tempCanvas.width = croppedWidth;
    tempCanvas.height = croppedHeight;
  
    // Apply transformations and filters to the temporary canvas
    tempContext.save();
    tempContext.translate(tempCanvas.width / 2, tempCanvas.height / 2);
+  tempContext.rotate((rotationAngle * Math.PI) / 180);
+
    // Draw the cropped portion of the image onto the temporary canvas
    tempContext.drawImage(
      image,
@@ -510,17 +520,17 @@ function cropImage() {
 
 // Event listener for crop button click
 cropButton.addEventListener('click', function () {
-  isCropMode = !isCropMode; // Toggle the value of isCropMode
-  saveCanvasState();
   if (isCropMode) {
-    cropButton.textContent = "Save Crop";
-    canvas.style.cursor = 'crosshair';
-  }
-  else {
+    // Perform the cropping operation using the stored coordinates
+    cropImage(cropStartX, cropStartY, cropEndX, cropEndY);
     cropButton.textContent = "Crop";
     canvas.style.cursor = 'auto';
-    startX = startY = endX = endY = undefined; // Reset the crop area
-    renderImage();
+    isCropMode = false; // Reset the crop mode
+  }
+  else {
+    isCropMode = true; // Enable crop mode when "Crop" is clicked
+    cropButton.textContent = "Save Crop";
+    canvas.style.cursor = 'crosshair';
   }
 });
 
@@ -530,7 +540,7 @@ canvas.addEventListener('mousemove', handleMouseMove);
 canvas.addEventListener('mouseup', handleMouseUp);
 
 
-// undo and redo feature
+       // undo and redo feature
 // Save the current canvas state for undo
 function saveCanvasState() {
   const imageData = canvasContext.getImageData(
@@ -608,22 +618,16 @@ function restoreCanvasState() {
       isCropMode = lastState.isCropMode; // Restore isCropMode
 
       
-      // Reset canvas dimensions if rotation angle is back to default state
-      if (rotationAngle === 0 || rotationAngle === 360) {
-        canvasContext.clearRect(0, 0, tempCanvas.width, tempCanvas.height);
+      // // Reset canvas dimensions if rotation angle is back to default state
+      // if (rotationAngle === 0 || rotationAngle === 360) {
+      //   canvasContext.clearRect(0, 0, tempCanvas.width, tempCanvas.height);
   
-        tempCanvas.width = Math.max(image.width, image.height);
-        tempCanvas.height = Math.max(image.width, image.height);
-     tempContext.translate(tempCanvas.width / 2, tempCanvas.height / 2); //rendering context to the center of the canvas
-        canvasContext.drawImage(image,0, 0);
-         
-      }
+      //   tempCanvas.width = Math.max(image.width, image.height);
+      //   tempCanvas.height = Math.max(image.width, image.height);
 
-        else if(image.width < image.height) { 
-        canvasContext.clearRect(0, 0, tempCanvas.width, tempCanvas.height);
-         canvas.height = tempCanvas.height
-      }
-
+      //   tempContext.translate(tempCanvas.width / 2, tempCanvas.height / 2);
+      //   canvasContext.drawImage(image,0, 0);
+      // }
 
       if (isCropMode) {
         cropButton.textContent = "Save Crop";
