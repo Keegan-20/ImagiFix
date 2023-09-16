@@ -614,20 +614,7 @@ function restoreCanvasState() {
       flipHorizontal = lastState.flipHorizontal;
       flipVertical = lastState.flipVertical;
       textOverlay = { ...lastState.textOverlay };
-
       isCropMode = lastState.isCropMode; // Restore isCropMode
-
-      
-      // // Reset canvas dimensions if rotation angle is back to default state
-      // if (rotationAngle === 0 || rotationAngle === 360) {
-      //   canvasContext.clearRect(0, 0, tempCanvas.width, tempCanvas.height);
-  
-      //   tempCanvas.width = Math.max(image.width, image.height);
-      //   tempCanvas.height = Math.max(image.width, image.height);
-
-      //   tempContext.translate(tempCanvas.width / 2, tempCanvas.height / 2);
-      //   canvasContext.drawImage(image,0, 0);
-      // }
 
       if (isCropMode) {
         cropButton.textContent = "Save Crop";
