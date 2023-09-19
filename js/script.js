@@ -434,16 +434,29 @@ function handleMouseUp() {
 
 // Function to draw the crop area rectangle based on userclick
 function drawCrosshair(startX, startY, endX, endY) {
-  // Calculate x and y coordinates to center the image on the canvas
+  // Calculate x and y coordinates to center the transformed image on the canvas
   const x = (canvas.width - renderWidth) / 2;
   const y = (canvas.height - renderHeight) / 2;
 
+  // Clear the canvas
   canvasContext.clearRect(0, 0, canvas.width, canvas.height);
-  tempContext.translate(tempCanvas.width / 2, tempCanvas.height / 2);
-  //rendering context to the center of the canvas
 
-  // Draw the image onto the canvas at position (x, y)
-  canvasContext.drawImage(image, x, y, renderWidth, renderHeight);
+  // Draw the transformed image onto the canvas
+  canvasContext.save();
+  canvasContext.filter = generateFilter();
+  canvasContext.translate(canvas.width / 2, canvas.height / 2);
+  canvasContext.rotate((rotationAngle * Math.PI) / 180);
+
+  if (flipHorizontal) {
+    canvasContext.scale(-1, 1);
+  }
+  if (flipVertical) {
+    canvasContext.scale(1, -1);
+  }
+  canvasContext.drawImage(image, -renderWidth / 2, -renderHeight / 2, renderWidth, renderHeight);
+  canvasContext.restore();
+
+  // Draw the selection rectangle
   canvasContext.beginPath();
   canvasContext.moveTo(startX, startY);
   canvasContext.lineTo(endX, startY);
