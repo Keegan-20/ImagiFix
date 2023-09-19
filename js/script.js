@@ -463,6 +463,7 @@ function drawCrosshair(startX, startY, endX, endY) {
   canvasContext.lineTo(endX, endY);
   canvasContext.lineTo(startX, endY);
   canvasContext.closePath();
+  canvasContext.setLineDash([5, 4]); 
   canvasContext.strokeStyle = 'blue';
   canvasContext.lineWidth = 1;
   canvasContext.stroke();
