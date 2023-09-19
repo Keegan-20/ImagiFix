@@ -138,7 +138,7 @@ function renderImage() {
     return displayErrorMessage();
   }
 
-  // /Checking if any setting has changed before applying the filter
+  //Checking if any setting has changed before applying the filter
   let settingsChanged = false;
 
   for (let key in settings) {
@@ -156,10 +156,8 @@ function renderImage() {
 
   const canvasWidth = canvas.width;
   const canvasHeight = canvas.height;
-
   const imageAspectRatio = image.width / image.height;
   const canvasAspectRatio = canvasWidth / canvasHeight;
-
 
   if (imageAspectRatio > canvasAspectRatio) {
     renderWidth = canvasWidth;
@@ -331,7 +329,7 @@ function rotateImage(angle) {
 rotateLeftButton.addEventListener('click', () => rotateImage(-90));
 rotateRightButton.addEventListener('click', () => rotateImage(90));
 
-//Flip Image feature
+     //Flip Image feature
 const flipHorizontalButton = document.getElementById("flipHorizontal");
 flipHorizontalButton.addEventListener("click", () => {
   flipHorizontal = !flipHorizontal;
@@ -416,9 +414,10 @@ function handleMouseMove(event) {
     endX = event.clientX - rect.left;
     endY = event.clientY - rect.top;
     drawCrosshair(startX, startY, endX, endY);
-
   }
 }
+
+
 
 // Function to handle mouse up event
 function handleMouseUp() {
@@ -428,7 +427,6 @@ function handleMouseUp() {
     cropStartY = startY;
     cropEndX = endX;
     cropEndY = endY;
-
     startX = startY = endX = endY = undefined;
     canvas.style.cursor = 'crosshair';
   }
@@ -446,7 +444,6 @@ function drawCrosshair(startX, startY, endX, endY) {
 
   // Draw the image onto the canvas at position (x, y)
   canvasContext.drawImage(image, x, y, renderWidth, renderHeight);
-
   canvasContext.beginPath();
   canvasContext.moveTo(startX, startY);
   canvasContext.lineTo(endX, startY);
@@ -483,7 +480,6 @@ const imageStartY = (cropStartY - yOffset) * yScale;
 const imageEndX = (cropEndX - xOffset) * xScale; 
 const imageEndY = (cropEndY - yOffset) * yScale; 
 
-
   // Calculate cropped width and height
   const croppedWidth = imageEndX - imageStartX;
   const croppedHeight = imageEndY - imageStartY;
@@ -493,9 +489,11 @@ const imageEndY = (cropEndY - yOffset) * yScale;
    tempCanvas.height = croppedHeight;
  
    // Apply transformations and filters to the temporary canvas
-   tempContext.save();
    tempContext.translate(tempCanvas.width / 2, tempCanvas.height / 2);
   tempContext.rotate((rotationAngle * Math.PI) / 180);
+  tempContext.filter = generateFilter();
+  renderImage();
+  tempContext.save();
 
    // Draw the cropped portion of the image onto the temporary canvas
    tempContext.drawImage(
@@ -503,7 +501,6 @@ const imageEndY = (cropEndY - yOffset) * yScale;
      imageStartX, imageStartY, croppedWidth, croppedHeight,
      -croppedWidth / 2, -croppedHeight / 2, croppedWidth, croppedHeight
    );
-   
    tempContext.restore();
  
    // Convert the resulting image data to a data URL and create a new image
