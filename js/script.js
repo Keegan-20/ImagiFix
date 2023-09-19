@@ -488,10 +488,10 @@ function cropImage() {
   const yOffset = offsetY;
 
 // Convert canvas-relative coordinates to image-relative coordinates
-const imageStartX = (cropStartX - xOffset) * xScale; 
-const imageStartY = (cropStartY - yOffset) * yScale; 
-const imageEndX = (cropEndX - xOffset) * xScale; 
-const imageEndY = (cropEndY - yOffset) * yScale; 
+const imageStartX = flipHorizontal ? (image.width - (cropStartX - xOffset) * xScale) : (cropStartX - xOffset) * xScale;
+const imageStartY = flipVertical ? (image.height - (cropStartY - yOffset) * yScale) : (cropStartY - yOffset) * yScale;
+const imageEndX = flipHorizontal ? (image.width - (cropEndX - xOffset) * xScale) : (cropEndX - xOffset) * xScale;
+const imageEndY = flipVertical ? (image.height - (cropEndY - yOffset) * yScale) : (cropEndY - yOffset) * yScale;
 
   // Calculate cropped width and height
   const croppedWidth = imageEndX - imageStartX;
@@ -502,12 +502,10 @@ const imageEndY = (cropEndY - yOffset) * yScale;
    tempCanvas.height = croppedHeight;
  
    // Apply transformations and filters to the temporary canvas
+   tempContext.save();
    tempContext.translate(tempCanvas.width / 2, tempCanvas.height / 2);
   tempContext.rotate((rotationAngle * Math.PI) / 180);
   tempContext.filter = generateFilter();
-  renderImage();
-  tempContext.save();
-
    // Draw the cropped portion of the image onto the temporary canvas
    tempContext.drawImage(
      image,
