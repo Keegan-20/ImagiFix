@@ -17,8 +17,8 @@ body {
 }
 
 .toolbar {
-  
     width: 250px;
+    margin-top: 3.3rem;
     border-left:2px solid black;
     background-color: #333;
     color:#fff; 
@@ -41,13 +41,48 @@ output{
     /* border: 2px solid red; */
 }
 
+#title{
+  font-family:'Times New Roman', Times, serif;
+  font-size: 22px;
+  font-weight: 800;
+  padding: 0.5rem;
+}
+
+
+
+.custom-file-upload {
+  background-color: #fdba3b;
+  color: #ffffff;
+  padding:7px;
+  cursor: pointer;
+  margin-left: 4rem;
+  border: 1px solid #ef9c01cc;
+  outline: none;
+  border-radius: 5px;
+  font-size: 13px;
+}
+
+#imageFileInput {
+  display: none;
+
+}
+ 
+ input#imageFileInput{
+  background-color: #fdba3b;
+  color: #ffff;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid #ef9c01cc;
+  outline: none;
+  border-radius: 30px;
+} 
 /* sidebar section */
 #sidebar{
     display: flex;
     flex-direction: column;
     color:#ffff;
-    background-color:rgb(74, 71, 65);
-   padding:0.4rem;
+    background-color:#272829;
+    margin-top: 3.3rem;
+    padding:0.4rem;
 }
 
 .tool-input {
@@ -66,7 +101,7 @@ output{
     display: flex;
     justify-content: center;
     align-items: center;
-   padding: 0.8rem 0;
+   padding: 2rem 0;
     background-color: wheat;
 }
 
@@ -188,15 +223,14 @@ margin-top: 0.3rem;
   }
 
   /* undo-redo */
-  .recover{
-    position:fixed;
-    margin: 0.4rem;
-    top: -8px;
-    left: 21%;
-    padding: 0.4rem 0.2rem;
-    background-color:#333;
-    color: wheat;
-    width: 78.4%;
+    .title-bar {
+      position: fixed;
+      top: 0px;
+      padding: 0.8rem 0.2rem;
+      background-color:#352F44;
+      border-bottom: 2px solid #272829;
+      color: #fdba3b;
+      width: 100%;
   }
 
   .image-area {
@@ -210,17 +244,17 @@ margin-top: 0.3rem;
   }
 
   #undoButton{
-    margin:0 1.5rem 0 3rem;
+    margin:0rem 1.5rem 0 3rem;
   }
 #undoButton:hover,#redoButton:hover{
-  background-color:tomato;
+  background-color:#fdba3b;
   color:white;
 }
   #undoButton:hover::before{
       content: 'Undo';
       position: absolute;
-      top: 35px;
-      left: 5%;
+      top: 42px;
+      left: 35%;
       transform: translateX(-50%);
       background-color: #333;
       color: #fff;
@@ -232,8 +266,8 @@ margin-top: 0.3rem;
   #redoButton:hover::before{
       content: 'Redo';
       position: absolute;
-      top: 35px;
-      left: 12%;
+      top: 42px;
+      left: 38%;
       transform: translateX(-50%);
       background-color: #333;
       color: #fff;
@@ -241,15 +275,18 @@ margin-top: 0.3rem;
       border-radius: 5px;
       white-space: nowrap;
     }
-  #saveButton{
-    padding: 0.3rem;
-    position: absolute;
-    right:8px;
-    border: none;
-    outline: none;
-    border-radius: 8px;
-  }
-
+    #saveButton {
+      position: absolute;
+      top: 10px;
+      right: 7px;
+      background-color: #fdba3b;
+      color: #ffff;
+      padding: 0.6rem 0.8rem;
+      border: 1px solid #ef9c01cc;
+      outline: none;
+      border-radius: 30px;
+    }
+  
   #resetButton {
     width: 84%;
     border-radius: 5px;
@@ -258,52 +295,6 @@ margin-top: 0.3rem;
     border: none;
   }
  /* range input field customiozation */
- 
-    input[type="range"] {
-        width: 100%;
-        -webkit-appearance: none;
-        appearance: none;
-        height: 10px;
-        border-radius: 5px;
-        background: wheat;
-        outline: none;
-        margin: 10px 0;
-    }
-
-    /* Styling the track */
-    input[type="range"]::-webkit-slider-runnable-track {
-        width: 100%;
-        height: 2px;
-        background: #95156a;
-    }
-
-    /* Styling the thumb (slider handle) */
-    input[type="range"]::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        appearance: none;
-        width: 15px;
-        height: 15px;
-        background: #b03737;
-        border-radius: 50%;
-        cursor: pointer;
-    }
-    
-
-    /* Additional styles for Firefox */
-    input[type="range"]::-moz-range-track {
-        width: 100%;
-        height: 2px;
-        background: #777;
-    }
-
-    input[type="range"]::-moz-range-thumb {
-        width: 15px;
-        height: 15px;
-        background: #333;
-        border-radius: 50%;
-        cursor: pointer;
-    }
-
 
 
 /* Media Queries */

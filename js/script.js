@@ -417,8 +417,6 @@ function handleMouseMove(event) {
   }
 }
 
-
-
 // Function to handle mouse up event
 function handleMouseUp() {
   if (isCropMode && startX !== undefined && startY !== undefined && endX !== undefined && endY !== undefined) {
@@ -549,8 +547,6 @@ function cropImage() {
    
    croppedImage.src = tempCanvas.toDataURL();
 }
-
-
 
 // Event listener for crop button click
 cropButton.addEventListener('click', function () {
