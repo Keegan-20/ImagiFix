@@ -485,36 +485,57 @@ function cropImage() {
     xScale = image.width / renderWidth;
     yScale = image.height / renderHeight;
   }
+  
   const xOffset = offsetX;
   const yOffset = offsetY;
 
-// Convert canvas-relative coordinates to image-relative coordinates
-const imageStartX = flipHorizontal ? (image.width - (cropStartX - xOffset) * xScale) : (cropStartX - xOffset) * xScale;
-const imageStartY = flipVertical ? (image.height - (cropStartY - yOffset) * yScale) : (cropStartY - yOffset) * yScale;
-const imageEndX = flipHorizontal ? (image.width - (cropEndX - xOffset) * xScale) : (cropEndX - xOffset) * xScale;
-const imageEndY = flipVertical ? (image.height - (cropEndY - yOffset) * yScale) : (cropEndY - yOffset) * yScale;
+  // Convert canvas-relative coordinates to image-relative coordinates
+  let imageStartX = flipHorizontal ? (image.width - (cropStartX - xOffset) * xScale) : (cropStartX - xOffset) * xScale;
+  let imageStartY = flipVertical ? (image.height - (cropStartY - yOffset) * yScale) : (cropStartY - yOffset) * yScale;
+  let imageEndX = flipHorizontal ? (image.width - (cropEndX - xOffset) * xScale) : (cropEndX - xOffset) * xScale;
+  let imageEndY = flipVertical ? (image.height - (cropEndY - yOffset) * yScale) : (cropEndY - yOffset) * yScale;
+
+  // Adjust for rotation
+  if(rotationAngle !== 0){
+    const centerX = image.width / 2;
+    const centerY = image.height / 2;
+    const angle = rotationAngle * Math.PI / 180;
+
+    const rotatedStartX = Math.cos(angle) * (imageStartX-centerX) - Math.sin(angle) * (imageStartY-centerY) + centerX;
+    const rotatedStartY = Math.sin(angle) * (imageStartX-centerX) + Math.cos(angle) * (imageStartY-centerY) + centerY;
+
+    const rotatedEndX = Math.cos(angle) * (imageEndX-centerX) - Math.sin(angle) * (imageEndY-centerY) + centerX;
+    const rotatedEndY = Math.sin(angle) * (imageEndX-centerX) + Math.cos(angle) * (imageEndY-centerY) + centerY;
+
+    imageStartX = rotatedStartX;
+    imageStartY = rotatedStartY;
+    imageEndX = rotatedEndX;
+    imageEndY = rotatedEndY;
+  }
 
   // Calculate cropped width and height
-  const croppedWidth = imageEndX - imageStartX;
-  const croppedHeight = imageEndY - imageStartY;
+  const croppedWidth = Math.abs(imageEndX - imageStartX);
+  const croppedHeight = Math.abs(imageEndY - imageStartY);
 
 //using the temporary canvas for cropping
    tempCanvas.width = croppedWidth;
    tempCanvas.height = croppedHeight;
- 
+
    // Apply transformations and filters to the temporary canvas
    tempContext.save();
    tempContext.translate(tempCanvas.width / 2, tempCanvas.height / 2);
-  tempContext.rotate((rotationAngle * Math.PI) / 180);
-  tempContext.filter = generateFilter();
+   tempContext.rotate((rotationAngle * Math.PI) / 180);
+   tempContext.filter = generateFilter();
+   
    // Draw the cropped portion of the image onto the temporary canvas
    tempContext.drawImage(
      image,
-     imageStartX, imageStartY, croppedWidth, croppedHeight,
+     Math.min(imageStartX, imageEndX), Math.min(imageStartY, imageEndY), croppedWidth, croppedHeight,
      -croppedWidth / 2, -croppedHeight / 2, croppedWidth, croppedHeight
    );
+   
    tempContext.restore();
- 
+
    // Convert the resulting image data to a data URL and create a new image
    let croppedImage = new Image();
    croppedImage.onload = function () {
@@ -522,10 +543,14 @@ const imageEndY = flipVertical ? (image.height - (cropEndY - yOffset) * yScale) 
      image = croppedImage; // Update the image variable with the cropped image
      renderImage();
    };
+   
    // Save the state after cropping
     saveCanvasState();
+   
    croppedImage.src = tempCanvas.toDataURL();
- }
+}
+
+
 
 // Event listener for crop button click
 cropButton.addEventListener('click', function () {
