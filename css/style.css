@@ -48,8 +48,6 @@ output{
   padding: 0.5rem;
 }
 
-
-
 .custom-file-upload {
   background-color: #fdba3b;
   color: #ffffff;
@@ -288,15 +286,72 @@ margin-top: 0.3rem;
     }
   
   #resetButton {
+    background-color: #fdba3b;
+    color: #ffffff;
+    padding: 8px;
+    cursor: pointer;
     width: 84%;
+    margin-left:1.3rem;
+    border: 1px solid #ef9c01cc;
+    outline: none;
     border-radius: 5px;
-    margin: 1.2rem 0.8rem;
-    padding: 0.5rem;
-    border: none;
+    font-size: 13px;
   }
  /* range input field customiozation */
 
+input[type="range"] {
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  height:7px;
+  border-radius: 5px;
+  background: wheat;
+  outline: none;
+  margin: 10px 0;
+}
 
+/* Styling the thumb */
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px;
+  height: 15px;
+  background-color:#fdba3b;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: .2s ease-in-out
+}
+
+
+input[type="range"]::-moz-range-thumb {
+  width: 15px;
+  height: 15px;
+  background: #333;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+/* Hover, active & focus Thumb: Webkit */
+input[type="range"]::-webkit-slider-thumb:hover {
+  box-shadow: 0 0 0 10px rgba(255,85,0, .1)
+}
+input[type="range"]:active::-webkit-slider-thumb {
+  box-shadow: 0 0 0 13px rgba(255,85,0, .2)
+}
+input[type="range"]:focus::-webkit-slider-thumb {
+  box-shadow: 0 0 0 13px rgba(255,85,0, .2)
+}
+
+/* Hover, active & focus Thumb for Firfox */
+input[type="range"]::-moz-range-thumb:hover {
+  box-shadow: 0 0 0 10px rgba(255,85,0, .1)
+}
+input[type="range"]:active::-moz-range-thumb {
+  box-shadow: 0 0 0 13px rgba(255,85,0, .2)
+}
+input[type="range"]:focus::-moz-range-thumb {
+  box-shadow: 0 0 0 13px rgba(255,85,0, .2)   
+}
 /* Media Queries */
 @media (max-width: 768px) {
   .editor {
