@@ -297,8 +297,8 @@ margin-top: 0.3rem;
     border-radius: 5px;
     font-size: 13px;
   }
+ 
  /* range input field customiozation */
-
 input[type="range"] {
   width: 100%;
   -webkit-appearance: none;
@@ -308,7 +308,7 @@ input[type="range"] {
   background: wheat;
   outline: none;
   margin: 10px 0;
-}
+} 
 
 /* Styling the thumb */
 input[type="range"]::-webkit-slider-thumb {
@@ -319,16 +319,17 @@ input[type="range"]::-webkit-slider-thumb {
   background-color:#fdba3b;
   border-radius: 50%;
   cursor: pointer;
-  transition: .2s ease-in-out
+  transition: 0.2s ease-in-out
 }
 
 
 input[type="range"]::-moz-range-thumb {
-  width: 15px;
+  width: 12px;
   height: 15px;
-  background: #333;
+  background-color:#fdba3b;
   border-radius: 50%;
   cursor: pointer;
+  transition: 0.2s ease-in-out
 }
 
 /* Hover, active & focus Thumb: Webkit */
