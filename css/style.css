@@ -273,6 +273,7 @@ margin-top: 0.3rem;
       border-radius: 5px;
       white-space: nowrap;
     }
+
     #saveButton {
       position: absolute;
       top: 10px;
@@ -297,7 +298,10 @@ margin-top: 0.3rem;
     border-radius: 5px;
     font-size: 13px;
   }
- 
+ #saveButton:hover,#resetButton:hover,.custom-file-upload:hover{
+  background-color:#FF7000;
+  transition: 0.2  all ease-in;
+ }
  /* range input field customiozation */
 input[type="range"] {
   width: 100%;
@@ -319,7 +323,7 @@ input[type="range"]::-webkit-slider-thumb {
   background-color:#fdba3b;
   border-radius: 50%;
   cursor: pointer;
-  transition: 0.2s ease-in-out
+  transition: 0.2 ease-in-out
 }
 
 
