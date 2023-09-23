@@ -357,16 +357,28 @@ input[type="range"]:active::-moz-range-thumb {
 input[type="range"]:focus::-moz-range-thumb {
   box-shadow: 0 0 0 13px rgba(255,85,0, .2)   
 }
+
+#toolbarButton{
+  display: none;
+}
+
 /* Media Queries */
 @media (max-width: 768px) {
   .editor {
       flex-direction: column-reverse;
   }
+  .toolbar{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
 
-  /* .toolbar {
-    display: none;
-      max-width: none;
-  } */
+  }
+  .toolbar-item {
+    width: 30%; /* adjust this value as needed */
+}
+  #toolbarButton{
+    display: block;
+  }
 
   #sidebar {
     flex-direction: row;
@@ -396,5 +408,5 @@ input[type="range"]:focus::-moz-range-thumb {
   border-radius: 8px;
   padding: 0.3rem;
 }
-
 }
+

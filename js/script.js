@@ -791,3 +791,14 @@ function resetAllFilters() {
 
 const resetButton = document.getElementById('resetButton');
 resetButton.addEventListener('click', resetAllFilters);
+
+//Responsive mode
+document.getElementById('toolbarButton').addEventListener('click', function() {
+  var toolbar = document.querySelector('.toolbar');
+  if (toolbar.style.display === 'none') {
+      toolbar.style.display = 'block';
+  } else {
+      toolbar.style.display = 'none';
+  }
+});
+
