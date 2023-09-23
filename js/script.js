@@ -796,7 +796,7 @@ resetButton.addEventListener('click', resetAllFilters);
 document.getElementById('toolbarButton').addEventListener('click', function() {
   var toolbar = document.querySelector('.toolbar');
   if (toolbar.style.display === 'none') {
-      toolbar.style.display = 'block';
+      toolbar.style.display = 'flex';
   } else {
       toolbar.style.display = 'none';
   }
