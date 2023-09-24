@@ -365,11 +365,7 @@ input[type="range"]:focus::-moz-range-thumb {
 /* Media Queries */
 @media (max-width: 768px) {
   .editor {
-    display: flex;
-    flex-direction: column-reverse;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+  flex-direction:column-reverse;
   }
 
   .toolbar{
@@ -390,6 +386,7 @@ input[type="range"]:focus::-moz-range-thumb {
   }
 
  #title{
+  display: none;
   font-size: 11px;
  }
 
@@ -422,7 +419,8 @@ input[type="range"]:focus::-moz-range-thumb {
 
 #canvas{
   position: relative;
-  top:80px;
+  /* change this to adjust the canvas position/ */
+  top:80px; 
 }
 
 #textContent {
@@ -437,6 +435,5 @@ input[type="range"]:focus::-moz-range-thumb {
   width:21%;
   margin: 2px auto;
  }
-
 }
 
