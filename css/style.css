@@ -99,7 +99,7 @@ output{
     display: flex;
     justify-content: center;
     align-items: center;
-   padding: 2rem 0;
+    padding: 2rem 0;
     background-color: wheat;
 }
 
@@ -365,14 +365,21 @@ input[type="range"]:focus::-moz-range-thumb {
 /* Media Queries */
 @media (max-width: 768px) {
   .editor {
-      flex-direction: column-reverse;
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
   }
+
   .toolbar{
     display: none;
+    position: relative;
+    top:53px;
     width: 100%;
     flex-wrap: wrap;
+    border-radius:8px 8px 0 0;
     justify-content: space-between;
-
   }
   .toolbar-item {
     width: 30%; /* adjust this value as needed */
@@ -402,12 +409,25 @@ input[type="range"]:focus::-moz-range-thumb {
   top: auto;
   bottom: 50px; /* Adjust this value as needed */
 }
+
+
+#canvas{
+  position: relative;
+  top:80px;
+}
+
 #textContent {
   width: 82%;
   margin: 0.8rem -0.4rem 0 0rem;
   outline: none;
   border-radius: 8px;
   padding: 0.3rem;
-}
+ }
+   
+ #resetButton{
+  width:21%;
+  margin: 0 auto;
+ }
+
 }
 
