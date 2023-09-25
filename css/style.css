@@ -420,7 +420,9 @@ input[type="range"]:focus::-moz-range-thumb {
 #canvas{
   position: relative;
 }
-
+.image-area {
+  margin-top: 0;
+}
 
 #textContent {
   width: 82%;
