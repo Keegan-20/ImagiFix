@@ -397,7 +397,6 @@ input[type="range"]:focus::-moz-range-thumb {
     flex-direction: row;
     width: 100%;
    border:2px solid hotpink;
-   margin-bottom: 0.8rem;
   }
   .recover {
     margin: 0;
