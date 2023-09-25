@@ -419,9 +419,8 @@ input[type="range"]:focus::-moz-range-thumb {
 
 #canvas{
   position: relative;
-  /* change this to adjust the canvas position/ */
-  top:80px; 
 }
+
 
 #textContent {
   width: 82%;

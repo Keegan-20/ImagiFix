@@ -797,8 +797,11 @@ document.getElementById('toolbarButton').addEventListener('click', function() {
   let toolbar = document.querySelector('.toolbar');
   if (toolbar.style.display === 'none') {
       toolbar.style.display = 'flex';
+      canvas.style.top = '15vh'; 
   } else {
       toolbar.style.display = 'none';
+      canvas.style.top = '0vh'; 
+
   }
 });
 
