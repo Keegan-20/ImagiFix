@@ -100,6 +100,7 @@ output{
     justify-content: center;
     align-items: center;
     padding: 2rem 0;
+    margin-top: 2rem; 
     background-color: wheat;
 }
 
@@ -231,10 +232,6 @@ margin-top: 0.3rem;
       width: 100%;
   }
 
-  .image-area {
-    margin-top: 2rem; 
-  }
-
   #redoButton, #undoButton{
     background-color: #fff;
     padding: 0.2rem;
@@ -285,7 +282,9 @@ margin-top: 0.3rem;
       outline: none;
       border-radius: 30px;
     }
-  
+  .save-icon{
+    display: none;
+  }
   #resetButton {
     background-color: #fdba3b;
     color: #ffffff;
@@ -390,13 +389,14 @@ input[type="range"]:focus::-moz-range-thumb {
   font-size: 11px;
  }
 
- /* .custom-file-upload{
+ .custom-file-upload{
   margin-left: 0;
   font-size: 10px;
- } */
+ }
   #sidebar {
     flex-direction: row;
-      width: 100%;
+    width: 100%;
+  border:2px solid hotpink;
   }
   .recover {
     margin: 0;
@@ -420,9 +420,7 @@ input[type="range"]:focus::-moz-range-thumb {
 #canvas{
   position: relative;
 }
-.image-area {
-  margin-top: 0;
-}
+
 
 #textContent {
   width: 82%;
@@ -436,5 +434,25 @@ input[type="range"]:focus::-moz-range-thumb {
   width:21%;
   margin: 2px auto;
  }
+ 
+ #saveButton {
+ top:10px;
+ right:7px;
+ padding: 0.1rem 0.2rem;
+ }
+
+ .save-text {
+  display: none;
+}
+.save-icon {
+  display: inline-block;
+  fill: #ffffff; /* changes the color of the icon */
+  width: 1.5rem; 
+  height: 1.5rem;
+  margin-left: 1px;
+}
+
+
+
 }
 
