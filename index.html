@@ -16,17 +16,19 @@
             
           <div class="title-bar">
             <span  id="title">ImagiFix- Photo Editor</span>
+
             <!--to choose a  image file-->
             <input type="file" name="ImageFile" id="imageFileInput" accept="image/*">
             <label for="imageFileInput" class="custom-file-upload">Choose Image</label>
+          <button id="saveButton"> 
+                <span  class="save-text">Save Image</span>
+                <box-icon class="save-icon"  type='solid' name='download'></box-icon>
+            </button>
+            <span  id="mobile-title">ImagiFix</span>
 
             <!-- Add your buttons here -->
             <box-icon name='undo' id="undoButton"></box-icon>
              <box-icon name='redo' id="redoButton"></box-icon>
-            <button id="saveButton"> 
-                <span  class="save-text">Save Image</span>
-                <box-icon class="save-icon"  type='solid' name='download'></box-icon>
-            </button>
 
           </div>
 

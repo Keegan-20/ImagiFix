@@ -357,6 +357,10 @@ input[type="range"]:focus::-moz-range-thumb {
   box-shadow: 0 0 0 13px rgba(255,85,0, .2)   
 }
 
+#mobile-title{
+  display: none;
+}
+
 #toolbarButton{
   display: none;
 }
@@ -393,6 +397,7 @@ input[type="range"]:focus::-moz-range-thumb {
   margin-left: 0;
   font-size: 10px;
  }
+ 
   #sidebar {
     flex-direction: row;
     width: 100%;
@@ -436,9 +441,11 @@ input[type="range"]:focus::-moz-range-thumb {
  }
 
  #saveButton {
- top:10px;
- right:7px;
- padding: 0.1rem 0.2rem;
+  position: relative;
+  top: 6px;
+  left: 12px;
+  padding: 0.1rem 0.2rem;
+
  }
 
  .save-text {
@@ -452,7 +459,22 @@ input[type="range"]:focus::-moz-range-thumb {
   margin-left: 1px;
 }
 
+#undoButton {
+  margin: 0rem 1.5rem 0 1rem;
+ }
 
-
+ #redoButton,#undoButton{
+  float: right;
+  margin-top: 0.8rem;
+}
+#mobile-title{
+  display: inline-block;
+  color:#ffffff;
+  text-align: center;
+  margin-left: 1.5rem;
+  padding: 0.5rem;
+  font-size: 1.2rem;
+  font-weight: 800;
 }
 
+}
