@@ -398,27 +398,27 @@ addTextButton.addEventListener("click", () => {
 });
 
 //Crop Image Feature
-// Function to handle mouse down event
 function handleMouseDown(event) {
+  event.preventDefault(); // Prevents default touch behavior
   if (isCropMode) {
     const rect = canvas.getBoundingClientRect();
-    startX = event.clientX - rect.left;
-    startY = event.clientY - rect.top;
+    startX = event.clientX - rect.left || event.touches[0].clientX - rect.left;
+    startY = event.clientY - rect.top || event.touches[0].clientY - rect.top;
   }
 }
 
-// Function to handle mouse move event
 function handleMouseMove(event) {
+  event.preventDefault();
   if (isCropMode && startX !== undefined && startY !== undefined) {
     const rect = canvas.getBoundingClientRect();
-    endX = event.clientX - rect.left;
-    endY = event.clientY - rect.top;
+    endX = event.clientX - rect.left || event.touches[0].clientX - rect.left;
+    endY = event.clientY - rect.top || event.touches[0].clientY - rect.top;
     drawCrosshair(startX, startY, endX, endY);
   }
 }
 
-// Function to handle mouse up event
-function handleMouseUp() {
+function handleMouseUp(event) {
+  event.preventDefault();
   if (isCropMode && startX !== undefined && startY !== undefined && endX !== undefined && endY !== undefined) {
     // Store the coordinates of the cropping rectangle
     cropStartX = startX;
@@ -564,12 +564,9 @@ cropButton.addEventListener('click', function () {
   }
 });
 
-// Add event listeners for mouse events
-canvas.addEventListener('mousedown', handleMouseDown);
-canvas.addEventListener('mousemove', handleMouseMove);
-canvas.addEventListener('mouseup', handleMouseUp);
-
-
+canvas.addEventListener('touchstart', handleMouseDown, { passive: false });
+canvas.addEventListener('touchmove', handleMouseMove, { passive: false });
+canvas.addEventListener('touchend', handleMouseUp);
        // undo and redo feature
 // Save the current canvas state for undo
 function saveCanvasState() {
