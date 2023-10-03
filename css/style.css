@@ -401,7 +401,8 @@ input[type="range"]:focus::-moz-range-thumb {
   #sidebar {
     flex-direction: row;
     width: 100%;
-   border:2px solid hotpink;
+    padding:0.5rem;
+  
   }
   .recover {
     margin: 0;
@@ -475,6 +476,22 @@ input[type="range"]:focus::-moz-range-thumb {
   padding: 0.5rem;
   font-size: 1.2rem;
   font-weight: 800;
+}
+
+.fa-rotate-left,.fa-rotate-right{
+  padding: 0.3rem 0.4rem;
+  width:100%;
+}
+
+#textOverlay {
+  margin-top: 0;
+}
+
+.toolbarButtons,.slider{
+  width: 2.5rem; /* Adjust this value to set the desired width */
+  height:2.5rem;
+  padding:0.3rem 0.4rem;
+  margin:0.4 rem ;
 }
 
 }
