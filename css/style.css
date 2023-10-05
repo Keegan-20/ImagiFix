@@ -401,7 +401,7 @@ input[type="range"]:focus::-moz-range-thumb {
   #sidebar {
     flex-direction: row;
     width: 100%;
-    margin-top: 0;
+    margin-bottom: 1.3rem;
     padding:0.5rem;
   
   }
