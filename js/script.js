@@ -422,11 +422,6 @@ function handleMouseUp(event) {
   if (isCropMode && startX !== undefined && startY !== undefined && endX !== undefined && endY !== undefined) {
     // Store the coordinates of the cropping rectangle
     cropStartX = startX;
-    cropStartY = startY;
-    cropEndX = endX;
-    cropEndY = endY;
-    startX = startY = endX = endY = undefined;
-    canvas.style.cursor = 'crosshair';
   }
 }
 
