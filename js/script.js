@@ -561,9 +561,6 @@ canvas.addEventListener('mousedown', handleMouseDown);
 canvas.addEventListener('mousemove', handleMouseMove);
 canvas.addEventListener('mouseup', handleMouseUp);
 
-canvas.addEventListener('touchstart', handleEvent);
-canvas.addEventListener('touchmove', handleEvent);
-canvas.addEventListener('touchend', handleEvent);
        // undo and redo feature
 // Save the current canvas state for undo
 function saveCanvasState() {
