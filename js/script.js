@@ -90,7 +90,7 @@ opacityInput.addEventListener("input", function () {
 });
 
 
-// Iitial image placeholder preview
+// Initial image placeholder preview
 const imgPlaceholder = new Image();
 imgPlaceholder.onload = function () {
   canvasContext.drawImage(imgPlaceholder, 0, 0, canvas.width, canvas.height);
@@ -398,30 +398,38 @@ addTextButton.addEventListener("click", () => {
 });
 
 //Crop Image Feature
+//Crop Image Feature
+// Function to handle mouse down event
 function handleMouseDown(event) {
-  event.preventDefault(); // Prevents default touch behavior
   if (isCropMode) {
     const rect = canvas.getBoundingClientRect();
-    startX = event.clientX - rect.left || event.touches[0].clientX - rect.left;
-    startY = event.clientY - rect.top || event.touches[0].clientY - rect.top;
+    startX = event.clientX - rect.left;
+    startY = event.clientY - rect.top;
   }
 }
 
+// Function to handle mouse move event
 function handleMouseMove(event) {
-  event.preventDefault();
   if (isCropMode && startX !== undefined && startY !== undefined) {
     const rect = canvas.getBoundingClientRect();
-    endX = event.clientX - rect.left || event.touches[0].clientX - rect.left;
-    endY = event.clientY - rect.top || event.touches[0].clientY - rect.top;
+    endX = event.clientX - rect.left;
+    endY = event.clientY - rect.top;
     drawCrosshair(startX, startY, endX, endY);
   }
 }
 
-function handleMouseUp(event) {
-  event.preventDefault();
+
+
+// Function to handle mouse up event
+function handleMouseUp() {
   if (isCropMode && startX !== undefined && startY !== undefined && endX !== undefined && endY !== undefined) {
     // Store the coordinates of the cropping rectangle
     cropStartX = startX;
+    cropStartY = startY;
+    cropEndX = endX;
+    cropEndY = endY;
+    startX = startY = endX = endY = undefined;
+    canvas.style.cursor = 'crosshair';
   }
 }
 
@@ -456,7 +464,6 @@ function drawCrosshair(startX, startY, endX, endY) {
   canvasContext.lineTo(endX, endY);
   canvasContext.lineTo(startX, endY);
   canvasContext.closePath();
-  canvasContext.setLineDash([5, 4]); 
   canvasContext.strokeStyle = 'blue';
   canvasContext.lineWidth = 1;
   canvasContext.stroke();
@@ -478,57 +485,36 @@ function cropImage() {
     xScale = image.width / renderWidth;
     yScale = image.height / renderHeight;
   }
-  
   const xOffset = offsetX;
   const yOffset = offsetY;
 
-  // Convert canvas-relative coordinates to image-relative coordinates
-  let imageStartX = flipHorizontal ? (image.width - (cropStartX - xOffset) * xScale) : (cropStartX - xOffset) * xScale;
-  let imageStartY = flipVertical ? (image.height - (cropStartY - yOffset) * yScale) : (cropStartY - yOffset) * yScale;
-  let imageEndX = flipHorizontal ? (image.width - (cropEndX - xOffset) * xScale) : (cropEndX - xOffset) * xScale;
-  let imageEndY = flipVertical ? (image.height - (cropEndY - yOffset) * yScale) : (cropEndY - yOffset) * yScale;
-
-  // Adjust for rotation
-  if(rotationAngle !== 0){
-    const centerX = image.width / 2;
-    const centerY = image.height / 2;
-    const angle = rotationAngle * Math.PI / 180;
-
-    const rotatedStartX = Math.cos(angle) * (imageStartX-centerX) - Math.sin(angle) * (imageStartY-centerY) + centerX;
-    const rotatedStartY = Math.sin(angle) * (imageStartX-centerX) + Math.cos(angle) * (imageStartY-centerY) + centerY;
-
-    const rotatedEndX = Math.cos(angle) * (imageEndX-centerX) - Math.sin(angle) * (imageEndY-centerY) + centerX;
-    const rotatedEndY = Math.sin(angle) * (imageEndX-centerX) + Math.cos(angle) * (imageEndY-centerY) + centerY;
-
-    imageStartX = rotatedStartX;
-    imageStartY = rotatedStartY;
-    imageEndX = rotatedEndX;
-    imageEndY = rotatedEndY;
-  }
+// Convert canvas-relative coordinates to image-relative coordinates
+const imageStartX = flipHorizontal ? (image.width - (cropStartX - xOffset) * xScale) : (cropStartX - xOffset) * xScale;
+const imageStartY = flipVertical ? (image.height - (cropStartY - yOffset) * yScale) : (cropStartY - yOffset) * yScale;
+const imageEndX = flipHorizontal ? (image.width - (cropEndX - xOffset) * xScale) : (cropEndX - xOffset) * xScale;
+const imageEndY = flipVertical ? (image.height - (cropEndY - yOffset) * yScale) : (cropEndY - yOffset) * yScale;
 
   // Calculate cropped width and height
-  const croppedWidth = Math.abs(imageEndX - imageStartX);
-  const croppedHeight = Math.abs(imageEndY - imageStartY);
+  const croppedWidth = imageEndX - imageStartX;
+  const croppedHeight = imageEndY - imageStartY;
 
 //using the temporary canvas for cropping
    tempCanvas.width = croppedWidth;
    tempCanvas.height = croppedHeight;
-
+ 
    // Apply transformations and filters to the temporary canvas
    tempContext.save();
    tempContext.translate(tempCanvas.width / 2, tempCanvas.height / 2);
-   tempContext.rotate((rotationAngle * Math.PI) / 180);
-   tempContext.filter = generateFilter();
-   
+  tempContext.rotate((rotationAngle * Math.PI) / 180);
+  tempContext.filter = generateFilter();
    // Draw the cropped portion of the image onto the temporary canvas
    tempContext.drawImage(
      image,
-     Math.min(imageStartX, imageEndX), Math.min(imageStartY, imageEndY), croppedWidth, croppedHeight,
+     imageStartX, imageStartY, croppedWidth, croppedHeight,
      -croppedWidth / 2, -croppedHeight / 2, croppedWidth, croppedHeight
    );
-   
    tempContext.restore();
-
+ 
    // Convert the resulting image data to a data URL and create a new image
    let croppedImage = new Image();
    croppedImage.onload = function () {
@@ -536,12 +522,10 @@ function cropImage() {
      image = croppedImage; // Update the image variable with the cropped image
      renderImage();
    };
-   
    // Save the state after cropping
     saveCanvasState();
-   
    croppedImage.src = tempCanvas.toDataURL();
-}
+ }
 
 // Event listener for crop button click
 cropButton.addEventListener('click', function () {
@@ -559,9 +543,11 @@ cropButton.addEventListener('click', function () {
   }
 });
 
-canvas.addEventListener('touchstart', handleMouseDown, { passive: false });
-canvas.addEventListener('touchmove', handleMouseMove, { passive: false });
-canvas.addEventListener('touchend', handleMouseUp);
+// Add event listeners for mouse events
+canvas.addEventListener('mousedown', handleMouseDown);
+canvas.addEventListener('mousemove', handleMouseMove);
+canvas.addEventListener('mouseup', handleMouseUp);
+
        // undo and redo feature
 // Save the current canvas state for undo
 function saveCanvasState() {
