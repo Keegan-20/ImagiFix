@@ -398,7 +398,6 @@ addTextButton.addEventListener("click", () => {
 });
 
 //Crop Image Feature
-//Crop Image Feature
 // Function to handle mouse down event
 function handleMouseDown(event) {
   if (isCropMode) {
@@ -433,6 +432,19 @@ function handleMouseUp() {
   }
 }
 
+// for touch EventListener for mobile devices
+function handleEvent(event) {
+  event.preventDefault();
+  if (event.type === 'mousedown' || event.type === 'touchstart') {
+    handleMouseDown(event);
+  } else if (event.type === 'mousemove' || event.type === 'touchmove') {
+    handleMouseMove(event);
+  } else if (event.type === 'mouseup' || event.type === 'touchend') {
+    handleMouseUp(event);
+  }
+}
+
+
 // Function to draw the crop area rectangle based on userclick
 function drawCrosshair(startX, startY, endX, endY) {
   // Calculate x and y coordinates to center the transformed image on the canvas
@@ -464,6 +476,7 @@ function drawCrosshair(startX, startY, endX, endY) {
   canvasContext.lineTo(endX, endY);
   canvasContext.lineTo(startX, endY);
   canvasContext.closePath();
+  canvasContext.setLineDash([5, 4]);
   canvasContext.strokeStyle = 'blue';
   canvasContext.lineWidth = 1;
   canvasContext.stroke();
@@ -548,6 +561,9 @@ canvas.addEventListener('mousedown', handleMouseDown);
 canvas.addEventListener('mousemove', handleMouseMove);
 canvas.addEventListener('mouseup', handleMouseUp);
 
+canvas.addEventListener('touchstart', handleEvent);
+canvas.addEventListener('touchmove', handleEvent);
+canvas.addEventListener('touchend', handleEvent);
        // undo and redo feature
 // Save the current canvas state for undo
 function saveCanvasState() {
