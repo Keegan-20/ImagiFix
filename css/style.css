@@ -403,7 +403,7 @@ input[type="range"]:focus::-moz-range-thumb {
     bottom:0;
     flex-direction: row;
     width: 100%;
-    padding:0.5rem;  
+    padding:0.5rem 0;  
   }
   .recover {
     margin: 0;
