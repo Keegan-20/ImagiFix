@@ -489,6 +489,9 @@ input[type="range"]:focus::-moz-range-thumb {
 }
 
 .toolbarButtons,.slider{
+  width: 2.5rem; 
+  height:2.5rem;
+  font-size:8px;
   padding:0.3rem 0.4rem;
   margin:0.32rem ;
 }
