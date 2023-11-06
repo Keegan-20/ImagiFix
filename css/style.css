@@ -399,6 +399,8 @@ input[type="range"]:focus::-moz-range-thumb {
  }
  
   #sidebar {
+    position:fixed;
+    bottom:0;
     flex-direction: row;
     width: 100%;
     padding:0.5rem;  
