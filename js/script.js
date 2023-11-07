@@ -432,18 +432,34 @@ function handleMouseUp() {
   }
 }
 
-// for touch EventListener for mobile devices
-function handleEvent(event) {
+// Function to handle touch start event
+function handleTouchStart(event) {
   event.preventDefault();
-  if (event.type === 'mousedown' || event.type === 'touchstart') {
-    handleMouseDown(event);
-  } else if (event.type === 'mousemove' || event.type === 'touchmove') {
-    handleMouseMove(event);
-  } else if (event.type === 'mouseup' || event.type === 'touchend') {
-    handleMouseUp(event);
+  if (isCropMode) {
+    const rect = canvas.getBoundingClientRect();
+    startX = event.touches[0].clientX - rect.left;
+    startY = event.touches[0].clientY - rect.top;
   }
 }
 
+// Function to handle touch move event
+function handleTouchMove(event) {
+  event.preventDefault();
+  if (isCropMode && startX !== undefined && startY !== undefined) {
+    const rect = canvas.getBoundingClientRect();
+    endX = event.touches[0].clientX - rect.left;
+    endY = event.touches[0].clientY - rect.top;
+    drawCrosshair(startX, startY, endX, endY);
+  }
+}
+
+// Function to handle touch end event
+function handleTouchEnd(event) {
+  event.preventDefault();
+  if (isCropMode && startX !== undefined && startY !== undefined && endX !== undefined && endY !== undefined) {
+    cropImage();
+  }
+}
 
 // Function to draw the crop area rectangle based on userclick
 function drawCrosshair(startX, startY, endX, endY) {
@@ -560,6 +576,11 @@ cropButton.addEventListener('click', function () {
 canvas.addEventListener('mousedown', handleMouseDown);
 canvas.addEventListener('mousemove', handleMouseMove);
 canvas.addEventListener('mouseup', handleMouseUp);
+
+// Add event listeners for touch events
+canvas.addEventListener('touchstart', handleTouchStart);
+canvas.addEventListener('touchmove', handleTouchMove);
+canvas.addEventListener('touchend', handleTouchEnd);
 
        // undo and redo feature
 // Save the current canvas state for undo
