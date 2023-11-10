@@ -374,7 +374,7 @@ input[type="range"]:focus::-moz-range-thumb {
   .toolbar{
     display: none;
     position: relative;
-    top:53px;
+    bottom:65px;
     width: 100%;
     flex-wrap: wrap;
     border-radius:8px 8px 0 0;

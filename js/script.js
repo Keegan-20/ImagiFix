@@ -435,41 +435,44 @@ function handleMouseUp() {
 // Function to handle touch Events (respoonsive mode)
 function getTouchPos(canvasDom, touchEvent) {
   var rect = canvasDom.getBoundingClientRect();
+  // Calculate the ratio between the actual width of the canvas (in pixels) and the displayed width of the canvas (in CSS pixels).
+//   canvasDom.width : gives you the actual width of the canvas in pixels. This is the number of pixels that the canvas consists of.
+// rect.width: gives you the displayed width of the canvas in CSS pixels. This is the size of the canvas as it appears on the screen.
   var widthRatio = canvasDom.width / rect.width;
   var heightRatio = canvasDom.height / rect.height;
   return {
+    // The touch coordinates are adjusted according to the actual size of the canvas.
     x: (touchEvent.touches[0].clientX - rect.left) * widthRatio,
     y: (touchEvent.touches[0].clientY - rect.top) * heightRatio
   };
 }
 
-
 function handleTouchStart(event) {
   event.preventDefault();
   if (isCropMode) {
     var touchPos = getTouchPos(canvas, event);
-    startX = touchPos.x;
-    startY = touchPos.y;
+    cropStartX = touchPos.x;
+    cropStartY = touchPos.y;
   }
 }
 
 function handleTouchMove(event) {
   event.preventDefault();
-  if (isCropMode && startX !== undefined && startY !== undefined) {
+  if (isCropMode && cropStartX !== undefined && cropStartY !== undefined) {
     var touchPos = getTouchPos(canvas, event);
-    endX = touchPos.x;
-    endY = touchPos.y;
-    drawCrosshair(startX, startY, endX, endY);
+    cropEndX = touchPos.x;
+    cropEndY = touchPos.y;
+    drawCrosshair(cropStartX, cropStartY, cropEndX, cropEndY);
   }
 }
 
-// Function to handle touch end event
 function handleTouchEnd(event) {
   event.preventDefault();
-  if (isCropMode && startX !== undefined && startY !== undefined && endX !== undefined && endY !== undefined) {
-    cropImage();
+  if (isCropMode && cropStartX !== undefined && cropStartY !== undefined && cropEndX !== undefined && cropEndY !== undefined) {
+
   }
 }
+
 
 // Function to draw the crop area rectangle based on userclick
 function drawCrosshair(startX, startY, endX, endY) {
@@ -558,7 +561,7 @@ const imageEndY = flipVertical ? (image.height - (cropEndY - yOffset) * yScale) 
    let croppedImage = new Image();
    croppedImage.onload = function () {
      resetSettings();
-     image = croppedImage; // Update the image variable with the cropped image
+     image = croppedImage; //Update the image variable with the cropped image
      renderImage();
    };
    // Save the state after cropping
@@ -581,6 +584,7 @@ cropButton.addEventListener('click', function () {
     canvas.style.cursor = 'crosshair';
   }
 });
+
  
 // Add event listeners for mouse events
 canvas.addEventListener('mousedown', handleMouseDown);
@@ -588,9 +592,9 @@ canvas.addEventListener('mousemove', handleMouseMove);
 canvas.addEventListener('mouseup', handleMouseUp);
 
 // Add event listeners for touch events
-canvas.addEventListener('touchstart', handleTouchStart);
-canvas.addEventListener('touchmove', handleTouchMove);
-canvas.addEventListener('touchend', handleTouchEnd);
+canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
+canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
+canvas.addEventListener('touchend', handleTouchEnd, { passive: false });
 
        // undo and redo feature
 // Save the current canvas state for undo
