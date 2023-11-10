@@ -235,7 +235,8 @@ margin-top: 0.3rem;
   #redoButton, #undoButton{
     background-color: #fff;
     padding: 0.2rem;
-    border-radius: 8px;
+    border-radius: 5px;
+    box-shadow:2px 3px 12px black;
   }
 
   #undoButton{
@@ -445,10 +446,14 @@ input[type="range"]:focus::-moz-range-thumb {
 
  #saveButton {
   position: relative;
-  top: 6px;
-  left: 12px;
+  top: 8px;
+  left: 17px;
   padding: 0.1rem 0.2rem;
+ }
 
+ button#saveButton{
+  width:24px;
+  height:24px;
  }
 
  .save-text {
@@ -457,9 +462,11 @@ input[type="range"]:focus::-moz-range-thumb {
 .save-icon {
   display: inline-block;
   fill: #ffffff; /* changes the color of the icon */
-  width: 1.5rem; 
-  height: 1.5rem;
-  margin-left: 1px;
+  width: 1.2rem; 
+  height: 1.2rem;
+  margin:0.2rem ;
+  margin-left:-1px;
+  padding-bottom:0.2rem;
 }
 
 #undoButton {
@@ -497,4 +504,15 @@ input[type="range"]:focus::-moz-range-thumb {
   margin:0.32rem ;
 }
 
+box-icon{
+  width:1.2rem;
+  height:1.2rem;
+}
+
+@media (max-width:370px) {
+ #mobile-title{
+  font-size:0.8rem;
+ }
+
+ 
 }
