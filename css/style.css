@@ -425,7 +425,7 @@ input[type="range"]:focus::-moz-range-thumb {
 
 
 #canvas{
-  border: 2px solid greenyellow; 
+  /* border: 2px solid greenyellow;  */
   position: relative;
 }
 
