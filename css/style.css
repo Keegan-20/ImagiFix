@@ -462,8 +462,8 @@ input[type="range"]:focus::-moz-range-thumb {
 .save-icon {
   display: inline-block;
   fill: #ffffff; /* changes the color of the icon */
-  width: 1.2rem; 
-  height: 1.2rem;
+  width: 1.24rem; 
+  height: 1.24rem;
   margin:0.2rem ;
   margin-left:-1px;
   padding-bottom:0.2rem;
@@ -475,7 +475,7 @@ input[type="range"]:focus::-moz-range-thumb {
 
  #redoButton,#undoButton{
   float: right;
-  margin-top: 0.8rem;
+  margin-top: 0.5rem;
 }
 #mobile-title{
   display: inline-block;
