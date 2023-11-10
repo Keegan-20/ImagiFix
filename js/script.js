@@ -432,23 +432,33 @@ function handleMouseUp() {
   }
 }
 
-// Function to handle touch start event
+// Function to handle touch Events (respoonsive mode)
+function getTouchPos(canvasDom, touchEvent) {
+  var rect = canvasDom.getBoundingClientRect();
+  var widthRatio = canvasDom.width / rect.width;
+  var heightRatio = canvasDom.height / rect.height;
+  return {
+    x: (touchEvent.touches[0].clientX - rect.left) * widthRatio,
+    y: (touchEvent.touches[0].clientY - rect.top) * heightRatio
+  };
+}
+
+
 function handleTouchStart(event) {
   event.preventDefault();
   if (isCropMode) {
-    const rect = canvas.getBoundingClientRect();
-    startX = event.touches[0].clientX - rect.left;
-    startY = event.touches[0].clientY - rect.top;
+    var touchPos = getTouchPos(canvas, event);
+    startX = touchPos.x;
+    startY = touchPos.y;
   }
 }
 
-// Function to handle touch move event
 function handleTouchMove(event) {
   event.preventDefault();
   if (isCropMode && startX !== undefined && startY !== undefined) {
-    const rect = canvas.getBoundingClientRect();
-    endX = event.touches[0].clientX - rect.left;
-    endY = event.touches[0].clientY - rect.top;
+    var touchPos = getTouchPos(canvas, event);
+    endX = touchPos.x;
+    endY = touchPos.y;
     drawCrosshair(startX, startY, endX, endY);
   }
 }
@@ -571,7 +581,7 @@ cropButton.addEventListener('click', function () {
     canvas.style.cursor = 'crosshair';
   }
 });
-
+ 
 // Add event listeners for mouse events
 canvas.addEventListener('mousedown', handleMouseDown);
 canvas.addEventListener('mousemove', handleMouseMove);
