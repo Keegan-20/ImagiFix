@@ -513,3 +513,8 @@ box-icon{
 
  
 }
+
+@media (max-width:370px) {
+  #mobile-title{
+   font-size:1.2rem;
+  }
