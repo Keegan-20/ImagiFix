@@ -482,8 +482,9 @@ input[type="range"]:focus::-moz-range-thumb {
   font-family: 'Cabin', sans-serif;
   display: inline-block;
   color:#ffffff;
-  text-shadow:3px 2px 12px #ffff;
+  text-shadow:3px 2px 8px #ffff;
   text-align: center;
+  margin-top:0.3rem;
   margin-left: 1.5rem;
   padding: 0.5rem;
   font-size: 1.8rem;
