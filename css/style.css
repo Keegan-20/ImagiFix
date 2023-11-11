@@ -447,14 +447,14 @@ input[type="range"]:focus::-moz-range-thumb {
 
  #saveButton {
   position: relative;
-  top: 8px;
+  top: 4px;
   left: 17px;
-  padding: 0.1rem 0.2rem;
+  padding: 0.1rem 0.3rem;
  }
 
  button#saveButton{
-  width:24px;
-  height:24px;
+  width:30px;
+  height:30px;
  }
 
  .save-text {
@@ -476,16 +476,17 @@ input[type="range"]:focus::-moz-range-thumb {
 
  #redoButton,#undoButton{
   float: right;
-  margin-top: 0.5rem;
+  margin-top: 1.5rem;
 }
+
 #mobile-title{
-  font-family: 'Cabin', sans-serif;
+  font-family:'Times New Roman', Times, serif;
   display: inline-block;
   color:#ffffff;
   text-shadow:3px 2px 8px #ffff;
   text-align: center;
   margin-top:0.3rem;
-  margin-left: 1.5rem;
+  margin-left: 10.5rem;
   padding: 0.5rem;
   font-size: 1.8rem;
 }
@@ -508,8 +509,8 @@ input[type="range"]:focus::-moz-range-thumb {
 }
 
 box-icon{
-  width:1.2rem;
-  height:1.2rem;
+  width:1.5rem;
+  height:1.5rem;
 }
 
  
