@@ -87,10 +87,16 @@ input#imageFileInput {
 }
 
 .toolbarButtons {
+  background: white;
   display: inline-flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 0.4rem;
+  width:30px;
+  margin-bottom: 0.5rem;
+  border: none;
+  outline: none;
+  border-radius: 2px;
+  box-shadow: 7px 8px 27px black;
 }
 
 .image-area {
@@ -122,10 +128,15 @@ input#imageFileInput {
   /* border: 2px solid greenyellow; */
 }
 
-#rotateLeftButton,
+
 #rotateRightButton {
-  padding: 0.2rem;
-  font-weight: 900;
+  padding: 0.3rem;
+  font-weight:900;
+}
+
+#rotateLeftButton{
+  padding:0.2rem;
+  font-weight:900;
 }
 
 #textOverlay {
@@ -548,6 +559,7 @@ input[type="range"]:focus::-moz-range-thumb {
 }
 
 box-icon {
+ background: white;
   width: 1.3rem;
   height: 1.3rem;
 }
