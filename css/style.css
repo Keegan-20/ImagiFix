@@ -559,14 +559,11 @@ input[type="range"]:focus::-moz-range-thumb {
     margin-left: 0.8rem;
 }
 
-/* .toolbarButtons, .slider {
+.toolbarButtons, .slider {
   width:2rem;
-  height:1.8rem;
-} */
-.slider{
-  padding:0;
-  margin-right:0.2rem;
+  height:2rem;
 }
+
 box-icon {
  background: white;
   width: 1.3rem;
