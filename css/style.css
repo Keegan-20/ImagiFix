@@ -559,6 +559,13 @@ input[type="range"]:focus::-moz-range-thumb {
     margin-left: 0.8rem;
 }
 
+.toolbarButtons, .slider {
+  width:1.8rem;
+  height:1.8rem;
+}
+.slider{
+  padding:0;
+}
 box-icon {
  background: white;
   width: 1.3rem;
