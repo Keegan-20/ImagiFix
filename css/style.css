@@ -560,11 +560,12 @@ input[type="range"]:focus::-moz-range-thumb {
 }
 
 .toolbarButtons, .slider {
-  width:1.8rem;
+  width:2rem;
   height:1.8rem;
 }
 .slider{
   padding:0;
+  margin-right:0.2rem;
 }
 box-icon {
  background: white;
