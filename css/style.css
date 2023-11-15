@@ -132,11 +132,13 @@ input#imageFileInput {
 #rotateRightButton {
   padding: 0.3rem;
   font-weight:900;
+  font-size:0.9rem;
 }
 
 #rotateLeftButton{
-  padding:0.2rem;
+  padding:0.15rem;
   font-weight:900;
+  font-size:0.9rem;
 }
 
 #textOverlay {
@@ -518,7 +520,7 @@ input[type="range"]:focus::-moz-range-thumb {
     height: 2.5rem;
     font-size: 8px;
     padding: 0.3rem 0.4rem;
-    margin: 0.32rem;
+    margin: 0.4rem;
   }
 
   box-icon {
@@ -554,7 +556,7 @@ input[type="range"]:focus::-moz-range-thumb {
 
 @media(max-width:345px){
 
-  #mobile-title {
+  #mobile-title {  
     font-size: 1rem;
     margin-left: 0.8rem;
 }
@@ -575,6 +577,13 @@ box-icon {
   margin-top:0.6rem;
 }
 
+/* #rotateLeftButton{
+
+}
+
+#rotateRightButton{
+
+} */
   button#saveButton {
     width: 23px;
     height: 23px;
