@@ -402,9 +402,18 @@ input[type="range"]:focus::-moz-range-thumb {
   #toolbarButton {
     display: block;
   }
-  
+
   input[type="range"] {
     height:5px;
+  }
+
+  .toolbar::-webkit-scrollbar {
+    width: 3px; 
+  }
+  
+  .toolbar::-webkit-scrollbar-thumb {
+    background-color: #fdba3b; 
+    border-radius: 6px;
   }
 
   #title {
