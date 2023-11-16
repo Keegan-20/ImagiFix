@@ -818,6 +818,15 @@ function resetAllFilters() {
 const resetButton = document.getElementById('resetButton');
 resetButton.addEventListener('click', resetAllFilters);
 
+document.addEventListener('DOMContentLoaded', function () {
+  var toolbarButton = document.getElementById('toolbarButton');
+
+  toolbarButton.addEventListener('click', function () {
+    toolbarButton.classList.toggle('active');
+  });
+});
+
+
 //Responsive mode
 document.getElementById('toolbarButton').addEventListener('click', function() {
   let toolbar = document.querySelector('.toolbar');

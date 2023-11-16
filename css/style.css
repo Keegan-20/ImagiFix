@@ -380,6 +380,9 @@ input[type="range"]:focus::-moz-range-thumb {
 #toolbarButton {
   display: none;
 }
+#toolbarButton.active + .toolbar {
+  display: flex;
+}
 
 /* Media Queries */
 @media (max-width: 768px) {
@@ -402,7 +405,9 @@ input[type="range"]:focus::-moz-range-thumb {
   #toolbarButton {
     display: block;
   }
-
+  #toolbarButton:not(.active) + .toolbar {
+    display: none;
+  }
   input[type="range"] {
     height:5px;
   }
@@ -544,6 +549,12 @@ input[type="range"]:focus::-moz-range-thumb {
 @media (max-width: 550px) {
   #mobile-title {
     margin-left: 5.5rem;
+  }
+  #toolbarButton {
+    display: block;
+  }
+  #toolbarButton:not(.active) + .toolbar {
+    display: none;
   }
 }
 
