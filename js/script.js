@@ -818,6 +818,7 @@ function resetAllFilters() {
 const resetButton = document.getElementById('resetButton');
 resetButton.addEventListener('click', resetAllFilters);
 
+//to Toggle the toolbar
 document.addEventListener('DOMContentLoaded', function () {
   var toolbarButton = document.getElementById('toolbarButton');
 

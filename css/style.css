@@ -380,9 +380,6 @@ input[type="range"]:focus::-moz-range-thumb {
 #toolbarButton {
   display: none;
 }
-#toolbarButton.active + .toolbar {
-  display: flex;
-}
 
 /* Media Queries */
 @media (max-width: 768px) {
@@ -402,12 +399,14 @@ input[type="range"]:focus::-moz-range-thumb {
   .toolbar-item {
     width: 100%; 
   }
+
   #toolbarButton {
     display: block;
   }
-  #toolbarButton:not(.active) + .toolbar {
+  .toolbar:not(.active) {
     display: none;
   }
+
   input[type="range"] {
     height:5px;
   }
@@ -550,12 +549,7 @@ input[type="range"]:focus::-moz-range-thumb {
   #mobile-title {
     margin-left: 5.5rem;
   }
-  #toolbarButton {
-    display: block;
-  }
-  #toolbarButton:not(.active) + .toolbar {
-    display: none;
-  }
+  
 }
 
 @media (max-width: 450px) {
@@ -600,13 +594,6 @@ box-icon {
   margin-top:0.6rem;
 }
 
-/* #rotateLeftButton{
-
-}
-
-#rotateRightButton{
-
-} */
   button#saveButton {
     width: 23px;
     height: 23px;
