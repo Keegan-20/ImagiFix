@@ -399,7 +399,7 @@ input[type="range"]:focus::-moz-range-thumb {
   .toolbar-item {
     width: 100%; 
   }
-
+  
   #toolbarButton {
     display: block;
   }
@@ -593,6 +593,7 @@ box-icon {
   margin: 0 0.3rem 0 1rem;
   margin-top:0.6rem;
 }
+
 
   button#saveButton {
     width: 23px;
