@@ -303,12 +303,14 @@ input#imageFileInput {
 #resetButton {
   background-color: #fdba3b;
   color: #ffffff;
+  text-shadow:2px 3px 23px #ffff;
   padding: 8px;
   cursor: pointer;
   width: 84%;
   margin-left: 1.3rem;
   border: 1px solid #ef9c01cc;
   outline: none;
+  font-weight:600;
   border-radius: 5px;
   font-size: 13px;
 }

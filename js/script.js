@@ -833,10 +833,10 @@ document.getElementById('toolbarButton').addEventListener('click', function() {
   let toolbar = document.querySelector('.toolbar');
   if (toolbar.style.display === 'flex') {
       toolbar.style.display = 'none';
-      canvas.style.top = '10vh'; 
+      canvas.style.top = '0vh'; 
   } else {
       toolbar.style.display = 'flex';
-      canvas.style.top = '0vh'; 
+      canvas.style.top = '10vh'; 
 
   }
 });
