@@ -388,13 +388,38 @@ addTextButton.addEventListener("click", () => {
   const textColor = document.getElementById("textColor").value;
   const textSize = parseInt(textSizeInput.value);
 
-  //selecting co-ordinates depending on user click
-  canvas.addEventListener('click', function (event) {
-    const rect = canvas.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
-    drawTextOverlay(textContent, textColor, textSize, x, y);
-  });
+ // Selecting coordinates depending on user click or touch
+ const handleInteraction = (event) => {
+  const rect = canvas.getBoundingClientRect();
+  let x, y;
+
+  if (event.type === 'click') {
+    // For click events, use the event coordinates directly
+    x = event.clientX - rect.left;
+    y = event.clientY - rect.top;
+  } else if (event.type === 'touchstart') {
+    // For touch events, use the getTouchPos function
+    const touchPos = getTouchPos(canvas, event);
+    x = touchPos.x;
+    y = touchPos.y;
+  }
+
+  drawTextOverlay(textContent, textColor, textSize, x, y);
+};
+
+// Add click event listener
+canvas.addEventListener('click', handleInteraction);
+
+// Add touch event listener
+canvas.addEventListener('touchstart', (event) => {
+  event.preventDefault(); // Prevent default touch behavior (e.g., scrolling)
+  handleInteraction(event);
+}, { passive: false });
+
+// Remove the click event listener after it's done
+canvas.addEventListener('click', () => {
+  canvas.removeEventListener('click', handleInteraction);
+}, { once: true });
 });
 
 //Crop Image Feature
