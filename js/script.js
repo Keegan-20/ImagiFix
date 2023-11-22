@@ -848,7 +848,7 @@ document.getElementById('toolbarButton').addEventListener('click', function() {
       canvas.style.top = '0vh'; 
   } else {
       toolbar.style.display = 'flex';
-      canvas.style.top = '10vh'; 
+      canvas.style.top = '2vh'; 
 
   }
 });
