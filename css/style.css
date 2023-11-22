@@ -429,7 +429,7 @@ input[type="range"]:focus::-moz-range-thumb {
 
   .custom-file-upload {
     margin-left: 0.2rem;
-    font-size: 10px;
+    font-size: 12px;
   }
 
   #sidebar {
@@ -557,7 +557,7 @@ input[type="range"]:focus::-moz-range-thumb {
 @media (max-width: 450px) {
   #mobile-title {
     font-size: 1.3rem;
-    margin-left: 3.3rem;
+    margin-left: 1.8rem;
   }
 
   #redoButton,
