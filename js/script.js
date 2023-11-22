@@ -827,6 +827,18 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 });
 
+    const toolbar = document.querySelector(".toolbar");
+    const toolbarButtons = document.querySelectorAll(".toolbarButtons");
+
+    // Add click event listener to each toolbar button
+    toolbarButtons.forEach(function (button) {
+      button.addEventListener("click", function () {
+        // Hide the toolbar
+        toolbar.style.display = "none";
+        
+      });
+    });
+
 
 //Responsive mode
 document.getElementById('toolbarButton').addEventListener('click', function() {
