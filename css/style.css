@@ -449,12 +449,17 @@ input[type="range"]:focus::-moz-range-thumb {
 
   .text-overlay-options {
     top: 50px;
-    left: 100px;
-    width: 64%;
+    left: 109px;
+    width: 71%;
   }
+
+  #textColor{
+    margin:0.5rem 0;
+  }
+
   .flipped-vertical {
     top: auto;
-    bottom: 50px; /* Adjust this value as needed */
+    bottom: 69px; /* Adjust this value as needed */
   }
 
   #canvas {
@@ -463,8 +468,8 @@ input[type="range"]:focus::-moz-range-thumb {
   }
 
   #textContent {
-    width: 82%;
-    margin: 0.8rem -0.4rem 0 0rem;
+    width: 65%;
+    margin: 0.8rem 0.6rem 0 0;
     outline: none;
     border-radius: 8px;
     padding: 0.3rem;
