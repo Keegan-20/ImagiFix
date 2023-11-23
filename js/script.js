@@ -860,10 +860,22 @@ document.addEventListener('DOMContentLoaded', function () {
       button.addEventListener("click", function () {
         // Hide the toolbar
         toolbar.style.display = "none";
-        
+        textOverlayOptions.style.display = 'none';
       });
     });
 
+//Event listener to open/close the text overlay options when clicking the textOverlayButton
+textOverlayButton.addEventListener('click', () => {
+  // Toggle the display of the text overlay options
+  textOverlayOptions.style.display = (textOverlayOptions.style.display === 'none' || textOverlayOptions.style.display === '') ? 'block' : 'none';
+});
+
+// Add click event listener to close the text overlay options when clicking outside of it
+document.addEventListener('click', (event) => {
+  if (!event.target.closest('.toolbar') && !event.target.closest('#textOverlay')) {
+    textOverlayOptions.style.display = 'none';
+  }
+});
 
 //Responsive mode
 document.getElementById('toolbarButton').addEventListener('click', function() {
@@ -873,6 +885,7 @@ document.getElementById('toolbarButton').addEventListener('click', function() {
       canvas.style.top = '0vh'; 
   } else {
       toolbar.style.display = 'flex';
+      
   }
 });
 
