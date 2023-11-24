@@ -864,10 +864,18 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     });
 
-//Event listener to open/close the text overlay options when clicking the textOverlayButton
-textOverlayButton.addEventListener('click', () => {
+// Event listener to open/close the text overlay options when clicking the textOverlayButton
+textOverlayButton.addEventListener('click', (event) => {
   // Toggle the display of the text overlay options
-  textOverlayOptions.style.display = (textOverlayOptions.style.display === 'none' || textOverlayOptions.style.display === '') ? 'block' : 'none';
+  textOverlayOptions.style.display = (textOverlayOptions.style.display === 'none' || textOverlayOptions.style.display === '') ? 'flex' : 'none';
+  event.stopPropagation(); // Stop the click event from propagating to the document
+});
+
+// Add click event listener to close the text overlay options when clicking outside of it
+document.addEventListener('click', (event) => {
+  if (!event.target.closest('#textOverlay')) {
+    textOverlayOptions.style.display = 'none';
+  }
 });
 
 // Add click event listener to close the text overlay options when clicking outside of it
@@ -885,7 +893,21 @@ document.getElementById('toolbarButton').addEventListener('click', function() {
       canvas.style.top = '0vh'; 
   } else {
       toolbar.style.display = 'flex';
-      
-  }
+  } 
+  // Close the text overlay options when opening the toolbar
+  textOverlayOptions.style.display = 'none';   
+  
 });
 
+document.getElementById('textOverlayButton').addEventListener('click', function() {
+  let textOverlayOptions = document.getElementById('textOverlayOptions');
+  let imageArea = document.querySelector('.image-area');
+
+  if (textOverlayOptions.style.display === 'flex') {
+   
+    imageArea.style.marginBottom = '0';
+  } else 
+  {
+    imageArea.style.marginBottom = '250px';
+  }
+});

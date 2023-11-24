@@ -459,7 +459,7 @@ input[type="range"]:focus::-moz-range-thumb {
 
   .flipped-vertical {
     top: auto;
-    bottom: 69px; /* Adjust this value as needed */
+    bottom: 69px; 
   }
 
   #canvas {
