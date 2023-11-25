@@ -396,6 +396,7 @@ input[type="range"]:focus::-moz-range-thumb {
     max-height: 250px; 
     width:100%;
     padding: 10px; 
+    margin-top:0;
   }
 
   .toolbar-item {
@@ -407,6 +408,10 @@ input[type="range"]:focus::-moz-range-thumb {
   }
   .toolbar:not(.active) {
     display: none;
+  }
+
+  .text-overlay-options {
+    flex-direction: column; 
   }
 
   input[type="range"] {

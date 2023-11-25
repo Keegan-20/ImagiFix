@@ -844,6 +844,10 @@ const resetButton = document.getElementById('resetButton');
 resetButton.addEventListener('click', resetAllFilters);
 
 //to Toggle the toolbar
+
+const toolbar = document.querySelector(".toolbar");
+const toolbarButtons = document.querySelectorAll(".toolbarButtons");
+
 document.addEventListener('DOMContentLoaded', function () {
   let toolbarButton = document.getElementById('toolbarButton');
 
@@ -851,9 +855,6 @@ document.addEventListener('DOMContentLoaded', function () {
     toolbarButton.classList.toggle('active');
   });
 });
-
-    const toolbar = document.querySelector(".toolbar");
-    const toolbarButtons = document.querySelectorAll(".toolbarButtons");
 
     // Add click event listener to each toolbar button
     toolbarButtons.forEach(function (button) {
@@ -871,12 +872,6 @@ textOverlayButton.addEventListener('click', (event) => {
   event.stopPropagation(); // Stop the click event from propagating to the document
 });
 
-// Add click event listener to close the text overlay options when clicking outside of it
-document.addEventListener('click', (event) => {
-  if (!event.target.closest('#textOverlay')) {
-    textOverlayOptions.style.display = 'none';
-  }
-});
 
 // Add click event listener to close the text overlay options when clicking outside of it
 document.addEventListener('click', (event) => {
@@ -888,15 +883,17 @@ document.addEventListener('click', (event) => {
 //Responsive mode
 document.getElementById('toolbarButton').addEventListener('click', function() {
   let toolbar = document.querySelector('.toolbar');
-  if (toolbar.style.display === 'flex') {
+  if (toolbar.style.display === 'block') {
       toolbar.style.display = 'none';
-      canvas.style.top = '0vh'; 
+      canvas.style.top = '8vh'; 
   } else {
-      toolbar.style.display = 'flex';
+      toolbar.style.display = 'block';
+      canvas.style.top = '8vh'; 
+      toolbar.style.marginTop='-8rem';
+      
   } 
   // Close the text overlay options when opening the toolbar
   textOverlayOptions.style.display = 'none';   
-  
 });
 
 document.getElementById('textOverlayButton').addEventListener('click', function() {
@@ -905,9 +902,10 @@ document.getElementById('textOverlayButton').addEventListener('click', function(
 
   if (textOverlayOptions.style.display === 'flex') {
    
-    imageArea.style.marginBottom = '0';
+    imageArea.style.marginBottom = '250px';
   } else 
   {
-    imageArea.style.marginBottom = '250px';
+    imageArea.style.marginBottom = '0px';
   }
 });
+ 
