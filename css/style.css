@@ -464,7 +464,7 @@ input[type="range"]:focus::-moz-range-thumb {
 
   .flipped-vertical {
     top: auto;
-    bottom: 69px; 
+    bottom: 60px; 
   }
 
   #canvas {
@@ -496,6 +496,7 @@ input[type="range"]:focus::-moz-range-thumb {
     width: 30px;
     height: 30px;
   }
+
 
   .save-text {
     display: none;

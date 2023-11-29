@@ -885,11 +885,11 @@ document.getElementById('toolbarButton').addEventListener('click', function() {
   let toolbar = document.querySelector('.toolbar');
   if (toolbar.style.display === 'block') {
       toolbar.style.display = 'none';
-      canvas.style.top = '8vh'; 
+      canvas.style.top = '0vh'; 
   } else {
       toolbar.style.display = 'block';
       canvas.style.top = '8vh'; 
-      toolbar.style.marginTop='-8rem';
+      toolbar .style.marginTop='8rem';
       
   } 
   // Close the text overlay options when opening the toolbar
@@ -897,15 +897,17 @@ document.getElementById('toolbarButton').addEventListener('click', function() {
 });
 
 document.getElementById('textOverlayButton').addEventListener('click', function() {
-  let textOverlayOptions = document.getElementById('textOverlayOptions');
-  let imageArea = document.querySelector('.image-area');
-
-  if (textOverlayOptions.style.display === 'flex') {
-   
-    imageArea.style.marginBottom = '250px';
-  } else 
-  {
-    imageArea.style.marginBottom = '0px';
-  }
+  let textOverlayOptions = document.querySelector('#textOverlayOptions');
+  if (textOverlayOptions.style.display === 'block') {
+      textOverlayOptions.style.display = 'none';
+      textOverlayButton.classList.remove('active');
+      canvas.style.bottom = '0vh'; 
+  } else {
+      textOverlayOptions.style.display = 'block';
+      textOverlayButton.classList.add('active');
+      canvas.style.bottom = '15vh'; 
+      textOverlayOptions.style.marginTop='8rem';
+  } 
+  // Close the toolbar when opening the text overlay options
+  document.querySelector('.toolbar').style.display = 'none';   
 });
- 
