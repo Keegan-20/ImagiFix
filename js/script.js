@@ -850,7 +850,7 @@ const toolbarButtons = document.querySelectorAll(".toolbarButtons");
 
 document.addEventListener('DOMContentLoaded', function () {
   let toolbarButton = document.getElementById('toolbarButton');
-
+  
   toolbarButton.addEventListener('click', function () {
     toolbarButton.classList.toggle('active');
   });
@@ -900,6 +900,7 @@ document.getElementById('textOverlayButton').addEventListener('click', function(
   let textOverlayOptions = document.querySelector('#textOverlayOptions');
   if (textOverlayOptions.style.display === 'block') {
       textOverlayOptions.style.display = 'none';
+      canvas.style.bottom = '0vh'; 
       textOverlayButton.classList.remove('active');
   } else {
       textOverlayOptions.style.display = 'block';
