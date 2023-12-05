@@ -13,7 +13,7 @@ const cropArea = document.querySelector("#cropArea");
 const tempCanvas = document.createElement('canvas');
 const tempContext = tempCanvas.getContext('2d');
 const errorMessage = document.getElementById("error-message");
-
+const imageArea = document.getElementsByClassName('image-area')[0];
 //range input user value
 const brightnessRangeValue = document.getElementById('brightnessValue');
 const saturationRangeValue = document.getElementById('saturationValue');
@@ -885,12 +885,12 @@ document.getElementById('toolbarButton').addEventListener('click', function() {
   let toolbar = document.querySelector('.toolbar');
   if (toolbar.style.display === 'block') {
       toolbar.style.display = 'none';
-      canvas.style.top = '0vh'; 
+      canvas.style.bottom = '0vh'; 
+
   } else {
       toolbar.style.display = 'block';
-      canvas.style.top = '8vh'; 
-      toolbar .style.marginTop='8rem';
-      
+      canvas.style.bottom = '-8vh'; 
+      toolbar.style.marginTop='3rem';
   } 
   // Close the text overlay options when opening the toolbar
   textOverlayOptions.style.display = 'none';   
@@ -901,12 +901,11 @@ document.getElementById('textOverlayButton').addEventListener('click', function(
   if (textOverlayOptions.style.display === 'block') {
       textOverlayOptions.style.display = 'none';
       textOverlayButton.classList.remove('active');
-      canvas.style.bottom = '0vh'; 
   } else {
       textOverlayOptions.style.display = 'block';
       textOverlayButton.classList.add('active');
       canvas.style.bottom = '15vh'; 
-      textOverlayOptions.style.marginTop='8rem';
+      textOverlayOptions.style.marginTop='0rem';
   } 
   // Close the toolbar when opening the text overlay options
   document.querySelector('.toolbar').style.display = 'none';   
