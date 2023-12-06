@@ -13,6 +13,7 @@ const cropArea = document.querySelector("#cropArea");
 const tempCanvas = document.createElement('canvas');
 const tempContext = tempCanvas.getContext('2d');
 const errorMessage = document.getElementById("error-message");
+let toolbarButton = document.getElementById('toolbarButton');
 const imageArea = document.getElementsByClassName('image-area')[0];
 //range input user value
 const brightnessRangeValue = document.getElementById('brightnessValue');
@@ -341,6 +342,12 @@ const flipVerticalButton = document.getElementById("flipVertical");
 flipVerticalButton.addEventListener("click", () => {
   flipVertical = !flipVertical;
   renderImage();
+});
+
+toolbarButton.addEventListener("click",()=> {
+  if (!image) {
+    return displayErrorMessage();
+  }
 });
 
 // Add Text Feature
@@ -855,9 +862,7 @@ resetButton.addEventListener('click', resetAllFilters);
 const toolbar = document.querySelector(".toolbar");
 const toolbarButtons = document.querySelectorAll(".toolbarButtons");
 
-document.addEventListener('DOMContentLoaded', function () {
-  let toolbarButton = document.getElementById('toolbarButton');
-  
+document.addEventListener('DOMContentLoaded', function () {  
   toolbarButton.addEventListener('click', function () {
     toolbarButton.classList.toggle('active');
   });

@@ -118,6 +118,7 @@ input#imageFileInput {
   /* border:2px solid red; */
   font-size: 26px;
   font-weight: 600;
+  z-index:99;
   margin-top: 3rem;
 }
 
@@ -397,7 +398,11 @@ input[type="range"]:focus::-moz-range-thumb {
     padding: 10px; 
     margin-top:0;
   }
-
+  
+  #error-message{
+    font-size:1rem;
+    text-align:center;
+  }
   .toolbar-item {
     width: 100%; 
   }
