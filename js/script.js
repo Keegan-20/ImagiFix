@@ -24,7 +24,7 @@ const inversionRangeValue = document.getElementById('inversionValue');
 const opacityRangeValue = document.getElementById('opacityValue');
 let outputTags = document.getElementsByTagName("output");
 let inputTags = document.getElementsByTagName("input");
-
+let isResponsiveMode = true;
 let settings = {}; // this empty object  will store all the user inputs for brightness,blur ,saturation etc.
 let image = null; //will store the currently selected image by default when page load  the user has not selected any image so its deafult value is  Null
 let prevSettings = {};
@@ -858,7 +858,6 @@ const resetButton = document.getElementById('resetButton');
 resetButton.addEventListener('click', resetAllFilters);
 
 //to Toggle the toolbar
-
 const toolbar = document.querySelector(".toolbar");
 const toolbarButtons = document.querySelectorAll(".toolbarButtons");
 
@@ -871,9 +870,17 @@ document.addEventListener('DOMContentLoaded', function () {
     // Add click event listener to each toolbar button
     toolbarButtons.forEach(function (button) {
       button.addEventListener("click", function () {
+        if(isResponsiveMode){
         // Hide the toolbar
         toolbar.style.display = "none";
         textOverlayOptions.style.display = 'none';
+        console.log("Responsive mode - Hiding toolbar");
+        }
+    else{
+      console.log("Desktop mode - Keeping toolbar open");
+      toolbar.style.display="block";
+    }
+
       });
     });
 
