@@ -352,6 +352,9 @@ const addTextButton = document.getElementById("addTextButton");
 
 // Toggle the add text icon
 textOverlayButton.addEventListener("click", () => {
+  if (!image) {
+    return displayErrorMessage();
+  }
   textOverlayButton.classList.toggle("active");
 });
 
@@ -384,6 +387,9 @@ function drawTextOverlay(content, color, size, x, y) {
 }
 
 addTextButton.addEventListener("click", () => {
+  if (!image) {
+    return displayErrorMessage();
+  }
   const textContent = document.getElementById("textContent").value;
   const textColor = document.getElementById("textColor").value;
   const textSize = parseInt(textSizeInput.value);
@@ -441,8 +447,6 @@ function handleMouseMove(event) {
     drawCrosshair(startX, startY, endX, endY);
   }
 }
-
-
 
 // Function to handle mouse up event
 function handleMouseUp() {
@@ -570,8 +574,8 @@ const imageEndY = flipVertical ? (image.height - (cropEndY - yOffset) * yScale) 
    tempCanvas.height = croppedHeight;
  
    // Apply transformations and filters to the temporary canvas
-   tempContext.save();
-   tempContext.translate(tempCanvas.width / 2, tempCanvas.height / 2);
+  tempContext.save();
+  tempContext.translate(tempCanvas.width / 2, tempCanvas.height / 2);
   tempContext.rotate((rotationAngle * Math.PI) / 180);
   tempContext.filter = generateFilter();
    // Draw the cropped portion of the image onto the temporary canvas
@@ -596,6 +600,9 @@ const imageEndY = flipVertical ? (image.height - (cropEndY - yOffset) * yScale) 
 
 // Event listener for crop button click
 cropButton.addEventListener('click', function () {
+  if (!image) {
+    return displayErrorMessage();
+  }
   if (isCropMode) {
     // Perform the cropping operation using the stored coordinates
     cropImage(cropStartX, cropStartY, cropEndX, cropEndY);
