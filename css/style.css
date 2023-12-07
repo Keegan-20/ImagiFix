@@ -104,6 +104,7 @@ input#imageFileInput {
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-top:2rem;
   padding: 2rem 0;
   background-color: wheat;
 }
@@ -264,7 +265,7 @@ input#imageFileInput {
   content: "Undo";
   position: absolute;
   top: 42px;
-  left: 35%;
+  left: 31%;
   transform: translateX(-50%);
   background-color: #333;
   color: #fff;
@@ -277,7 +278,7 @@ input#imageFileInput {
   content: "Redo";
   position: absolute;
   top: 42px;
-  left: 38%;
+  left: 36%;
   transform: translateX(-50%);
   background-color: #333;
   color: #fff;
@@ -398,7 +399,7 @@ input[type="range"]:focus::-moz-range-thumb {
     padding: 10px; 
     margin-top:0;
   }
-  
+
   #error-message{
     font-size:1rem;
     text-align:center;

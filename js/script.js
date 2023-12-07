@@ -24,7 +24,7 @@ const inversionRangeValue = document.getElementById('inversionValue');
 const opacityRangeValue = document.getElementById('opacityValue');
 let outputTags = document.getElementsByTagName("output");
 let inputTags = document.getElementsByTagName("input");
-let isResponsiveMode = true;
+let isResponsiveMode;
 let settings = {}; // this empty object  will store all the user inputs for brightness,blur ,saturation etc.
 let image = null; //will store the currently selected image by default when page load  the user has not selected any image so its deafult value is  Null
 let prevSettings = {};
@@ -861,7 +861,17 @@ resetButton.addEventListener('click', resetAllFilters);
 const toolbar = document.querySelector(".toolbar");
 const toolbarButtons = document.querySelectorAll(".toolbarButtons");
 
+// Function to check if the window is in responsive mode
+function checkResponsiveMode() {
+  // Update isResponsiveMode based on window width(Responsive)
+  isResponsiveMode = window.innerWidth <= 768; 
+}
+
+// Call checkResponsiveMode when the window is resized
+window.addEventListener('resize', checkResponsiveMode);
+
 document.addEventListener('DOMContentLoaded', function () {  
+  checkResponsiveMode();
   toolbarButton.addEventListener('click', function () {
     toolbarButton.classList.toggle('active');
   });
@@ -879,6 +889,7 @@ document.addEventListener('DOMContentLoaded', function () {
     else{
       console.log("Desktop mode - Keeping toolbar open");
       toolbar.style.display="block";
+      textOverlayOptions.style.display = "block";
     }
 
       });
@@ -928,5 +939,7 @@ document.getElementById('textOverlayButton').addEventListener('click', function(
       textOverlayOptions.style.marginTop='0rem';
   } 
   // Close the toolbar when opening the text overlay options
+  if(isResponsiveMode){
   document.querySelector('.toolbar').style.display = 'none';   
+  }
 });
