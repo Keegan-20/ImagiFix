@@ -367,6 +367,7 @@ textOverlayButton.addEventListener("click", () => {
 
 closeButton.addEventListener("click", () => {
   textOverlayButton.classList.remove("active");
+  textOverlayOptions.style.display = 'none';
 })
 // Update text size value
 textSizeInput.addEventListener("input", () => {
@@ -901,8 +902,6 @@ textOverlayButton.addEventListener('click', (event) => {
   textOverlayOptions.style.display = (textOverlayOptions.style.display === 'none' || textOverlayOptions.style.display === '') ? 'flex' : 'none';
   event.stopPropagation(); // Stop the click event from propagating to the document
 });
-
-
 // Add click event listener to close the text overlay options when clicking outside of it
 document.addEventListener('click', (event) => {
   if (!event.target.closest('.toolbar') && !event.target.closest('#textOverlay')) {
