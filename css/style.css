@@ -156,8 +156,8 @@ input#imageFileInput {
   z-index: 1;
 }
 
-.text-overlay-options.active{
-  display:block !important;
+.text-overlay-options:not(.active){
+  display:none !important;
 }
 
 #textOverlayButton {
@@ -534,7 +534,16 @@ input[type="range"]:focus::-moz-range-thumb {
     float: right;
     margin-top: 1rem;
   }
-
+  
+  #undoButton:hover::before {
+  top:47px;
+  left:96%;
+  }
+  
+  #redoButton:hover::before {
+  top:47px;
+  left:89%;
+  }
   #mobile-title {
     font-family: "Times New Roman", Times, serif;
     display: inline-block;
@@ -575,7 +584,17 @@ input[type="range"]:focus::-moz-range-thumb {
   #mobile-title {
     margin-left: 5.5rem;
   }
-  
+  #undoButton:hover::before {
+    top:52px;
+    left:93%;
+    font-size:0.8rem
+   }
+    
+    #redoButton:hover::before {
+      top:52px;
+      left:84%;
+      font-size:0.8rem
+    }
 }
 
 @media (max-width: 450px) {
@@ -588,6 +607,14 @@ input[type="range"]:focus::-moz-range-thumb {
   #undoButton {
     margin-top: 0.6rem;
   }
+  #undoButton:hover::before {
+    top:44px;
+
+   }
+    #redoButton:hover::before {
+      top:44px;
+      left:80%;
+    }
 }
 @media (max-width: 375px)
 {
@@ -595,6 +622,12 @@ input[type="range"]:focus::-moz-range-thumb {
     font-size: 1.2rem;
     margin-left: 2rem;
  }
+ #undoButton:hover::before {
+  left:92%;
+ }
+  #redoButton:hover::before {
+    left:77%;
+  }
 }
 
 @media(max-width:345px){
@@ -620,6 +653,13 @@ box-icon {
   margin-top:0.6rem;
 }
 
+#undoButton:hover::before { 
+left:94%;
+}
+
+#redoButton:hover::before{
+ left: 80%;
+}
 
   button#saveButton {
     width: 23px;

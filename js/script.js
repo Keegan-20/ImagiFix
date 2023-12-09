@@ -362,13 +362,8 @@ textOverlayButton.addEventListener("click", () => {
   if (!image) {
     return displayErrorMessage();
   }
-  textOverlayButton.classList.toggle("active");
 });
 
-closeButton.addEventListener("click", () => {
-  textOverlayButton.classList.remove("active");
-  textOverlayOptions.style.display = 'none';
-})
 // Update text size value
 textSizeInput.addEventListener("input", () => {
   textSizeValue.textContent = textSizeInput.value;
@@ -898,17 +893,23 @@ document.addEventListener('DOMContentLoaded', function () {
 
 // Event listener to open/close the text overlay options when clicking the textOverlayButton
 textOverlayButton.addEventListener('click', (event) => {
-  // Toggle the class to show/hide the text overlay options
   textOverlayOptions.classList.toggle('active');
   event.stopPropagation(); // Stop the click event from propagating to the document
 });
 
-// Add click event listener to close the text overlay options when clicking outside of it
+// Add click event listener to close the text overlay options  & toolbar when clicking outside of it
 document.addEventListener('click', (event) => {
   if (!event.target.closest('.toolbar') && !event.target.closest('#textOverlay')) {
     textOverlayOptions.classList.remove('active');
   }
 });
+
+// Event listener for closeButton
+closeButton.addEventListener("click", () => {
+  textOverlayOptions.classList.remove("active");
+  textOverlayOptions.style.display = 'none';
+});
+
 //Responsive mode
 document.getElementById('toolbarButton').addEventListener('click', function() {
   let toolbar = document.querySelector('.toolbar');
@@ -930,11 +931,13 @@ document.getElementById('textOverlayButton').addEventListener('click', function(
   if (textOverlayOptions.style.display === 'block') {
       textOverlayOptions.style.display = 'none';
       canvas.style.bottom = '0vh'; 
-  } else {
-      textOverlayOptions.style.display = 'none';
+  }
+  else{
+      textOverlayOptions.style.display = 'block';
       canvas.style.bottom = '15vh'; 
       textOverlayOptions.style.marginTop='0rem';
   } 
+
   // Close the toolbar when opening the text overlay options
   if(isResponsiveMode){
   document.querySelector('.toolbar').style.display = 'none';   
