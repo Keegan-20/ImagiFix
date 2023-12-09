@@ -155,10 +155,10 @@ input#imageFileInput {
   border-radius: 8px;
   z-index: 1;
 }
-.text-overlay-options.active{
-  display:block;
-}
 
+.text-overlay-options.active{
+  display:block !important;
+}
 
 #textOverlayButton {
   display: block;

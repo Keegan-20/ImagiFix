@@ -898,17 +898,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
 // Event listener to open/close the text overlay options when clicking the textOverlayButton
 textOverlayButton.addEventListener('click', (event) => {
-  // Toggle the display of the text overlay options
-  textOverlayOptions.style.display = (textOverlayOptions.style.display === 'none' || textOverlayOptions.style.display === '') ? 'flex' : 'none';
+  // Toggle the class to show/hide the text overlay options
+  textOverlayOptions.classList.toggle('active');
   event.stopPropagation(); // Stop the click event from propagating to the document
 });
+
 // Add click event listener to close the text overlay options when clicking outside of it
 document.addEventListener('click', (event) => {
   if (!event.target.closest('.toolbar') && !event.target.closest('#textOverlay')) {
-    textOverlayOptions.style.display = 'none';
+    textOverlayOptions.classList.remove('active');
   }
 });
-
 //Responsive mode
 document.getElementById('toolbarButton').addEventListener('click', function() {
   let toolbar = document.querySelector('.toolbar');
@@ -930,10 +930,8 @@ document.getElementById('textOverlayButton').addEventListener('click', function(
   if (textOverlayOptions.style.display === 'block') {
       textOverlayOptions.style.display = 'none';
       canvas.style.bottom = '0vh'; 
-      textOverlayButton.classList.remove('active');
   } else {
-      textOverlayOptions.style.display = 'block';
-      textOverlayButton.classList.add('active');
+      textOverlayOptions.style.display = 'none';
       canvas.style.bottom = '15vh'; 
       textOverlayOptions.style.marginTop='0rem';
   } 
