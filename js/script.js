@@ -928,6 +928,7 @@ document.getElementById('toolbarButton').addEventListener('click', function() {
 
 document.getElementById('textOverlayButton').addEventListener('click', function() {
   let textOverlayOptions = document.querySelector('#textOverlayOptions');
+  if(isResponsiveMode){
   if (textOverlayOptions.style.display === 'block') {
       textOverlayOptions.style.display = 'none';
       canvas.style.bottom = '0vh'; 
@@ -937,7 +938,7 @@ document.getElementById('textOverlayButton').addEventListener('click', function(
       canvas.style.bottom = '15vh'; 
       textOverlayOptions.style.marginTop='0rem';
   } 
-
+  }
   // Close the toolbar when opening the text overlay options
   if(isResponsiveMode){
   document.querySelector('.toolbar').style.display = 'none';   

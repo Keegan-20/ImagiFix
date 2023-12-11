@@ -156,9 +156,7 @@ input#imageFileInput {
   z-index: 1;
 }
 
-.text-overlay-options:not(.active){
-  display:none !important;
-}
+
 
 #textOverlayButton {
   display: block;
@@ -460,7 +458,10 @@ input[type="range"]:focus::-moz-range-thumb {
     left: 0;
     width: 100%;
   }
-
+  .text-overlay-options:not(.active){
+    display:none !important;
+  }
+  
   .text-overlay-options {
     top: 50px;
     left: 0;
