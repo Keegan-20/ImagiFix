@@ -66,28 +66,39 @@ function resetSettings() {
   // Updating the canvasContext.filter with the reset values
   canvasContext.filter = generateFilter();
 }
-
 // displaying range input values according to user input
 brightnessInput.addEventListener('input', function () {
-  brightnessRangeValue.textContent = brightnessInput.value;
+  window.requestAnimationFrame(() => {
+    brightnessRangeValue.textContent = brightnessInput.value;
+  });
 });
 saturationInput.addEventListener('input', function () {
-  saturationRangeValue.textContent = saturationInput.value;
+  window.requestAnimationFrame(() => {
+    saturationRangeValue.textContent = saturationInput.value;
+  });
 });
 contrastInput.addEventListener('input', function () {
-  contrastRangeValue.textContent = contrastInput.value;
+  window.requestAnimationFrame(() => {
+    contrastRangeValue.textContent = contrastInput.value;
+  });
 });
 blurInput.addEventListener('input', function () {
-  blurRangeValue.textContent = blurInput.value;
+  window.requestAnimationFrame(() => {
+    blurRangeValue.textContent = blurInput.value;
+  });
 });
 inversionInput.addEventListener('input', function () {
-  inversionRangeValue.textContent = inversionInput.value;
+  window.requestAnimationFrame(() => {
+    inversionRangeValue.textContent = inversionInput.value;
+  });
 });
 
 //opacity filter to keep value between  0 to 1
 opacityInput.addEventListener("input", function () {
-  let opacity = opacityInput.value / 100;
-  opacityRangeValue.textContent = opacity;
+  window.requestAnimationFrame(() => {
+    let opacity = opacityInput.value / 100;
+    opacityRangeValue.textContent = opacity;
+  });
 });
 
 
