@@ -793,8 +793,9 @@ function saveImage() {
   if (flipVertical) {
     saveContext.scale(1, -1);
   }
-  saveContext.filter = generateFilter();
-
+  // Copy the filter from the original canvas context
+  saveContext.filter = canvasContext.filter;
+  
   saveContext.drawImage(
     image,
     -renderWidth / 2,
@@ -892,20 +893,18 @@ document.addEventListener('DOMContentLoaded', function () {
         toolbar.style.display = "none";
         textOverlayOptions.style.display = 'none';
         console.log("Responsive mode - Hiding toolbar");
-        }
+        }      
     else{
       console.log("Desktop mode - Keeping toolbar open");
       toolbar.style.display="block";
-      textOverlayOptions.style.display = "block";
     }
-
       });
     });
 
 // Event listener to open/close the text overlay options when clicking the textOverlayButton
 textOverlayButton.addEventListener('click', (event) => {
   textOverlayOptions.classList.toggle('active');
-  event.stopPropagation(); // Stop the click event from propagating to the document
+
 });
 
 // Add click event listener to close the text overlay options  & toolbar when clicking outside of it
@@ -939,7 +938,6 @@ document.getElementById('toolbarButton').addEventListener('click', function() {
 
 document.getElementById('textOverlayButton').addEventListener('click', function() {
   let textOverlayOptions = document.querySelector('#textOverlayOptions');
-  if(isResponsiveMode){
   if (textOverlayOptions.style.display === 'block') {
       textOverlayOptions.style.display = 'none';
       canvas.style.bottom = '0vh'; 
@@ -949,7 +947,7 @@ document.getElementById('textOverlayButton').addEventListener('click', function(
       canvas.style.bottom = '15vh'; 
       textOverlayOptions.style.marginTop='0rem';
   } 
-  }
+  
   // Close the toolbar when opening the text overlay options
   if(isResponsiveMode){
   document.querySelector('.toolbar').style.display = 'none';   
