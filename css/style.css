@@ -1,4 +1,10 @@
 @import url("https://fonts.googleapis.com/css2?family=Cabin:ital,wght@0,600;1,600&display=swap");
+
+:root{
+  --main-background-color:#fdba3b;
+  --background-hover-color:#ff7000;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -49,7 +55,7 @@ output {
 }
 
 .custom-file-upload {
-  background-color: #fdba3b;
+  background-color:var(--main-background-color);
   color: #ffffff;
   padding: 7px;
   cursor: pointer;
@@ -65,7 +71,7 @@ output {
 }
 
 input#imageFileInput {
-  background-color: #fdba3b;
+  background-color: var(--main-background-color);
   color: #ffff;
   padding: 0.6rem 0.8rem;
   border: 1px solid #ef9c01cc;
@@ -243,7 +249,7 @@ input#imageFileInput {
   padding: 0.8rem 0.2rem;
   background-color: #352f44;
   border-bottom: 2px solid #272829;
-  color: #fdba3b;
+  color: var(--main-background-color);
   width: 100%;
 }
 
@@ -260,7 +266,7 @@ input#imageFileInput {
 }
 #undoButton:hover,
 #redoButton:hover {
-  background-color: #fdba3b;
+  background-color: var(--main-background-color);
   color: white;
 }
 #undoButton:hover::before {
@@ -293,7 +299,7 @@ input#imageFileInput {
   position: absolute;
   top: 10px;
   right: 7px;
-  background-color: #fdba3b;
+  background-color: var(--main-background-color);
   color: #ffff;
   padding: 0.6rem 0.8rem;
   border: 1px solid #ef9c01cc;
@@ -304,7 +310,7 @@ input#imageFileInput {
   display: none;
 }
 #resetButton {
-  background-color: #fdba3b;
+  background-color:var(--main-background-color);
   color: #ffffff;
   text-shadow:2px 3px 23px #ffff;
   padding: 8px;
@@ -320,7 +326,7 @@ input#imageFileInput {
 #saveButton:hover,
 #resetButton:hover,
 .custom-file-upload:hover {
-  background-color: #ff7000;
+  background-color:var(--background-hover-color);
   transition: 0.2 all ease-in;
 }
 /* range input field customiozation */
@@ -341,7 +347,7 @@ input[type="range"]::-webkit-slider-thumb {
   appearance: none;
   width: 12px;
   height: 15px;
-  background-color: #fdba3b;
+  background-color: var(--main-background-color);
   border-radius: 50%;
   cursor: pointer;
   transition: 0.2 ease-in-out;
@@ -350,7 +356,7 @@ input[type="range"]::-webkit-slider-thumb {
 input[type="range"]::-moz-range-thumb {
   width: 12px;
   height: 15px;
-  background-color: #fdba3b;
+  background-color: var(--main-background-color);
   border-radius: 50%;
   cursor: pointer;
   transition: 0.2s ease-in-out;
@@ -430,7 +436,7 @@ input[type="range"]:focus::-moz-range-thumb {
   }
   
   .toolbar::-webkit-scrollbar-thumb {
-    background-color: #fdba3b; 
+    background-color: var(--background-color); 
     border-radius: 6px;
   }
 
