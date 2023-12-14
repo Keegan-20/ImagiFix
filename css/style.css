@@ -212,9 +212,17 @@ input#imageFileInput {
 }
 
 #addTextButton {
+  background:var(--main-background-color);
+  color:#ffff;
+  border:none;
+  outline:none;
+  box-shadow:2px 3px 5px grey;
+  border-radius: 5px;
   display: block;
   text-align: center;
   width: 30%;
+  font-weight:700;
+  padding:0.3rem;
   margin: 0.4rem auto;
 }
 
@@ -325,7 +333,7 @@ input#imageFileInput {
 }
 #saveButton:hover,
 #resetButton:hover,
-.custom-file-upload:hover {
+.custom-file-upload:hover,#addTextButton:hover {
   background-color:var(--background-hover-color);
   transition: 0.2 all ease-in;
 }
