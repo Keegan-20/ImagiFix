@@ -106,6 +106,7 @@ opacityInput.addEventListener("input", function () {
 const imgPlaceholder = new Image();
 imgPlaceholder.onload = function () {
   canvasContext.drawImage(imgPlaceholder, 0, 0, canvas.width, canvas.height);
+  saveCanvasState();
 };
 imgPlaceholder.src = "./img/image-placeholder.svg";
 
@@ -651,7 +652,6 @@ function saveCanvasState() {
     canvas.width,
     canvas.height
   );
-
   const currentState = {
     imageId: imageId,
     imageData: imageData,
@@ -676,7 +676,6 @@ function saveCanvasState() {
   };
   undoStack.push(currentState);
 }
-
 
 // Undo the last canvas state
 function undo() {
@@ -704,10 +703,16 @@ function restoreCanvasState() {
       // Clear the canvas
       canvasContext.clearRect(0, 0, canvas.width, canvas.height);
 
+      // Create a new image from the image data
+      const img = new Image();
+      img.onload = function() {
+        // Draw the image onto the canvas
+        canvasContext.drawImage(img, 0, 0, img.width, img.height);
+      }
+      img.src = lastState.imageData;
+
       // Restore the rotation angle
       rotationAngle = lastState.rotationAngle;
-      
-
       canvasContext.putImageData(lastState.imageData, 0, 0);
       Object.assign(settings, lastState.settings);
 

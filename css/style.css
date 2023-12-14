@@ -273,7 +273,7 @@ input#imageFileInput {
   content: "Undo";
   position: absolute;
   top: 42px;
-  left: 31%;
+  left: 35%;
   transform: translateX(-50%);
   background-color: #333;
   color: #fff;
@@ -286,7 +286,7 @@ input#imageFileInput {
   content: "Redo";
   position: absolute;
   top: 42px;
-  left: 36%;
+  left: 39%;
   transform: translateX(-50%);
   background-color: #333;
   color: #fff;
