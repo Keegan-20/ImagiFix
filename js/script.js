@@ -301,7 +301,7 @@ function rotateImage(angle) {
     return displayErrorMessage();
   }
   rotationAngle += angle;
-  
+
   tempCanvas.width = Math.max(image.width, image.height);
   tempCanvas.height = Math.max(image.width, image.height);
 
@@ -311,12 +311,12 @@ function rotateImage(angle) {
   }
   else if (rotationAngle < 0) {
     rotationAngle = (rotationAngle % 360) + 360;
-  }  
+  }
 
   tempContext.save();
   tempContext.translate(tempCanvas.width / 2, tempCanvas.height / 2); //rendering context to the center of the canvas
   tempContext.rotate((rotationAngle * Math.PI) / 180); // The angle is converted from degrees to radians
- 
+
   tempContext.drawImage(
     image,
     -image.width / 2,
@@ -341,7 +341,7 @@ function rotateImage(angle) {
 rotateLeftButton.addEventListener('click', () => rotateImage(-90));
 rotateRightButton.addEventListener('click', () => rotateImage(90));
 
-     //Flip Image feature
+//Flip Image feature
 const flipHorizontalButton = document.getElementById("flipHorizontal");
 flipHorizontalButton.addEventListener("click", () => {
   flipHorizontal = !flipHorizontal;
@@ -355,7 +355,7 @@ flipVerticalButton.addEventListener("click", () => {
   renderImage();
 });
 
-toolbarButton.addEventListener("click",()=> {
+toolbarButton.addEventListener("click", () => {
   if (!image) {
     return displayErrorMessage();
   }
@@ -408,38 +408,38 @@ addTextButton.addEventListener("click", () => {
   const textColor = document.getElementById("textColor").value;
   const textSize = parseInt(textSizeInput.value);
 
- // Selecting coordinates depending on user click or touch
- const handleInteraction = (event) => {
-  const rect = canvas.getBoundingClientRect();
-  let x, y;
+  // Selecting coordinates depending on user click or touch
+  const handleInteraction = (event) => {
+    const rect = canvas.getBoundingClientRect();
+    let x, y;
 
-  if (event.type === 'click') {
-    // For click events, use the event coordinates directly
-    x = event.clientX - rect.left;
-    y = event.clientY - rect.top;
-  } else if (event.type === 'touchstart') {
-    // For touch events, use the getTouchPos function
-    const touchPos = getTouchPos(canvas, event);
-    x = touchPos.x;
-    y = touchPos.y;
-  }
+    if (event.type === 'click') {
+      // For click events, use the event coordinates directly
+      x = event.clientX - rect.left;
+      y = event.clientY - rect.top;
+    } else if (event.type === 'touchstart') {
+      // For touch events, use the getTouchPos function
+      const touchPos = getTouchPos(canvas, event);
+      x = touchPos.x;
+      y = touchPos.y;
+    }
 
-  drawTextOverlay(textContent, textColor, textSize, x, y);
-};
+    drawTextOverlay(textContent, textColor, textSize, x, y);
+  };
 
-// Add click event listener
-canvas.addEventListener('click', handleInteraction);
+  // Add click event listener
+  canvas.addEventListener('click', handleInteraction);
 
-// Add touch event listener
-canvas.addEventListener('touchstart', (event) => {
-  event.preventDefault(); // Prevent default touch behavior (e.g., scrolling)
-  handleInteraction(event);
-}, { passive: false });
+  // Add touch event listener
+  canvas.addEventListener('touchstart', (event) => {
+    event.preventDefault(); // Prevent default touch behavior (e.g., scrolling)
+    handleInteraction(event);
+  }, { passive: false });
 
-// Remove the click event listener after it's done
-canvas.addEventListener('click', () => {
-  canvas.removeEventListener('click', handleInteraction);
-}, { once: true });
+  // Remove the click event listener after it's done
+  canvas.addEventListener('click', () => {
+    canvas.removeEventListener('click', handleInteraction);
+  }, { once: true });
 });
 
 //Crop Image Feature
@@ -479,8 +479,8 @@ function handleMouseUp() {
 function getTouchPos(canvasDom, touchEvent) {
   var rect = canvasDom.getBoundingClientRect();
   // Calculate the ratio between the actual width of the canvas (in pixels) and the displayed width of the canvas (in CSS pixels).
-//   canvasDom.width : gives you the actual width of the canvas in pixels. This is the number of pixels that the canvas consists of.
-// rect.width: gives you the displayed width of the canvas in CSS pixels. This is the size of the canvas as it appears on the screen.
+  //   canvasDom.width : gives you the actual width of the canvas in pixels. This is the number of pixels that the canvas consists of.
+  // rect.width: gives you the displayed width of the canvas in CSS pixels. This is the size of the canvas as it appears on the screen.
   var widthRatio = canvasDom.width / rect.width;
   var heightRatio = canvasDom.height / rect.height;
   return {
@@ -564,7 +564,7 @@ function cropImage() {
   if (image.height > image.width) {  //handling image aspect ratio
     xScale = image.height / renderHeight;
     yScale = image.width / renderWidth;
-  } 
+  }
   else {
     xScale = image.width / renderWidth;
     yScale = image.height / renderHeight;
@@ -572,44 +572,44 @@ function cropImage() {
   const xOffset = offsetX;
   const yOffset = offsetY;
 
-// Convert canvas-relative coordinates to image-relative coordinates
-const imageStartX = flipHorizontal ? (image.width - (cropStartX - xOffset) * xScale) : (cropStartX - xOffset) * xScale;
-const imageStartY = flipVertical ? (image.height - (cropStartY - yOffset) * yScale) : (cropStartY - yOffset) * yScale;
-const imageEndX = flipHorizontal ? (image.width - (cropEndX - xOffset) * xScale) : (cropEndX - xOffset) * xScale;
-const imageEndY = flipVertical ? (image.height - (cropEndY - yOffset) * yScale) : (cropEndY - yOffset) * yScale;
+  // Convert canvas-relative coordinates to image-relative coordinates
+  const imageStartX = flipHorizontal ? (image.width - (cropStartX - xOffset) * xScale) : (cropStartX - xOffset) * xScale;
+  const imageStartY = flipVertical ? (image.height - (cropStartY - yOffset) * yScale) : (cropStartY - yOffset) * yScale;
+  const imageEndX = flipHorizontal ? (image.width - (cropEndX - xOffset) * xScale) : (cropEndX - xOffset) * xScale;
+  const imageEndY = flipVertical ? (image.height - (cropEndY - yOffset) * yScale) : (cropEndY - yOffset) * yScale;
 
   // Calculate cropped width and height
   const croppedWidth = imageEndX - imageStartX;
   const croppedHeight = imageEndY - imageStartY;
 
-//using the temporary canvas for cropping
-   tempCanvas.width = croppedWidth;
-   tempCanvas.height = croppedHeight;
- 
-   // Apply transformations and filters to the temporary canvas
+  //using the temporary canvas for cropping
+  tempCanvas.width = croppedWidth;
+  tempCanvas.height = croppedHeight;
+
+  // Apply transformations and filters to the temporary canvas
   tempContext.save();
   tempContext.translate(tempCanvas.width / 2, tempCanvas.height / 2);
   tempContext.rotate((rotationAngle * Math.PI) / 180);
   tempContext.filter = generateFilter();
-   // Draw the cropped portion of the image onto the temporary canvas
-   tempContext.drawImage(
-     image,
-     imageStartX, imageStartY, croppedWidth, croppedHeight,
-     -croppedWidth / 2, -croppedHeight / 2, croppedWidth, croppedHeight
-   );
-   tempContext.restore();
- 
-   // Convert the resulting image data to a data URL and create a new image
-   let croppedImage = new Image();
-   croppedImage.onload = function () {
-     resetSettings();
-     image = croppedImage; //Update the image variable with the cropped image
-     renderImage();
-   };
-   // Save the state after cropping
-    saveCanvasState();
-   croppedImage.src = tempCanvas.toDataURL();
- }
+  // Draw the cropped portion of the image onto the temporary canvas
+  tempContext.drawImage(
+    image,
+    imageStartX, imageStartY, croppedWidth, croppedHeight,
+    -croppedWidth / 2, -croppedHeight / 2, croppedWidth, croppedHeight
+  );
+  tempContext.restore();
+
+  // Convert the resulting image data to a data URL and create a new image
+  let croppedImage = new Image();
+  croppedImage.onload = function () {
+    resetSettings();
+    image = croppedImage; //Update the image variable with the cropped image
+    renderImage();
+  };
+  // Save the state after cropping
+  saveCanvasState();
+  croppedImage.src = tempCanvas.toDataURL();
+}
 
 // Event listener for crop button click
 cropButton.addEventListener('click', function () {
@@ -630,7 +630,7 @@ cropButton.addEventListener('click', function () {
   }
 });
 
- 
+
 // Add event listeners for mouse events
 canvas.addEventListener('mousedown', handleMouseDown);
 canvas.addEventListener('mousemove', handleMouseMove);
@@ -641,7 +641,7 @@ canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
 canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
 canvas.addEventListener('touchend', handleTouchEnd, { passive: false });
 
-       // undo and redo feature
+// undo and redo feature
 // Save the current canvas state for undo
 function saveCanvasState() {
   const imageData = canvasContext.getImageData(
@@ -653,7 +653,7 @@ function saveCanvasState() {
   const currentState = {
     imageId: imageId,
     imageData: imageData,
-    imageSrc: image.src, 
+    imageSrc: image.src,
     settings: { ...settings },
     rotationAngle: rotationAngle,
 
@@ -802,7 +802,7 @@ function saveImage() {
   }
   // Copy the filter from the original canvas context
   saveContext.filter = canvasContext.filter;
-  
+
   saveContext.drawImage(
     image,
     -renderWidth / 2,
@@ -879,34 +879,34 @@ const toolbarButtons = document.querySelectorAll(".toolbarButtons");
 // Function to check if the window is in responsive mode
 function checkResponsiveMode() {
   // Update isResponsiveMode based on window width(Responsive)
-  isResponsiveMode = window.innerWidth <= 768; 
+  isResponsiveMode = window.innerWidth <= 768;
 }
 
 // Call checkResponsiveMode when the window is resized
 window.addEventListener('resize', checkResponsiveMode);
 
-document.addEventListener('DOMContentLoaded', function () {  
+document.addEventListener('DOMContentLoaded', function () {
   checkResponsiveMode();
   toolbarButton.addEventListener('click', function () {
     toolbarButton.classList.toggle('active');
   });
 });
 
-    // Add click event listener to each toolbar button
-    toolbarButtons.forEach(function (button) {
-      button.addEventListener("click", function () {
-        if(isResponsiveMode){
-        // Hide the toolbar
-        toolbar.style.display = "none";
-        textOverlayOptions.style.display = 'none';
-        console.log("Responsive mode - Hiding toolbar");
-        }      
-    else{
-      console.log("Desktop mode - Keeping toolbar open");
-      toolbar.style.display="block";
+// Add click event listener to each toolbar button
+toolbarButtons.forEach(function (button) {
+  button.addEventListener("click", function () {
+    if (isResponsiveMode) {
+      // Hide the toolbar
+      toolbar.style.display = "none";
+      textOverlayOptions.style.display = 'none';
+      console.log("Responsive mode - Hiding toolbar");
     }
-      });
-    });
+    else {
+      console.log("Desktop mode - Keeping toolbar open");
+      toolbar.style.display = "block";
+    }
+  });
+});
 
 // Event listener to open/close the text overlay options when clicking the textOverlayButton
 textOverlayButton.addEventListener('click', (event) => {
@@ -928,35 +928,35 @@ closeButton.addEventListener("click", () => {
 });
 
 //Responsive mode
-document.getElementById('toolbarButton').addEventListener('click', function() {
+document.getElementById('toolbarButton').addEventListener('click', function () {
   let toolbar = document.querySelector('.toolbar');
   if (toolbar.style.display === 'block') {
-      toolbar.style.display = 'none';
-      canvas.style.bottom = '0vh'; 
-
-  } else {
-      toolbar.style.display = 'block';
-      canvas.style.bottom = '-8vh'; 
-      toolbar.style.marginTop='3rem';
-  } 
+    toolbar.style.display = 'none';
+    canvas.style.bottom = '0vh';
+  }
+ else {
+    toolbar.style.display = 'block';
+    canvas.style.bottom = '-8vh';
+    toolbar.style.marginTop = '3rem';
+  }
   // Close the text overlay options when opening the toolbar
-  textOverlayOptions.style.display = 'none';   
+  textOverlayOptions.style.display = 'none';
 });
 
-document.getElementById('textOverlayButton').addEventListener('click', function() {
+document.getElementById('textOverlayButton').addEventListener('click', function () {
   let textOverlayOptions = document.querySelector('#textOverlayOptions');
   if (textOverlayOptions.style.display === 'block') {
-      textOverlayOptions.style.display = 'none';
-      canvas.style.bottom = '0vh'; 
+    textOverlayOptions.style.display = 'none';
+    canvas.style.bottom = '0vh';
   }
-  else{
-      textOverlayOptions.style.display = 'block';
-      canvas.style.bottom = '15vh'; 
-      textOverlayOptions.style.marginTop='0rem';
-  } 
-  
+  else {
+    textOverlayOptions.style.display = 'block';
+    canvas.style.bottom = '15vh';
+    textOverlayOptions.style.marginTop = '0rem';
+  }
+
   // Close the toolbar when opening the text overlay options
-  if(isResponsiveMode){
-  document.querySelector('.toolbar').style.display = 'none';   
+  if (isResponsiveMode) {
+    document.querySelector('.toolbar').style.display = 'none';
   }
 });
