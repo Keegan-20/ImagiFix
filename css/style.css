@@ -216,6 +216,7 @@ input#imageFileInput {
   color:#ffff;
   border:none;
   outline:none;
+  cursor:pointer;
   box-shadow:2px 3px 5px grey;
   border-radius: 5px;
   display: block;

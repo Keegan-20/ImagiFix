@@ -106,7 +106,6 @@ opacityInput.addEventListener("input", function () {
 const imgPlaceholder = new Image();
 imgPlaceholder.onload = function () {
   canvasContext.drawImage(imgPlaceholder, 0, 0, canvas.width, canvas.height);
-  saveCanvasState();
 };
 imgPlaceholder.src = "./img/image-placeholder.svg";
 
@@ -562,7 +561,6 @@ function cropImage() {
   // Convert canvas-relative coordinates to image-relative coordinates for the end coordinates
   let xScale = image.width / renderWidth;
   let yScale = image.height / renderHeight;
-
   if (image.height > image.width) {  //handling image aspect ratio
     xScale = image.height / renderHeight;
     yScale = image.width / renderWidth;
@@ -655,6 +653,7 @@ function saveCanvasState() {
   const currentState = {
     imageId: imageId,
     imageData: imageData,
+    imageSrc: image.src, 
     settings: { ...settings },
     rotationAngle: rotationAngle,
 
@@ -705,15 +704,18 @@ function restoreCanvasState() {
 
       // Create a new image from the image data
       const img = new Image();
-      img.onload = function() {
-        // Draw the image onto the canvas
-        canvasContext.drawImage(img, 0, 0, img.width, img.height);
+      img.onload = function () {
+        const centerX = canvas.width / 2 - img.width / 2;
+        const centerY = canvas.height / 2 - img.height / 2;
+        // Draw the image onto the canvas at the center
+        canvasContext.drawImage(img, centerX, centerY, img.width, img.height);
+        // Update the image variable with the new image
+        image = img;
       }
-      img.src = lastState.imageData;
+      img.src = lastState.imageSrc;
 
       // Restore the rotation angle
       rotationAngle = lastState.rotationAngle;
-      canvasContext.putImageData(lastState.imageData, 0, 0);
       Object.assign(settings, lastState.settings);
 
       rotationAngle = lastState.rotationAngle;
