@@ -105,6 +105,10 @@ input#imageFileInput {
   box-shadow: 7px 8px 27px black;
 }
 
+.toolbarButtons:hover {
+  background-color:var(--main-background-color);
+}
+
 .image-area {
   flex-grow: 1;
   display: flex;
