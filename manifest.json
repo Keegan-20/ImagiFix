@@ -1,0 +1,24 @@
+{
+    "name":"ImagiFix - A Photo Editing Web App",
+    "short_name":"ImagiFix",
+    "start_url":".",
+    "background_color":"#fdba3b",
+  "theme_color": "wheat",
+  "display": "standalone",
+
+  "icons": [
+    {
+      "src": "./img/logo.jpeg",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+
+    {
+      "src": "./img/logo.jpeg",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ]
+}
