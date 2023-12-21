@@ -960,3 +960,16 @@ document.getElementById('textOverlayButton').addEventListener('click', function 
     document.querySelector('.toolbar').style.display = 'none';
   }
 });
+
+
+//Creating it as PWA
+if("serviceWorker" in navigator){
+navigator.serviceWorker.register("service worker.js").then(registration => {
+  console.log("SW Registered");
+  console.log(registration);
+}) .catch(error => {
+  console.log("SW Registration failed");
+  console.log(error);
+
+})
+}

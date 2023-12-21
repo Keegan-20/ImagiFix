@@ -17,8 +17,8 @@ self.addEventListener("install",e =>{
         e.respondeWith(
              caches.match(e.request)
              .then(response =>{
-                   return response  || fetch(e.request); // to check if data is availble in cache than respond from cache db storage otherwise go to fetch (make a network call to get the data)
+                   return response  || fetch(e.request); // to check if data is availble in cache than respond from cache db storage otherwise go to fetch (make a network call to get the data) "Cache-First" strategy
               })
         )
     //    console.log(`Intercepting fetch request for : ${e.request.url}`);
-    });
+    }); 

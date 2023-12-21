@@ -2,7 +2,7 @@
     "name":"ImagiFix - A Photo Editing Web App",
     "short_name":"ImagiFix",
     "start_url":".",
-    "background_color":"#fdba3b",
+    "background_color":"wheat",
   "theme_color": "wheat",
   "display": "standalone",
 
