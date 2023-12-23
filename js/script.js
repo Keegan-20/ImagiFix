@@ -970,6 +970,46 @@ navigator.serviceWorker.register("service worker.js").then(registration => {
 }) .catch(error => {
   console.log("SW Registration failed");
   console.log(error);
-
 })
 }
+
+let deferredPrompt;
+const installPopup = document.getElementById('install-popup');
+const installButton = document.getElementById('install-button');
+const dismissButton = document.getElementById('dismiss-button');
+
+window.addEventListener('beforeinstallprompt', (event) => {
+  // Prevent the default browser prompt from showing
+  event.preventDefault();
+  
+  // Store the event for later use
+  deferredPrompt = event;
+  
+  // Show the install popup
+  installPopup.style.display = 'flex';
+});
+
+installButton.addEventListener('click', () => {
+  // Prompt the user to install the PWA
+  deferredPrompt.prompt();
+  
+  // Wait for the user's response
+  deferredPrompt.userChoice.then((choiceResult) => {
+    if (choiceResult.outcome === 'accepted') {
+      console.log('User installed the PWA');
+    } else {
+      console.log('User dismissed the PWA installation');
+    }
+    
+    // Clear the deferredPrompt variable after the user has made a choice
+    deferredPrompt = null;
+    
+    // Hide the install popup
+    installPopup.style.display = 'none';
+  });
+});
+
+dismissButton.addEventListener('click', () => {
+  // Hide the install popup
+  installPopup.style.display = 'none';
+});
