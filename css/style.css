@@ -493,6 +493,14 @@ border-radius:30px;
     border-radius: 6px;
   }
 
+ p.popup-para{
+  display:none;
+ }
+ 
+ .popup-header{
+  font-size:12px;
+ }
+
   #title {
     display: none;
     font-size: 11px;
