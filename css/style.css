@@ -404,7 +404,47 @@ input[type="range"]:focus::-moz-range-thumb {
 #toolbarButton {
   display: none;
 }
+//PWA
+.install-popup {
+  width: 200px; 
+  height:200px;
+  background-color: red;
+  padding: 20px;
+  text-align: center;
+  display: none;
+}
 
+.install-popup-content {
+  background-color:#352f44;
+  border-radius:8px;
+  position: fixed;
+  color:#ffff;
+  top: 50%;
+  left: 60%;
+  transform: translate(-50%, -50%);
+  padding: 20px;
+  text-align: center;
+}
+
+.install-popup-content h3 {
+  margin-top: 0;
+}
+
+.install-popup-content p {
+  margin-bottom: 20px;
+}
+
+.install-popup-content button {
+  margin: 8px;
+}
+#install-button,#dismiss-button{
+background-color:var(--main-background-color);
+border:none;
+outline:none;
+padding:8px 12px;
+color:#ffff;
+border-radius:30px;
+}
 /* Media Queries */
 @media (max-width: 768px) {
   .editor {

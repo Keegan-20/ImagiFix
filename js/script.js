@@ -973,6 +973,7 @@ navigator.serviceWorker.register("service worker.js").then(registration => {
 })
 }
 
+//Custom Installation Popup
 let deferredPrompt;
 const installPopup = document.getElementById('install-popup');
 const installButton = document.getElementById('install-button');
