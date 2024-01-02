@@ -702,6 +702,11 @@ border-radius:30px;
   #redoButton:hover::before {
     left:77%;
   }
+
+  #install-popup-content{
+    width:75%;
+    left:52%;
+    }
 }
 
 @media(max-width:345px){
@@ -717,7 +722,6 @@ border-radius:30px;
 }
 
 #install-popup-content{
-width:75%;
 left:50%;
 }
 
