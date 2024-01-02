@@ -975,7 +975,7 @@ navigator.serviceWorker.register("service worker.js").then(registration => {
 
 //Custom Installation Popup
 let deferredPrompt;
-const installPopup = document.getElementById('install-popup');
+const installPopup = document.getElementById('install-popup-content');
 const installButton = document.getElementById('install-button');
 const dismissButton = document.getElementById('dismiss-button');
 
@@ -986,9 +986,14 @@ window.addEventListener('beforeinstallprompt', (event) => {
   // Store the event for later use
   deferredPrompt = event;
   
-  // Show the install popup
-  installPopup.style.display = 'flex';
+  // Delay the install popup by 5 seconds
+  setTimeout(() => {
+    installPopup.style.display = 'block';
+  console.log("fired");
+
+  },8000);
 });
+
 
 installButton.addEventListener('click', () => {
   // Prompt the user to install the PWA
