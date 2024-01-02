@@ -411,7 +411,6 @@ input[type="range"]:focus::-moz-range-thumb {
   height:200px;
   padding: 20px;
   text-align: center;
-  display: none;
 }
 
 #install-popup-content {
@@ -423,7 +422,7 @@ input[type="range"]:focus::-moz-range-thumb {
   left: 60%;
   transform: translate(-50%, -50%);
   padding: 20px;
-  text-align: center;
+  text-align:center;
   display:none;
 }
 
@@ -467,6 +466,11 @@ border-radius:30px;
     font-size:1rem;
     text-align:center;
   }
+
+  #install-popup-content{
+    width:60%;
+  }
+
   .toolbar-item {
     width: 100%; 
   }
@@ -712,6 +716,11 @@ border-radius:30px;
   height:2rem;
 }
 
+#install-popup-content{
+width:75%;
+left:50%;
+}
+
 box-icon {
  background: white;
   width: 1.3rem;
@@ -731,7 +740,7 @@ left:94%;
  left: 80%;
 }
 
-  button#saveButton {
+ button#saveButton {
     width: 23px;
     height: 23px;
 }

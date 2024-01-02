@@ -991,7 +991,7 @@ window.addEventListener('beforeinstallprompt', (event) => {
     installPopup.style.display = 'block';
   console.log("fired");
 
-  },8000);
+  },3000);
 });
 
 
