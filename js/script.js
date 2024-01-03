@@ -728,10 +728,10 @@ function restoreCanvasState() {
       }
       img.src = lastState.imageSrc;
 
-      // Restore the rotation angle
-      rotationAngle = lastState.rotationAngle;
       Object.assign(settings, lastState.settings);
-
+      // Apply the filters to the image
+      canvasContext.filter = generateFilter();
+      // Restore the rotation angle
       rotationAngle = lastState.rotationAngle;
 
       flipHorizontal = lastState.flipHorizontal;
