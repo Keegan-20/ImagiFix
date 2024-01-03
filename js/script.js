@@ -705,10 +705,24 @@ function restoreCanvasState() {
       // Create a new image from the image data
       const img = new Image();
       img.onload = function () {
-        const centerX = canvas.width / 2 - img.width / 2;
-        const centerY = canvas.height / 2 - img.height / 2;
+        // Calculate the aspect ratio of the image
+        const aspectRatio = img.width / img.height;
+
+        // Adjust the width and height of the image based on its aspect ratio
+        let newWidth = img.width;
+        let newHeight = img.height;
+        if (img.width > img.height) {
+          newWidth = canvas.width;
+          newHeight = newWidth / aspectRatio;
+        } else {
+          newHeight = canvas.height;
+          newWidth = newHeight * aspectRatio;
+        }
+
+        const centerX = canvas.width / 2 - newWidth / 2;
+        const centerY = canvas.height / 2 - newHeight / 2;
         // Draw the image onto the canvas at the center
-        canvasContext.drawImage(img, centerX, centerY, img.width, img.height);
+        canvasContext.drawImage(img, centerX, centerY, newWidth, newHeight);
         // Update the image variable with the new image
         image = img;
       }
@@ -934,7 +948,7 @@ document.getElementById('toolbarButton').addEventListener('click', function () {
     toolbar.style.display = 'none';
     canvas.style.bottom = '0vh';
   }
- else {
+  else {
     toolbar.style.display = 'block';
     canvas.style.bottom = '-8vh';
     toolbar.style.marginTop = '3rem';
@@ -963,14 +977,14 @@ document.getElementById('textOverlayButton').addEventListener('click', function 
 
 
 //Creating it as PWA
-if("serviceWorker" in navigator){
-navigator.serviceWorker.register("service worker.js").then(registration => {
-  console.log("SW Registered");
-  console.log(registration);
-}) .catch(error => {
-  console.log("SW Registration failed");
-  console.log(error);
-})
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("service worker.js").then(registration => {
+    console.log("SW Registered");
+    console.log(registration);
+  }).catch(error => {
+    console.log("SW Registration failed");
+    console.log(error);
+  })
 }
 
 //Custom Installation Popup
@@ -982,23 +996,23 @@ const dismissButton = document.getElementById('dismiss-button');
 window.addEventListener('beforeinstallprompt', (event) => {
   // Prevent the default browser prompt from showing
   event.preventDefault();
-  
+
   // Store the event for later use
   deferredPrompt = event;
-  
+
   // Delay the install popup by 5 seconds
   setTimeout(() => {
     installPopup.style.display = 'block';
-  console.log("fired");
+    console.log("fired");
 
-  },3000);
+  }, 3000);
 });
 
 
 installButton.addEventListener('click', () => {
   // Prompt the user to install the PWA
   deferredPrompt.prompt();
-  
+
   // Wait for the user's response
   deferredPrompt.userChoice.then((choiceResult) => {
     if (choiceResult.outcome === 'accepted') {
@@ -1006,10 +1020,10 @@ installButton.addEventListener('click', () => {
     } else {
       console.log('User dismissed the PWA installation');
     }
-    
+
     // Clear the deferredPrompt variable after the user has made a choice
     deferredPrompt = null;
-    
+
     // Hide the install popup
     installPopup.style.display = 'none';
   });
