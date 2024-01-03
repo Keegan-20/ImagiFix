@@ -713,7 +713,7 @@ border-radius:30px;
 
   #mobile-title {  
     font-size: 1rem;
-    margin-left: 0.8rem;
+    margin-left: 1.8rem;
 }
 
 .toolbarButtons, .slider {
@@ -729,6 +729,10 @@ box-icon {
  background: white;
   width: 1.3rem;
   height: 1.3rem;
+}
+
+#redoButton{
+  margin-right: -0.5rem;
 }
 
 #undoButton {
