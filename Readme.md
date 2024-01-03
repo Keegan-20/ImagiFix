@@ -1,6 +1,6 @@
 # ImagiFix--Photo Editing Web App
 
-![imagiFix Logo](img/logo-192x192.png)
+![imagiFix Logo](img/logo.jpeg)
 
 ImagiFix is a robust photo editing web application built using HTML,CSS,Canvas API, and Vanilla JavaScript.The application is designed to work offline as a Progressive Web App (PWA), enhancing its usability and accessibility.
 
