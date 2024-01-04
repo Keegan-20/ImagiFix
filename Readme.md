@@ -53,6 +53,7 @@ Here are some screenshots of the application in action:
 <div align="center">
   <img   src="img/mobile view.png" alt="mobile view of app">
 </div>
+
 ## Usage
 - Choose an image using the Choose Image Button.
 - Apply various filters and manipulate the image as needed.
