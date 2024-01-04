@@ -12,27 +12,27 @@ The application provides a variety of features for editing the photos:
 
 1. **Filters**:
 
-  Apply different filters to your images, including brightness, saturation, contrast, blur, inversion, and opacity.
+   Apply different filters to your images, including brightness, saturation, contrast, blur, inversion, and opacity.
 
 2. **Crop Image**:
 
-  Trim your images to the perfect size.
+   Trim your images to the perfect size.
 
 3. **Rotate Image**: 
 
-  Rotate your images to the right or left as needed.
+   Rotate your images to the right or left as needed.
 
 4. **Flip Image**:
 
-  Flip your images horizontally or vertically.
+   Flip your images horizontally or vertically.
 
 5. **Add Text Overlay**: 
 
-  Add a text overlay to your images for additional context or creativity.
+   Add a text overlay to your images for additional context or creativity.
 
 6. **Reset, Undo & Redo**:
 
-  Easily revert changes using the reset, undo, and redo buttons.
+   Easily revert changes using the reset, undo, and redo buttons.
 
 7. **Save Image**: 
 Save your edited images directly from the application.
