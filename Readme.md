@@ -1,4 +1,6 @@
-# ImagiFix--Photo Editing Web App
+<div align="center">
+# ImagiFix-Photo Editing Web App
+</div>
 
 <div align="center">
   <img  width="300" src="img/logo-512x512.png" alt="Image logo">
