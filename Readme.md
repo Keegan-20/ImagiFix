@@ -51,7 +51,7 @@ Here are some screenshots of the application in action:
 
 ### Mobile View
 <div align="center">
-  <img  width="300" src="img/mobile view.png" alt="mobile view of app">
+  <img   src="img/mobile view.png" alt="mobile view of app">
 </div>
 ## Usage
 - Choose an image using the Choose Image Button.
