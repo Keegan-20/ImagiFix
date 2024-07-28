@@ -85,7 +85,7 @@ input#imageFileInput {
   color: #ffff;
   background-color: #272829;
   margin-top: 3.3rem;
-  padding: 0.4rem;
+  padding: 0.4rem 0.7rem;
 }
 
 .tool-input {
@@ -93,22 +93,31 @@ input#imageFileInput {
 }
 
 .toolbarButtons {
-  background: white;
+  background: #F1F5F9;
   display: inline-flex;
   justify-content: center;
   align-items: center;
   width:28px;
-  margin-bottom: 0.6rem;
-  border: none;
-  outline: none;
-  border-radius: 2px;
-  box-shadow: 7px 8px 27px black;
+  padding:2px;
+  margin: 1rem 0;
+  border:0;
+  outline:0;
+  border-radius: 5px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.toolbarButtons:hover {
-  background-color:var(--main-background-color);
+.toolbarButtons:hover, .slider:hover {
+  background-color:#333;
+  color:#ffff;
+  transition: fill 0.3s ease; 
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+
 }
 
+.toolbarButtons box-icon:Hover, .slider  box-icon:Hover {
+  fill: #ffff;
+  transition: fill 0.3s ease; 
+}
 .image-area {
   flex-grow: 1;
   display: flex;
@@ -139,15 +148,20 @@ input#imageFileInput {
   /* border: 2px solid greenyellow; */
 }
 
+.crop-button-active {
+  padding: 6px 18px;
+  background-color: #e0e0e0; 
+  margin:1rem auto; 
+}
 
 #rotateRightButton {
-  padding: 0.3rem;
+  padding: 0.4rem;
   font-weight:900;
   font-size:0.9rem;
 }
 
 #rotateLeftButton{
-  padding:0.15rem;
+  padding:0.4rem;
   font-weight:900;
   font-size:0.9rem;
 }
@@ -260,16 +274,17 @@ input#imageFileInput {
   position: fixed;
   top: 0px;
   padding: 0.8rem 0.2rem;
-  background-color: #352f44;
-  border-bottom: 2px solid #272829;
+  background-color:#2a2a2b;
+  border-bottom: 2px solid #333;
   color: var(--main-background-color);
   width: 100%;
 }
 
 #redoButton,
 #undoButton {
-  background-color: #fff;
+  background: #F1F5F9;
   padding: 0.2rem;
+  padding:2px;
   border-radius: 5px;
   box-shadow: 2px 3px 12px black;
 }
@@ -325,11 +340,10 @@ input#imageFileInput {
 #resetButton {
   background-color:var(--main-background-color);
   color: #ffffff;
-  text-shadow:2px 3px 23px #ffff;
   padding: 8px;
   cursor: pointer;
-  width: 84%;
-  margin-left: 1.3rem;
+  width: 75%;
+  margin-left: 1.5rem;
   border: 1px solid #ef9c01cc;
   outline: none;
   font-weight:600;

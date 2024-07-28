@@ -616,18 +616,21 @@ cropButton.addEventListener('click', function () {
   if (!image) {
     return displayErrorMessage();
   }
-  if (isCropMode) {
-    // Perform the cropping operation using the stored coordinates
-    cropImage(cropStartX, cropStartY, cropEndX, cropEndY);
-    cropButton.textContent = "Crop";
-    canvas.style.cursor = 'auto';
-    isCropMode = false; // Reset the crop mode
-  }
-  else {
-    isCropMode = true; // Enable crop mode when "Crop" is clicked
-    cropButton.textContent = "Save Crop";
-    canvas.style.cursor = 'crosshair';
-  }
+ // Assuming cropButton is already defined and selected
+
+if (isCropMode) {
+  // Perform the cropping operation using the stored coordinates
+  cropImage(cropStartX, cropStartY, cropEndX, cropEndY);
+  cropButton.textContent = "Crop";
+  cropButton.classList.add('crop-button-active');
+  canvas.style.cursor = 'auto';
+  isCropMode = false; // Reset the crop mode
+}
+else {
+  isCropMode = true; // Enable crop mode when "Crop" is clicked
+  cropButton.textContent = "Save Crop";
+  canvas.style.cursor = 'crosshair';
+}
 });
 
 
