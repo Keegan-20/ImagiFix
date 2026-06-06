@@ -1,0 +1,15 @@
+/* Typography — system font stack, no web-font request. */
+body {
+  font-family: var(--font-sans);
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  line-height: 1.45;
+  min-height: 100vh;
+}
+
+.app-header__title {
+  font-family: var(--font-brand);
+  font-weight: 800;
+  font-size: 1.4rem;
+  letter-spacing: 0.3px;
+}

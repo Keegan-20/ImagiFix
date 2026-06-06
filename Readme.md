@@ -1,67 +1,142 @@
+# 🎨 ImagiFix — Photo Editing Web App
 
-#  🎨🖌️ImagiFix-Photo Editing Web App
 <div align="center">
-  <img  width="300" src="img/logo-512x512.png" alt="Image logo">
+  <img width="280" src="assets/images/logo-512.png" alt="ImagiFix logo" />
 </div>
 
-ImagiFix is a robust photo editing web application built using HTML,CSS,Canvas API, and Vanilla JavaScript.The application is designed to work offline as a Progressive Web App (PWA), enhancing its usability and accessibility.
+ImagiFix is a Canvas-based photo editor built with **pure HTML5, CSS3 and Vanilla
+JavaScript (ES modules)** — **zero libraries, frameworks, build tools or CDNs**.
+It runs fully offline as a Progressive Web App.
 
-## 🎨Features
+> This codebase is a deliberate demonstration of modern frontend engineering
+> *without* tooling: a one-way data-flow architecture, a rAF-batched canvas
+> render pipeline, lightweight undo/redo, and an accessible, responsive UI —
+> all hand-rolled.
 
-The application provides a variety of features for editing the photos:
+🔗 **Live demo:** https://imagi-fix.vercel.app
 
-1. **Filters**:
+---
 
-   Apply different filters to your images, including brightness, saturation, contrast, blur, inversion, and opacity.
+## ✨ Features
 
-2. **Crop Image**:
+| | Feature | Notes |
+|---|---|---|
+| 🎚️ | **Adjustments** | Exposure, saturation, contrast, blur, inversion, opacity |
+| ✂️ | **Crop** | Drag-select on canvas (mouse **or** touch via Pointer Events) |
+| 🔄 | **Rotate** | 90° left / right |
+| 🪞 | **Flip** | Horizontal / vertical |
+| 🅰️ | **Text overlay** | Click-to-place, custom colour & size |
+| ↩️ | **Undo / Redo** | Lightweight state snapshots, not pixel buffers |
+| 💾 | **Save** | Exports a PNG of the exact composited result |
+| 📲 | **PWA** | Installable, works offline, smart caching |
+| ⌨️ | **Shortcuts** | `Ctrl+Z/Y` undo/redo · `Ctrl+S` save · `R`/`Shift+R` rotate · `H`/`V` flip · `Esc` cancel |
 
-   Trim your images to the perfect size.
+---
 
-3. **Rotate Image**: 
+## 🏗️ Architecture
 
-   Rotate your images to the right or left as needed.
+State flows **one way**: features dispatch to a single observable **store**, the
+store notifies subscribers, and a **rAF-coalesced render pipeline** repaints the
+canvas. Nothing reaches into anything else.
 
-4. **Flip Image**:
+```
+UI event ──▶ feature ──▶ store.setState() ──▶ subscribers ──▶ renderer.scheduleRender()
+                                   │                                     │
+                                   └────────── history snapshot ◀────────┘
+```
 
-   Flip your images horizontally or vertically.
+### Project layout
 
-5. **Add Text Overlay**: 
+```
+ImagiFix/
+├── index.html                  # semantic markup, ARIA, data-icon slots, <script type="module">
+├── manifest.webmanifest
+├── sw.js                       # service worker: precache + stale-while-revalidate
+├── assets/
+│   ├── icons.js                # inline SVG icon registry (replaces icon CDNs)
+│   └── images/                 # logos + placeholder
+├── css/                        # ITCSS-ish: base / layout / components, single @import entry
+│   ├── main.css
+│   ├── base/      tokens · reset · typography
+│   ├── layout/    header · editor · sidebar · toolbar · canvas
+│   └── components/ buttons · range · text-overlay · install-popup · toast
+└── js/
+    ├── main.js                 # bootstrap & wiring only
+    ├── config/constants.js     # filters, defaults, shortcuts, breakpoints
+    ├── core/                   # store · eventBus · state (the spine)
+    ├── canvas/                 # renderer · filters · geometry (pure paint pipeline)
+    ├── features/               # imageIO · transform · crop · text · filtersPanel · history
+    ├── ui/                     # dom · controls · shortcuts · responsive · toast
+    ├── pwa/                    # service-worker registration + install prompt
+    └── utils/helpers.js        # debounce · throttle · rafThrottle · clamp · downloadBlob
+```
 
-   Add a text overlay to your images for additional context or creativity.
+### Design decisions worth a look
 
-6. **Reset, Undo & Redo**:
+- **Single source of truth** — [`core/store.js`](js/core/store.js): an observable
+  store with shallow change-detection (no-op updates don't repaint).
+- **Pure render pipeline** — [`canvas/renderer.js`](js/canvas/renderer.js): the
+  same `paint()` function drives the live canvas *and* PNG export, so the saved
+  file can never drift from the preview.
+- **Config-driven UI** — the adjustment sliders are generated from the `FILTERS`
+  table in [`config/constants.js`](js/config/constants.js). Add a filter there and
+  it appears in the panel, the render pipeline and reset/undo automatically.
+- **Cheap history** — [`features/history.js`](js/features/history.js) snapshots
+  *state* (a few numbers + objects), not full `ImageData` buffers.
+- **Pointer Events** — one code path for mouse and touch in
+  [`features/crop.js`](js/features/crop.js).
+- **Zero dependencies** — icons are inline SVG, fonts are a system stack;
+  nothing is fetched from a CDN, so the PWA is genuinely offline-first.
 
-   Easily revert changes using the reset, undo, and redo buttons.
+---
 
-7. **Save Image**: 
-Save your edited images directly from the application.
+## ⚡ Performance
 
-## Built With Pure JavaScript
+- Paint work is coalesced to one repaint per animation frame (`rafThrottle`).
+- The canvas uses the GPU-accelerated path (no per-edit `getImageData` readbacks).
+- Images decode off the main thread via `createImageBitmap` (with a safe fallback
+  that revokes its object URL).
+- The service worker precaches the app shell and serves it stale-while-revalidate.
 
-This application is built using pure JavaScript, without the use of any libraries or frameworks.This approach demonstrates the power and flexibility of Vanilla JS in creating complex applications.
+---
 
-## Application Preview
+## ♿ Accessibility
 
-Here are some screenshots of the application in action:
+Semantic landmarks, `aria-label`/`aria-pressed` on icon controls, visible
+`:focus-visible` rings, an `aria-live` status region for feedback, full keyboard
+shortcuts, and `prefers-reduced-motion` support.
 
-### Desktop View
+---
 
-![Desktop View](/img/desktop%20view.png)
+## 🚀 Running locally
 
-### Mobile View
+ES modules and the service worker must be served over HTTP (not `file://`).
+**No build step or install required** — any static server works:
+
+```bash
+# Python (built in on macOS/Linux)
+python3 -m http.server 8000
+
+# …or Node's one-liner
+npx serve .
+```
+
+Then open <http://localhost:8000>.
+
+---
+
+## 🛠️ Built with
+
+Pure **HTML5 · CSS3 · Vanilla JavaScript (ES2020 modules)** and the **Canvas 2D**,
+**Pointer Events**, **Service Worker** and **Web App Manifest** browser APIs.
+No libraries. No frameworks. No bundler.
+
+## 📷 Preview
+
+### Desktop
+![Desktop View](assets/images/desktop-view.png)
+
+### Mobile
 <div align="center">
-  <img   src="img/mobile view.png" alt="mobile view of app">
+  <img src="assets/images/mobile-view.png" alt="Mobile view" width="280" />
 </div>
-
-## Usage
-- Choose an image using the Choose Image Button.
-- Apply various filters and manipulate the image as needed.
-- Add text overlay if desired.
-- Save the edited image to your device either right clicking on the canvas or using the Save image button.
-
-## Live Demo
-[Visit the ImagiFix-Photo Editing Web App](https://imagi-fix.vercel.app)
-
-
-

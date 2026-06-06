@@ -1,0 +1,59 @@
+/* Design tokens — the single source of truth for colour, spacing, etc.
+   Change a value here and it cascades through every component. */
+:root {
+  /* Brand */
+  --color-accent: #fdba3b;
+  --color-accent-hover: #ff7000;
+
+  /* Surfaces */
+  --color-bg: #f5deb3;            /* the app's signature wheat */
+  --color-surface: #ffffff;
+  --color-rail: #272829;          /* tool rail */
+  --color-panel: #2f3133;         /* adjustments + header */
+  --color-panel-border: #3a3a3b;
+
+  /* Text */
+  --color-text: #1c1c1c;
+  --color-text-muted: #6b6b6b;
+  --color-text-inverse: #ffffff;
+
+  /* Feedback */
+  --color-danger: #e53935;
+  --color-info: #2f3133;
+
+  /* Radii */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-pill: 999px;
+
+  /* Spacing scale */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+
+  /* Elevation */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.18);
+  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.22);
+  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.30);
+
+  /* Motion */
+  --transition: 160ms ease;
+
+  /* Layout */
+  --header-height: 56px;
+  --sidebar-width: 64px;
+  --toolbar-width: 256px;
+
+  /* Typography */
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial,
+    "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
+  --font-brand: "Georgia", "Times New Roman", serif;
+}
+
+/* Respect users who prefer reduced motion. */
+@media (prefers-reduced-motion: reduce) {
+  :root { --transition: 0ms; }
+}

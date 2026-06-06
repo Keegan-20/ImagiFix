@@ -1,0 +1,36 @@
+/* Canvas stage — fills the remaining space and centres the image. */
+.canvas-area {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-5);
+  background-color: var(--color-bg);
+  min-width: 0;
+}
+
+#canvas {
+  max-width: 100%;
+  max-height: 100%;
+  background-color: var(--color-surface);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-md);
+  touch-action: none; /* let pointer events drive crop without page panning */
+}
+
+#canvas.canvas--crop {
+  cursor: crosshair;
+}
+
+#canvas.canvas--placing {
+  cursor: text;
+}
+
+@media (max-width: 768px) {
+  .canvas-area {
+    padding: var(--space-4);
+    /* room for the fixed bottom rail */
+    padding-bottom: calc(var(--sidebar-width) + var(--space-4));
+  }
+}

@@ -1,0 +1,23 @@
+/* ImagiFix stylesheet entry point.
+   Import order matters: tokens → reset → typography → layout → components.
+   No build step — the browser resolves these and the service worker
+   pre-caches each file for offline use. */
+
+/* Base */
+@import "base/tokens.css";
+@import "base/reset.css";
+@import "base/typography.css";
+
+/* Layout */
+@import "layout/header.css";
+@import "layout/editor.css";
+@import "layout/sidebar.css";
+@import "layout/toolbar.css";
+@import "layout/canvas.css";
+
+/* Components */
+@import "components/buttons.css";
+@import "components/range.css";
+@import "components/text-overlay.css";
+@import "components/install-popup.css";
+@import "components/toast.css";

@@ -1,0 +1,81 @@
+/* ===== Text overlay panel (popover off the text tool) ===== */
+.text-panel {
+  position: absolute;
+  left: calc(100% + var(--space-3));
+  top: 0;
+  z-index: 60;
+  width: 240px;
+  display: none;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+}
+.text-panel.is-open {
+  display: flex;
+}
+
+.text-panel__close {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background-color: #ececec;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--color-text);
+  transition: background-color var(--transition), color var(--transition);
+}
+.text-panel__close:hover {
+  background-color: var(--color-danger);
+  color: var(--color-text-inverse);
+}
+
+.text-panel__label {
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+
+.text-panel input[type="text"] {
+  width: 100%;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid #d6d6d6;
+  border-radius: var(--radius-sm);
+  outline: none;
+}
+.text-panel input[type="text"]:focus-visible {
+  border-color: var(--color-accent);
+}
+
+.text-panel__row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: 0.85rem;
+}
+.text-panel__row .range {
+  flex: 1;
+  background: #e2e2e2;
+}
+.text-panel__row output {
+  min-width: 2ch;
+  font-weight: 700;
+  color: var(--color-accent-hover);
+}
+
+@media (max-width: 768px) {
+  /* Anchor above the bottom rail and span the width. */
+  .text-panel {
+    position: fixed;
+    left: var(--space-3);
+    right: var(--space-3);
+    bottom: calc(var(--sidebar-width) + var(--space-3));
+    top: auto;
+    width: auto;
+  }
+}

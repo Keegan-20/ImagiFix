@@ -1,0 +1,15 @@
+/* Three-column editor shell sitting below the fixed header. */
+.editor {
+  display: flex;
+  height: 100vh;
+  padding-top: var(--header-height);
+}
+
+@media (max-width: 768px) {
+  /* Stack on mobile: canvas on top, tool rail pinned to the bottom. */
+  .editor {
+    flex-direction: column;
+    height: auto;
+    min-height: 100vh;
+  }
+}

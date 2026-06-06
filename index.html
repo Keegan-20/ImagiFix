@@ -1,152 +1,95 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="wheat">
-    <link rel="stylesheet" href="css/style.css">    
-    <link rel="manifest" href="/manifest.json">
-    <link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon">
-    <link rel="apple-touch-icon" href="/img/logo.jpeg">
-  <script src="https://kit.fontawesome.com/4f2459a64d.js" crossorigin="anonymous"></script>
-  <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
-    <title>ImagiFix- Image Editor Web App</title>
-</head> 
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#fdba3b" />
+  <meta name="description" content="ImagiFix — a fast, offline-capable photo editor built with pure HTML, CSS and Vanilla JavaScript using the Canvas API." />
+
+  <title>ImagiFix — Photo Editor</title>
+
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="assets/images/favicon.ico" type="image/x-icon" />
+  <link rel="apple-touch-icon" href="assets/images/logo-192.png" />
+</head>
 
 <body>
-    <section id="header">
-        <div class="horizontal-bar">
-            
-          <div class="title-bar">
-            <span  id="title">ImagiFix- Photo Editor</span>
+  <!-- ===== Header ===== -->
+  <header class="app-header">
+    <h1 class="app-header__title" id="title">ImagiFix</h1>
 
-            <!--to choose a  image file-->
-            <input type="file" name="ImageFile" id="imageFileInput" accept="image/*">
-            <label for="imageFileInput" class="custom-file-upload">Choose Image</label>
-          <button id="saveButton"> 
-                <span  class="save-text">Save Image</span>
-                <box-icon class="save-icon"  type='solid' name='download'></box-icon>
-            </button>
-            <span  id="mobile-title">ImagiFix</span>
+    <div class="app-header__actions">
+      <input type="file" id="fileInput" accept="image/*" class="visually-hidden" />
+      <label for="fileInput" class="btn btn--primary">Choose Image</label>
 
-            <!-- Add your buttons here -->
-            <box-icon name='undo' id="undoButton"></box-icon>
-             <box-icon name='redo' id="redoButton"></box-icon>
+      <button type="button" id="undoButton" class="icon-btn" aria-label="Undo (Ctrl+Z)" title="Undo (Ctrl+Z)" data-icon="undo"></button>
+      <button type="button" id="redoButton" class="icon-btn" aria-label="Redo (Ctrl+Y)" title="Redo (Ctrl+Y)" data-icon="redo"></button>
 
-          </div>
-
-        </div>
-      </section>
-    <div class="editor">
-    
-        <section id="sidebar">
-            <button id="toolbarButton" class="slider">
-            <!-- filters feature -->
-            <box-icon name='slider'></box-icon>
-            </button>
-            <!-- Crop Feature -->
-            <div id="cropArea"> 
-            <button id="cropButton" class="toolbarButtons">
-                <box-icon name='crop'></box-icon>
-             </button>
-          </div>
-            <!-- Rotate Feature -->
-            <button id="rotateLeftButton" class="toolbarButtons">
-         <i class="fa-sharp fa-solid fa-rotate-left" ></i> </button>
-
-            <button id="rotateRightButton" class="toolbarButtons">
-                <i class="fa-sharp fa-solid fa-rotate-right"></i> </button>
-             <!-- Flip Feature  -->
-             <button id="flipHorizontal" class="toolbarButtons">
-              <box-icon name='reflect-vertical' ></box-icon>
-             </button>
-            <button id="flipVertical" class="toolbarButtons" >
-                <box-icon name='reflect-horizontal'></box-icon>
-
-            </button>
-
-              <!-- Add Text Overlay Feature -->
-            <div id="textOverlay">
-                <button id="textOverlayButton" class="toolbarButtons">
-                    <box-icon name='text'></box-icon>
-                </button>
-
-                <div id="textOverlayOptions" class="text-overlay-options flipped-vertical">
-                    <input type="text" id="textContent" placeholder="Enter text content">
-                    <input type="color" id="textColor" value="#000000">
-                    <button id="closeButton">X</button>
-                    <input type="range" id="textSize" min="4" max="120">
-                    <output id="textSizeValue"></output>
-                    <button id="addTextButton">Add Text</button>
-                </div>
-            </div>      
-        </section>
-
-        <div class="toolbar">
-
-            <div class="toolbar-item">
-                <label class="tool-label" for="brightness">Exposure</label>
-                <!-- we have used 200 value because img ususally has 100 as default brightness so inorder to double the brightness we have used the value 200 -->
-                <input class="tool-input " type="range" id="brightness" min="0" max="200">
-                <output id="brightnessValue"> </output>
-
-            </div>
-
-            <div class="toolbar-item">
-                <label class="tool-label" for="saturation">Saturation</label>
-                <input class="tool-input" type="range" id="saturation" min="0" max="200">
-                <output id="saturationValue"></output>
-            </div>
-
-            <div class="toolbar-item">
-                <label class="tool-label" for="Contrast">Contrast</label>
-                <input class="tool-input" type="range" id="contrast" min="0" max="200">
-                <output id="contrastValue"></output>
-            </div>
-
-            <div class="toolbar-item">
-                <label class="tool-label" for="blur">Blur</label>
-                <input class="tool-input" type="range" id="blur" min="0" max="25">
-                <output id="blurValue"></output>
-            </div>
-
-            <div class="toolbar-item">
-                <label class="tool-label" for="inversion">Inversion</label>
-                <input class="tool-input" type="range" id="inversion" min="0" max="100">
-               <output id="inversionValue"></output>
-            </div>
-
-            <div class="toolbar-item">
-                <label class="tool-label" for="opacity">Opacity</label>
-                <input class="tool-input" type="range" id="opacity" min="0" max="100" step="1">
-                <output id="opacityValue"></output>
-            </div>
-              <button id="resetButton">Reset Filters</button>
-        </div>
-            
-        <!-- basically where the image will be -->
-        <div class="image-area">
-         
-            <!-- when no image is selected -->
-            <div id="error-message"></div>
-            
-            <canvas id="canvas" height="600" width="980" >
-
-            </canvas>
-
-        </div> 
+      <button type="button" id="saveButton" class="btn btn--primary btn--save" aria-label="Save image (Ctrl+S)" title="Save image (Ctrl+S)">
+        <span class="btn__label">Save</span>
+        <span class="btn__icon" data-icon="download"></span>
+      </button>
     </div>
-    
-    <div id="install-popup" class="install-popup">
-        <div id="install-popup-content">
-          <h3 class="popup-header">Install the App?</h3>
-          <p class="popup-para">Install this app on your device for easy access and offline functionality.</p>
-          <button id="install-button">Install</button>
-          <button id="dismiss-button">Dismiss</button>
+  </header>
+
+  <!-- ===== Editor ===== -->
+  <main class="editor">
+    <!-- Tool rail -->
+    <nav class="sidebar" aria-label="Editing tools">
+      <button type="button" id="toolbarToggle" class="tool-btn" aria-label="Toggle adjustments" aria-controls="toolbar" title="Adjustments" data-icon="sliders"></button>
+      <button type="button" id="cropButton" class="tool-btn" aria-label="Crop" aria-pressed="false" title="Crop" data-icon="crop"></button>
+      <button type="button" id="rotateLeftButton" class="tool-btn" aria-label="Rotate left (Shift+R)" title="Rotate left" data-icon="rotateLeft"></button>
+      <button type="button" id="rotateRightButton" class="tool-btn" aria-label="Rotate right (R)" title="Rotate right" data-icon="rotateRight"></button>
+      <button type="button" id="flipHButton" class="tool-btn" aria-label="Flip horizontal (H)" aria-pressed="false" title="Flip horizontal" data-icon="flipHorizontal"></button>
+      <button type="button" id="flipVButton" class="tool-btn" aria-label="Flip vertical (V)" aria-pressed="false" title="Flip vertical" data-icon="flipVertical"></button>
+
+      <div class="text-tool">
+        <button type="button" id="textButton" class="tool-btn" aria-label="Add text" aria-haspopup="dialog" title="Add text" data-icon="text"></button>
+
+        <div class="text-panel" id="textPanel" role="dialog" aria-label="Add text overlay">
+          <button type="button" id="textCloseButton" class="text-panel__close" aria-label="Close">&times;</button>
+          <label class="text-panel__label" for="textContent">Text</label>
+          <input type="text" id="textContent" placeholder="Enter text…" autocomplete="off" />
+          <div class="text-panel__row">
+            <label for="textColor">Colour</label>
+            <input type="color" id="textColor" value="#000000" />
+          </div>
+          <div class="text-panel__row">
+            <label for="textSize">Size</label>
+            <input type="range" id="textSize" class="range" min="4" max="120" value="24" />
+            <output id="textSizeValue" for="textSize">24</output>
+          </div>
+          <button type="button" id="addTextButton" class="btn btn--primary">Add Text</button>
         </div>
       </div>
-    <script src="js/script.js"></script>
-</body>
+    </nav>
 
+    <!-- Adjustments -->
+    <aside class="toolbar" id="toolbar" aria-label="Adjustments">
+      <div id="filterControls" class="toolbar__filters"><!-- generated from FILTERS config --></div>
+      <button type="button" id="resetButton" class="btn">Reset Adjustments</button>
+    </aside>
+
+    <!-- Canvas -->
+    <section class="canvas-area" aria-label="Image preview">
+      <div id="toast" class="toast" role="status" aria-live="polite"></div>
+      <canvas id="canvas" width="980" height="600" role="img" aria-label="Editing canvas"></canvas>
+    </section>
+  </main>
+
+  <!-- ===== Install prompt ===== -->
+  <div class="install-popup" id="installPopup" role="dialog" aria-label="Install ImagiFix" aria-hidden="true">
+    <div class="install-popup__card">
+      <h2 class="install-popup__title">Install ImagiFix?</h2>
+      <p class="install-popup__text">Add it to your device for one-tap access and full offline editing.</p>
+      <div class="install-popup__actions">
+        <button type="button" id="installButton" class="btn btn--primary">Install</button>
+        <button type="button" id="dismissButton" class="btn">Dismiss</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
 </html>

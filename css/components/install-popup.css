@@ -1,0 +1,39 @@
+/* ===== PWA install prompt ===== */
+.install-popup {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  background: rgba(0, 0, 0, 0.35);
+}
+.install-popup.is-visible {
+  display: flex;
+}
+
+.install-popup__card {
+  width: min(320px, 100%);
+  padding: var(--space-5);
+  text-align: center;
+  background-color: #352f44;
+  color: var(--color-text-inverse);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+}
+
+.install-popup__title {
+  margin-bottom: var(--space-2);
+  font-size: 1.1rem;
+}
+.install-popup__text {
+  margin-bottom: var(--space-4);
+  font-size: 0.9rem;
+  color: #d7d3df;
+}
+.install-popup__actions {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-3);
+}

@@ -1,0 +1,98 @@
+/* ===== Buttons ===== */
+
+/* Pill / labelled buttons. */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0.5rem 0.9rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.85rem;
+  font-weight: 600;
+  background-color: #e7e7e7;
+  color: var(--color-text);
+  transition: background-color var(--transition), transform var(--transition);
+}
+.btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+.btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn--primary {
+  background-color: var(--color-accent);
+  color: var(--color-text-inverse);
+}
+.btn--primary:hover:not(:disabled) {
+  background-color: var(--color-accent-hover);
+}
+
+/* Reset button stretches in the adjustments panel. */
+#resetButton {
+  width: 100%;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+}
+
+/* Header icon buttons (undo / redo). */
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 7px;
+  border-radius: var(--radius-sm);
+  background-color: #f1f5f9;
+  color: var(--color-text);
+  box-shadow: var(--shadow-sm);
+  transition: background-color var(--transition), color var(--transition);
+}
+.icon-btn:hover:not(:disabled) {
+  background-color: var(--color-accent);
+  color: var(--color-text-inverse);
+}
+
+/* Tool-rail buttons. */
+.tool-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  padding: 9px;
+  border-radius: var(--radius-sm);
+  background-color: #f1f5f9;
+  color: #1e1e1e;
+  box-shadow: var(--shadow-sm);
+  transition: background-color var(--transition), color var(--transition),
+    transform var(--transition);
+}
+.tool-btn:hover:not(:disabled) {
+  background-color: var(--color-accent);
+  color: var(--color-text-inverse);
+  transform: translateY(-1px);
+}
+/* Active toggle state (crop armed, flip on). */
+.tool-btn[aria-pressed="true"] {
+  background-color: var(--color-accent);
+  color: var(--color-text-inverse);
+  box-shadow: inset 0 0 0 2px var(--color-accent-hover);
+}
+
+/* The save button hides its text label on small screens. */
+@media (max-width: 768px) {
+  .btn--save .btn__label {
+    display: none;
+  }
+}
+@media (min-width: 769px) {
+  .btn--save .btn__icon {
+    display: none;
+  }
+}
+.btn__icon {
+  width: 20px;
+  height: 20px;
+}
