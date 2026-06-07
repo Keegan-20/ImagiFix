@@ -8,7 +8,7 @@
   justify-content: center;
   padding: var(--space-6);
   min-width: 0;
-  border-radius: var(--radius-lg);
+  border-radius: 12px;
   border: 1px solid var(--glass-border);
   box-shadow: var(--shadow-inset);
   /* Subtle dot grid floating over the lavender wash. */

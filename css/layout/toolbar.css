@@ -9,7 +9,7 @@
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
   border: 1px solid var(--glass-border);
-  border-radius: var(--radius-lg);
+  border-radius: 8px;
   box-shadow: var(--shadow-md), var(--shadow-inset);
   overflow-y: auto;
 }
