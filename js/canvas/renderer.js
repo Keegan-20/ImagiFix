@@ -5,15 +5,14 @@
  * canvas and the exporter (so export can never drift from what's on screen —
  * the original code duplicated this logic, which is how the save bug crept in).
  *
- * `createRenderer()` adds the live concerns: a placeholder when empty, the
- * crop selection overlay, and rAF-coalesced repaints.
+ * `createRenderer()` adds the live concerns: a clear stage when empty (the
+ * HTML empty-state overlay handles onboarding), the crop selection overlay,
+ * and rAF-coalesced repaints.
  */
 import { CANVAS } from '../config/constants.js';
 import { buildFilterString } from './filters.js';
-import { getDrawSize, fitContain } from './geometry.js';
+import { getDrawSize } from './geometry.js';
 import { toRadians, rafThrottle } from '../utils/helpers.js';
-
-const PLACEHOLDER_SRC = './assets/images/placeholder.png';
 
 /**
  * Draw the image (with transforms + filters) and the text overlay onto any
@@ -66,51 +65,10 @@ export function createRenderer(canvas, getState) {
   canvas.width = CANVAS.width;
   canvas.height = CANVAS.height;
 
-  // Placeholder shown before any image is loaded. We prefer the nice SVG, but
-  // never depend on it: a canvas-drawn prompt is rendered immediately and as a
-  // fallback, so the stage is never blank even if the asset is slow or fails.
-  let placeholder = null;
-  const placeholderImg = new Image();
-  const onPlaceholderReady = () => {
-    placeholder = placeholderImg.naturalWidth ? placeholderImg : null;
-    if (!getState().image) render();
-  };
-  placeholderImg.addEventListener('load', onPlaceholderReady);
-  placeholderImg.addEventListener('error', onPlaceholderReady); // keep the text fallback
-  placeholderImg.src = PLACEHOLDER_SRC;
-  // If it was already in cache, `load` may not fire — draw it now.
-  if (placeholderImg.complete) onPlaceholderReady();
-
-  /** Canvas-native fallback so the prompt always appears, asset or not. */
-  function drawPlaceholderText() {
-    ctx.save();
-    ctx.fillStyle = '#bdbdbd';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.font = '600 26px Georgia, "Times New Roman", serif';
-    ctx.fillText('Choose Image to Edit', canvas.width / 2, canvas.height / 2);
-    ctx.restore();
-  }
-
-  function drawPlaceholder() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    if (!placeholder) {
-      drawPlaceholderText();
-      return;
-    }
-    const { width, height, x, y } = fitContain(
-      placeholder.naturalWidth || 1536,
-      placeholder.naturalHeight || 1024,
-      canvas.width,
-      canvas.height,
-    );
-    ctx.drawImage(placeholder, x, y, width, height);
-  }
-
   function drawCropOverlay(rect) {
     // Dim everything, then punch a clear window over the selection.
     ctx.save();
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
+    ctx.fillStyle = 'rgba(30, 27, 75, 0.55)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.clearRect(rect.x, rect.y, rect.width, rect.height);
     // Re-draw the selected slice at full clarity inside the window.
@@ -122,7 +80,7 @@ export function createRenderer(canvas, getState) {
     ctx.restore();
     // Marching-ants border.
     ctx.setLineDash([6, 4]);
-    ctx.strokeStyle = '#fdba3b';
+    ctx.strokeStyle = '#7c3aed';
     ctx.lineWidth = 2;
     ctx.strokeRect(rect.x, rect.y, rect.width, rect.height);
     ctx.restore();
@@ -132,7 +90,8 @@ export function createRenderer(canvas, getState) {
   function render() {
     const state = getState();
     if (!state.image) {
-      drawPlaceholder();
+      // Empty stage — the HTML empty-state overlay sits on top of the canvas.
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
       return;
     }
     paint(ctx, state, canvas.width, canvas.height);

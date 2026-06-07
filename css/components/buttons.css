@@ -1,98 +1,185 @@
 /* ===== Buttons ===== */
 
-/* Pill / labelled buttons. */
+/* Base pill / labelled button — soft glass by default. */
 .btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: var(--space-2);
-  padding: 0.5rem 0.9rem;
+  padding: 0.6rem 1.1rem;
   border-radius: var(--radius-pill);
   font-size: 0.85rem;
   font-weight: 600;
-  background-color: #e7e7e7;
-  color: var(--color-text);
-  transition: background-color var(--transition), transform var(--transition);
+  letter-spacing: 0.01em;
+  color: var(--ink);
+  background: var(--glass-bg-strong);
+  border: 1px solid var(--glass-stroke);
+  box-shadow: var(--shadow-xs);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast),
+    background var(--transition-fast), color var(--transition-fast);
 }
 .btn:hover:not(:disabled) {
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
 }
 .btn:active:not(:disabled) {
-  transform: translateY(0);
+  transform: translateY(0) scale(0.98);
 }
 
+/* Primary gradient CTA with a soft active glow-ripple. */
 .btn--primary {
-  background-color: var(--color-accent);
-  color: var(--color-text-inverse);
+  position: relative;
+  overflow: hidden;
+  color: #fff;
+  border-color: transparent;
+  background: var(--grad-primary);
+  box-shadow: var(--shadow-glow);
 }
 .btn--primary:hover:not(:disabled) {
-  background-color: var(--color-accent-hover);
+  background: var(--grad-primary-hover);
+  box-shadow: 0 12px 30px rgba(124, 58, 237, 0.45);
+}
+.btn--primary::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.55), transparent 60%);
+  opacity: 0;
+  transform: scale(0.4);
+  transition: opacity var(--transition), transform var(--transition);
+  pointer-events: none;
+}
+.btn--primary:active:not(:disabled)::after {
+  opacity: 0.7;
+  transform: scale(1);
+  transition-duration: 0ms;
+}
+
+/* Soft tonal button (Reset). */
+.btn--soft {
+  color: var(--violet-700);
+  background: var(--violet-100);
+  border-color: transparent;
+}
+.btn--soft:hover:not(:disabled) {
+  background: var(--violet-200);
+}
+
+/* Premium Save button. */
+.btn--save {
+  color: #fff;
+  border-color: transparent;
+  background: var(--grad-save);
+  box-shadow: var(--shadow-glow);
+}
+.btn--save:hover:not(:disabled) {
+  box-shadow: 0 12px 30px rgba(124, 58, 237, 0.45);
 }
 
 /* Reset button stretches in the adjustments panel. */
 #resetButton {
   width: 100%;
-  justify-content: center;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
 }
 
-/* Header icon buttons (undo / redo). */
+/* Header icon buttons (undo / redo) — ghost chips inside the history pill. */
 .icon-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 36px;
   height: 36px;
-  padding: 7px;
-  border-radius: var(--radius-sm);
-  background-color: #f1f5f9;
-  color: var(--color-text);
-  box-shadow: var(--shadow-sm);
-  transition: background-color var(--transition), color var(--transition);
+  border-radius: var(--radius-pill);
+  color: var(--ink-soft);
+  background: transparent;
+  transition: background var(--transition-fast), color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+.icon-btn svg {
+  width: 18px;
+  height: 18px;
 }
 .icon-btn:hover:not(:disabled) {
-  background-color: var(--color-accent);
-  color: var(--color-text-inverse);
+  background: #fff;
+  color: var(--violet-700);
+  box-shadow: var(--shadow-xs);
 }
 
-/* Tool-rail buttons. */
+/* Tool-rail buttons — stacked icon + label. */
 .tool-btn {
-  display: inline-flex;
+  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 42px;
-  height: 42px;
-  padding: 9px;
-  border-radius: var(--radius-sm);
-  background-color: #f1f5f9;
-  color: #1e1e1e;
-  box-shadow: var(--shadow-sm);
-  transition: background-color var(--transition), color var(--transition),
-    transform var(--transition);
+  gap: 5px;
+  width: 100%;
+  padding: var(--space-2) var(--space-1);
+  border-radius: var(--radius-md);
+  color: var(--ink-soft);
+  background: transparent;
+  transition: background var(--transition-fast), color var(--transition-fast),
+    transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+.tool-btn__icon {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+}
+.tool-btn__icon svg {
+  width: 22px;
+  height: 22px;
+}
+.tool-btn__label {
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
 }
 .tool-btn:hover:not(:disabled) {
-  background-color: var(--color-accent);
-  color: var(--color-text-inverse);
+  background: var(--violet-100);
+  color: var(--violet-700);
   transform: translateY(-1px);
 }
-/* Active toggle state (crop armed, flip on). */
+.tool-btn:active:not(:disabled) {
+  transform: translateY(0) scale(0.96);
+}
+/* Active toggle state (crop armed, flip on, panel open). */
 .tool-btn[aria-pressed="true"] {
-  background-color: var(--color-accent);
-  color: var(--color-text-inverse);
-  box-shadow: inset 0 0 0 2px var(--color-accent-hover);
+  background: var(--grad-primary);
+  color: #fff;
+  box-shadow: var(--shadow-glow);
+}
+.tool-btn[aria-pressed="true"] .tool-btn__label {
+  color: rgba(255, 255, 255, 0.95);
 }
 
-/* The save button hides its text label on small screens. */
+/* Shared icon sizing for labelled buttons (Choose Image / Save). */
+.btn__icon {
+  display: inline-grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+}
+.btn__icon svg {
+  width: 18px;
+  height: 18px;
+}
+
 @media (max-width: 768px) {
+  /* Save collapses to its icon; tools keep their labels in the dock. */
   .btn--save .btn__label {
     display: none;
+  }
+  .tool-btn {
+    width: auto;
+    min-width: 58px;
+  }
+  .tool-btn__label {
+    font-size: 0.58rem;
   }
 }
 @media (min-width: 769px) {
   .btn--save .btn__icon {
     display: none;
   }
-}
-.btn__icon {
-  width: 20px;
-  height: 20px;
 }

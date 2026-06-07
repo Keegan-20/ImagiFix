@@ -1,0 +1,291 @@
+/* ===== Empty state / drag-and-drop upload zone =====
+   Overlays the canvas area until an image loads, then fades out. Decoupled
+   from the canvas's own (variable) size so it stays roomy on every viewport.
+   The whole illustration is inline SVG + CSS — no raster asset, crisp at any
+   DPI, and fully offline. `.is-dragover` on .canvas-area lifts the zone while
+   a file is dragged in. */
+.empty-state {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-6);
+  transition: opacity var(--transition), transform var(--transition);
+}
+.empty-state.is-hidden {
+  opacity: 0;
+  transform: scale(0.98);
+  pointer-events: none;
+}
+
+.empty-state__dropzone {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  width: 100%;
+  height: 100%;
+  padding: var(--space-6);
+  text-align: center;
+  cursor: pointer;
+  overflow: hidden;
+  border: 2px dashed var(--violet-300);
+  border-radius: var(--radius-lg);
+  /* Soft lavender / lilac corner blobs over a lavender-tinted base. */
+  background:
+    radial-gradient(540px 470px at -10% -18%, rgba(167, 139, 250, 0.34), transparent 62%),
+    radial-gradient(480px 420px at 110% 116%, rgba(196, 181, 253, 0.26), transparent 60%),
+    linear-gradient(160deg, rgba(244, 242, 254, 0.96), rgba(235, 231, 252, 0.97));
+  transition: border-color var(--transition), box-shadow var(--transition),
+    transform var(--transition);
+}
+.empty-state__dropzone:hover {
+  border-color: var(--violet-500);
+  box-shadow: var(--shadow-md);
+}
+
+/* Dotted grids tucked into opposite corners, fading diagonally inward so they
+   read as triangular clusters like the reference. */
+.empty-state__dropzone::before,
+.empty-state__dropzone::after {
+  content: "";
+  position: absolute;
+  background: radial-gradient(circle, rgba(124, 58, 237, 0.30) 1.6px, transparent 2px) 0 0 / 16px 16px;
+  opacity: 0.7;
+  pointer-events: none;
+}
+.empty-state__dropzone::before {
+  top: 18px;
+  left: 22px;
+  width: 190px;
+  height: 150px;
+  -webkit-mask: linear-gradient(135deg, #000 0%, rgba(0, 0, 0, 0.55) 38%, transparent 72%);
+  mask: linear-gradient(135deg, #000 0%, rgba(0, 0, 0, 0.55) 38%, transparent 72%);
+}
+.empty-state__dropzone::after {
+  right: 22px;
+  bottom: 18px;
+  width: 160px;
+  height: 130px;
+  opacity: 0.55;
+  -webkit-mask: linear-gradient(315deg, #000 0%, rgba(0, 0, 0, 0.55) 38%, transparent 72%);
+  mask: linear-gradient(315deg, #000 0%, rgba(0, 0, 0, 0.55) 38%, transparent 72%);
+}
+
+/* "Supported" pill, top-right. */
+.empty-state__badge {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+  padding: 0.4rem 0.85rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+  background: var(--glass-bg-strong);
+  border: 1px solid var(--glass-stroke);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-xs);
+}
+.empty-state__badge strong {
+  color: var(--violet-700);
+  font-weight: 700;
+}
+
+/* ----- Illustration -----
+   The art box is intentionally wide so the decorations can orbit the card,
+   while the card stack stays a fixed 150px centred inside it. */
+.empty-state__art {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 440px;
+  max-width: 100%;
+  height: 280px;
+  /* The art box is taller than the artwork so the decor SVG keeps its scale
+     and alignment; pull the title up into that empty lower region instead of
+     resizing the box (which would shift the decorations). */
+  margin-bottom: -32px;
+  animation: empty-float 5s ease-in-out infinite;
+}
+.empty-state__decor {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+/* Fixed-size stack so the + badge always anchors to the card corner. */
+.empty-state__cards {
+  position: relative;
+  z-index: 1;
+  width: 150px;
+  height: 150px;
+}
+
+.empty-state__card {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 150px;
+  height: 150px;
+  border-radius: 22px;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.55));
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow: var(--shadow-lg), var(--shadow-inset);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+.empty-state__card svg {
+  width: 92px;
+  height: 92px;
+}
+.empty-state__card--back {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: var(--shadow-md);
+  transform: rotate(8deg) translate(12px, -10px);
+}
+
+.empty-state__plus {
+  position: absolute;
+  z-index: 3;
+  right: -14px;
+  bottom: 4px;
+  display: grid;
+  place-items: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  color: #fff;
+  background: var(--grad-primary);
+  box-shadow: var(--shadow-glow);
+}
+.empty-state__plus svg {
+  width: 26px;
+  height: 26px;
+}
+
+/* ----- Copy ----- */
+/* One continuous blue→violet gradient flows across the whole heading; the
+   "dark" words opt back out to solid ink. */
+.empty-state__title {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  background: linear-gradient(95deg, #4f46e5 0%, #7c3aed 52%, #9333ea 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+.empty-state__title em {
+  font-style: normal;
+}
+.empty-state__title-dark {
+  color: var(--ink);
+  -webkit-text-fill-color: var(--ink);
+}
+.empty-state__text {
+  margin-top: 2px;
+  font-size: 0.98rem;
+  color: var(--ink-soft);
+}
+
+/* ----- Actions ----- */
+.empty-state__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+.empty-state__upload,
+.empty-state__browse {
+  padding: 0.8rem 1.5rem;
+  font-family: var(--font-display);
+  font-size: 0.98rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  border-radius: var(--radius-md);
+}
+.empty-state__upload {
+  color: #fff;
+  border-color: transparent;
+  background: var(--grad-upload);
+  box-shadow: var(--shadow-glow);
+}
+.empty-state__upload:hover:not(:disabled) {
+  box-shadow: 0 14px 34px rgba(168, 85, 247, 0.5);
+}
+.empty-state__browse {
+  color: var(--ink);
+  background: #fff;
+  border: 1px solid var(--glass-stroke);
+  box-shadow: var(--shadow-sm);
+}
+.empty-state__browse .btn__icon {
+  color: var(--violet-600);
+}
+.empty-state__browse:hover:not(:disabled) {
+  background: var(--violet-50);
+}
+
+.empty-state__hint {
+  margin-top: var(--space-3);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--violet-400);
+}
+
+/* Active drag state — a violet ring on the stage gives feedback even when
+   replacing an existing image (the overlay is hidden then). */
+.canvas-area.is-dragover {
+  box-shadow: var(--shadow-inset), inset 0 0 0 2px var(--violet-400);
+}
+.canvas-area.is-dragover .empty-state__dropzone {
+  border-color: var(--violet-600);
+  box-shadow: var(--shadow-lg);
+  transform: scale(1.01);
+}
+.canvas-area.is-dragover .empty-state__art {
+  transform: scale(1.05);
+}
+
+@keyframes empty-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-8px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .empty-state__art { animation: none; }
+}
+
+@media (max-width: 768px) {
+  .empty-state { padding: var(--space-3); }
+  .empty-state__dropzone { padding: var(--space-4); }
+  .empty-state__badge { display: none; }
+
+  .empty-state__art { width: 320px; height: 216px; }
+  .empty-state__cards { width: 120px; height: 120px; }
+  .empty-state__card { width: 120px; height: 120px; border-radius: 18px; }
+  .empty-state__card svg { width: 72px; height: 72px; }
+  .empty-state__plus { width: 46px; height: 46px; right: -12px; bottom: 6px; }
+  .empty-state__plus svg { width: 22px; height: 22px; }
+
+  .empty-state__title { font-size: 1.3rem; }
+  .empty-state__text { font-size: 0.85rem; }
+
+  .empty-state__actions { flex-direction: column; width: 100%; max-width: 280px; }
+  .empty-state__upload,
+  .empty-state__browse { width: 100%; }
+}

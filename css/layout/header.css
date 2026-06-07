@@ -1,4 +1,4 @@
-/* Fixed top bar: brand on the left, actions on the right. */
+/* Sticky translucent navbar: brand on the left, actions on the right. */
 .app-header {
   position: fixed;
   inset: 0 0 auto 0;
@@ -7,16 +7,76 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-3);
-  padding: 0 var(--space-4);
-  background-color: var(--color-panel);
-  border-bottom: 1px solid var(--color-panel-border);
-  color: var(--color-accent);
+  gap: var(--space-4);
+  padding: 0 var(--space-5);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-bottom: 1px solid var(--glass-stroke);
   box-shadow: var(--shadow-sm);
+}
+
+.app-header__brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+/* Gradient logo chip. */
+.app-header__logo {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  background: var(--grad-primary);
+  color: #fff;
+  box-shadow: var(--shadow-glow);
+}
+.app-header__logo svg {
+  width: 20px;
+  height: 20px;
 }
 
 .app-header__actions {
   display: flex;
   align-items: center;
   gap: var(--space-3);
+}
+
+/* Undo / redo grouped in a soft pill. */
+.app-header__history {
+  display: flex;
+  gap: 2px;
+  padding: 4px;
+  background: rgba(124, 58, 237, 0.06);
+  border: 1px solid var(--glass-stroke);
+  border-radius: var(--radius-pill);
+}
+
+@media (max-width: 768px) {
+  .app-header {
+    padding: 0 var(--space-4);
+    gap: var(--space-2);
+  }
+  .app-header__title {
+    font-size: 1.15rem;
+  }
+}
+
+@media (max-width: 600px) {
+  /* Reclaim space: the upload button collapses to its icon (the empty-state
+     CTA still spells it out), and the wordmark gives way to the logo chip. */
+  .app-header {
+    padding: 0 var(--space-3);
+  }
+  .app-header__upload .btn__label {
+    display: none;
+  }
+  .app-header__upload {
+    padding: 0.6rem;
+  }
+  .app-header__title {
+    display: none;
+  }
 }

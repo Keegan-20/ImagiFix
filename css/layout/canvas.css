@@ -1,28 +1,49 @@
-/* Canvas stage — fills the remaining space and centres the image. */
+/* Canvas stage — fills remaining space, centres the artwork on a soft,
+   patterned lavender backdrop. */
 .canvas-area {
   position: relative;
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--space-5);
-  background-color: var(--color-bg);
+  padding: var(--space-6);
   min-width: 0;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-inset);
+  /* Subtle dot grid floating over the lavender wash. */
+  background:
+    radial-gradient(circle at 1px 1px, rgba(124, 58, 237, 0.07) 1px, transparent 0) 0 0 / 22px 22px,
+    var(--grad-accent-soft);
+  overflow: hidden;
+}
+
+/* Wraps the canvas. min-width/height:0 lets this flex item shrink so the
+   canvas's own max-width:100% governs sizing — a flex item's min-width:auto
+   would otherwise keep it at its 980px intrinsic width and overflow narrow
+   viewports. line-height:0 trims the inline descender gap. */
+.canvas-stage {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  max-width: 100%;
+  max-height: 100%;
+  line-height: 0;
 }
 
 #canvas {
   max-width: 100%;
   max-height: 100%;
   background-color: var(--color-surface);
-  border-radius: var(--radius-sm);
-  box-shadow: var(--shadow-md);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
   touch-action: none; /* let pointer events drive crop without page panning */
+  transition: opacity var(--transition);
 }
 
 #canvas.canvas--crop {
   cursor: crosshair;
 }
-
 #canvas.canvas--placing {
   cursor: text;
 }
@@ -30,7 +51,7 @@
 @media (max-width: 768px) {
   .canvas-area {
     padding: var(--space-4);
-    /* room for the fixed bottom rail */
-    padding-bottom: calc(var(--sidebar-width) + var(--space-4));
+    /* room for the fixed bottom dock */
+    padding-bottom: calc(var(--rail-mobile-height) + var(--space-5));
   }
 }

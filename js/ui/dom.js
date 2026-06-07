@@ -60,7 +60,11 @@ export function createDom() {
     resetButton: byId('resetButton'),
     // canvas
     canvas: byId('canvas'),
+    canvasArea: byId('canvasArea'),
     toast: byId('toast'),
+    // empty state / drag-and-drop
+    emptyState: byId('emptyState'),
+    dropzone: byId('dropzone'),
     // install prompt
     installPopup: byId('installPopup'),
     installButton: byId('installButton'),

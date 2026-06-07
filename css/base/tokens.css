@@ -1,32 +1,62 @@
-/* Design tokens — the single source of truth for colour, spacing, etc.
-   Change a value here and it cascades through every component. */
+/* Design tokens — the single source of truth for the visual system.
+   Change a value here and it cascades through every component.
+
+   The redesign is a glassmorphism + soft-neumorphism hybrid built on a
+   violet / lavender / lilac palette. Back-compat aliases keep the handful of
+   variable names referenced by older selectors (and JS) working. */
 :root {
-  /* Brand */
-  --color-accent: #fdba3b;
-  --color-accent-hover: #ff7000;
+  /* === Brand palette === */
+  --violet-700: #6d28d9;
+  --violet-600: #7c3aed;          /* primary */
+  --violet-500: #8b5cf6;
+  --violet-400: #a78bfa;          /* secondary */
+  --violet-300: #c4b5fd;          /* accent */
+  --violet-200: #ddd6fe;
+  --violet-100: #ede9fe;
+  --violet-50:  #f5f3ff;
 
-  /* Surfaces */
-  --color-bg: #f5deb3;            /* the app's signature wheat */
+  --ink:        #1e1b4b;          /* deep violet — primary text */
+  --ink-soft:   #463f6b;
+  --ink-muted:  #7b7796;
+
+  /* === Back-compat aliases (referenced by JS-driven bits & legacy rules) === */
+  --color-accent: var(--violet-600);
+  --color-accent-hover: var(--violet-700);
   --color-surface: #ffffff;
-  --color-rail: #272829;          /* tool rail */
-  --color-panel: #2f3133;         /* adjustments + header */
-  --color-panel-border: #3a3a3b;
-
-  /* Text */
-  --color-text: #1c1c1c;
-  --color-text-muted: #6b6b6b;
+  --color-text: var(--ink);
+  --color-text-muted: var(--ink-muted);
   --color-text-inverse: #ffffff;
+  --color-danger: #ef4444;
+  --color-info: var(--violet-600);
 
-  /* Feedback */
-  --color-danger: #e53935;
-  --color-info: #2f3133;
+  /* === Gradients === */
+  --grad-primary: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+  --grad-primary-hover: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+  --grad-save: linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%);
+  /* Violet → fuchsia, for the hero upload CTA. */
+  --grad-upload: linear-gradient(135deg, #7c3aed 0%, #9333ea 48%, #d946ef 100%);
+  --grad-accent-soft: linear-gradient(135deg, #ede9fe 0%, #f5f3ff 100%);
+  /* The whole-app backdrop: layered lavender glows over a soft white base. */
+  --grad-app:
+    radial-gradient(1200px 820px at 12% -12%, #efeaff 0%, transparent 55%),
+    radial-gradient(1000px 720px at 112% 8%, #e6dbff 0%, transparent 52%),
+    linear-gradient(160deg, #faf9ff 0%, #f1ecff 100%);
 
-  /* Radii */
-  --radius-sm: 6px;
-  --radius-md: 10px;
+  /* === Glass surfaces === */
+  --glass-bg: rgba(255, 255, 255, 0.72);
+  --glass-bg-strong: rgba(255, 255, 255, 0.86);
+  --glass-border: rgba(255, 255, 255, 0.65);
+  --glass-stroke: rgba(124, 58, 237, 0.12);
+  --glass-blur: blur(18px) saturate(160%);
+
+  /* === Radii === */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
   --radius-pill: 999px;
 
-  /* Spacing scale */
+  /* === Spacing scale === */
   --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;
@@ -34,26 +64,45 @@
   --space-5: 1.5rem;
   --space-6: 2rem;
 
-  /* Elevation */
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.18);
-  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.22);
-  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.30);
+  /* === Elevation — soft, diffuse, violet-tinted === */
+  --shadow-xs: 0 1px 2px rgba(30, 27, 75, 0.06);
+  --shadow-sm: 0 2px 10px rgba(30, 27, 75, 0.08);
+  --shadow-md: 0 12px 32px rgba(76, 40, 130, 0.12);
+  --shadow-lg: 0 24px 60px rgba(76, 40, 130, 0.20);
+  --shadow-glow: 0 8px 24px rgba(124, 58, 237, 0.35);
+  --shadow-inset: inset 0 1px 0 rgba(255, 255, 255, 0.6);
 
-  /* Motion */
-  --transition: 160ms ease;
+  /* === Motion === */
+  --transition: 240ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-fast: 160ms cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 
-  /* Layout */
-  --header-height: 56px;
-  --sidebar-width: 64px;
-  --toolbar-width: 256px;
+  /* === Layout === */
+  --header-height: 64px;
+  --sidebar-width: 92px;
+  --toolbar-width: 284px;
+  --rail-mobile-height: 72px;
 
-  /* Typography */
-  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial,
-    "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
-  --font-brand: "Georgia", "Times New Roman", serif;
+  /* === Typography ===
+     Prefers Inter/Satoshi if the user has them installed locally, then falls
+     back to the platform UI font. No network request — the app stays fully
+     offline-capable, which a Google-Fonts <link> would break. */
+  --font-sans: "Inter", "Inter var", "Satoshi", system-ui, -apple-system,
+    "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji",
+    "Segoe UI Emoji", sans-serif;
+  /* Display face for hero headings & CTAs — a premium, professional geometric
+     sans (Avenir Next ships on macOS; SF Pro Display / Inter / Segoe UI
+     Variable cover other platforms). No web-font request, so the app stays
+     offline-capable. */
+  --font-display: "Avenir Next", "SF Pro Display", "Inter", "Inter var",
+    "Segoe UI Variable Display", system-ui, -apple-system, "Helvetica Neue",
+    Arial, sans-serif;
 }
 
 /* Respect users who prefer reduced motion. */
 @media (prefers-reduced-motion: reduce) {
-  :root { --transition: 0ms; }
+  :root {
+    --transition: 0ms;
+    --transition-fast: 0ms;
+  }
 }

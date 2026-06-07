@@ -1,15 +1,19 @@
-/* Three-column editor shell sitting below the fixed header. */
+/* Editor shell — three floating glass panels below the fixed header.
+   The gap + padding let each panel read as a distinct, elevated surface. */
 .editor {
   display: flex;
+  gap: var(--space-4);
   height: 100vh;
-  padding-top: var(--header-height);
+  padding: calc(var(--header-height) + var(--space-4)) var(--space-4) var(--space-4);
 }
 
 @media (max-width: 768px) {
-  /* Stack on mobile: canvas on top, tool rail pinned to the bottom. */
+  /* Stack on mobile: canvas owns the flow; the rail + adjustments float fixed. */
   .editor {
     flex-direction: column;
+    gap: var(--space-3);
     height: auto;
     min-height: 100vh;
+    padding: calc(var(--header-height) + var(--space-3)) var(--space-3) var(--space-3);
   }
 }

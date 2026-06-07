@@ -7,30 +7,45 @@
   align-items: center;
   justify-content: center;
   padding: var(--space-4);
-  background: rgba(0, 0, 0, 0.35);
+  background: rgba(30, 27, 75, 0.45);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
 }
 .install-popup.is-visible {
   display: flex;
+  animation: fade-in var(--transition) var(--ease-out);
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .install-popup.is-visible { animation: none; }
 }
 
 .install-popup__card {
-  width: min(320px, 100%);
-  padding: var(--space-5);
+  width: min(340px, 100%);
+  padding: var(--space-6) var(--space-5);
   text-align: center;
-  background-color: #352f44;
-  color: var(--color-text-inverse);
-  border-radius: var(--radius-md);
+  background: var(--glass-bg-strong);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  color: var(--ink);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
   box-shadow: var(--shadow-lg);
 }
 
 .install-popup__title {
   margin-bottom: var(--space-2);
-  font-size: 1.1rem;
+  font-size: 1.15rem;
+  font-weight: 800;
 }
 .install-popup__text {
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--space-5);
   font-size: 0.9rem;
-  color: #d7d3df;
+  color: var(--ink-muted);
 }
 .install-popup__actions {
   display: flex;

@@ -15,12 +15,14 @@ import { initToast } from './ui/toast.js';
 import { initControls } from './ui/controls.js';
 import { initResponsive } from './ui/responsive.js';
 import { initShortcuts } from './ui/shortcuts.js';
+import { initRangeFills } from './ui/range.js';
 import { createHistory } from './features/history.js';
 import { initImageIO } from './features/imageIO.js';
 import { initTransform } from './features/transform.js';
 import { initFiltersPanel } from './features/filtersPanel.js';
 import { initText } from './features/text.js';
 import { initCrop } from './features/crop.js';
+import { initDropzone } from './features/dropzone.js';
 import { initPWA } from './pwa/pwa.js';
 
 function boot() {
@@ -44,6 +46,8 @@ function boot() {
   const crop = initCrop(ctx);
   initControls(ctx);
   initResponsive(ctx);
+  initDropzone(ctx);
+  initRangeFills(); // paint slider fills (after all .range inputs exist)
 
   // Esc: back out of the active tool / close the text panel.
   const cancel = () => {
@@ -66,7 +70,7 @@ function boot() {
 
   initPWA(dom);
 
-  renderer.render(); // first paint shows the placeholder
+  renderer.render(); // first paint clears the canvas; the HTML empty state shows over it
 }
 
 if (document.readyState === 'loading') {

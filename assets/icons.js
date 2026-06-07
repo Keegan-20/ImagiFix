@@ -34,4 +34,22 @@ export const ICONS = Object.freeze({
     '<path d="M8 16l4 4 4-4Z" fill="currentColor"/>',
   ),
   text: svg('<path d="M4 7V5h16v2"/><path d="M12 5v14"/><path d="M9 19h6"/>'),
+  plus: svg('<path d="M12 5v14"/><path d="M5 12h14"/>'),
+  image: svg(
+    '<rect x="3" y="3" width="18" height="18" rx="2.5"/>' +
+    '<circle cx="8.5" cy="8.5" r="1.6"/><path d="m21 15-4.5-4.5L5 21"/>',
+  ),
+  sparkles: svg(
+    '<path d="M12 3l1.7 4.5L18 9l-4.3 1.5L12 15l-1.7-4.5L6 9l4.3-1.5z" ' +
+    'fill="currentColor" stroke="none"/>' +
+    '<path d="M18.5 13.5l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z" ' +
+    'fill="currentColor" stroke="none"/>',
+  ),
+  upload: svg(
+    '<path d="M4 17v2a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-2"/>' +
+    '<path d="M12 3v12"/><path d="m7 8 5-5 5 5"/>',
+  ),
+  folder: svg(
+    '<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
+  ),
 });

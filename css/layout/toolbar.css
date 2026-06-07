@@ -1,57 +1,99 @@
-/* Adjustments panel. */
+/* Adjustments panel — floating glass surface with grouped slider cards. */
 .toolbar {
   display: flex;
   flex-direction: column;
+  gap: var(--space-4);
   width: var(--toolbar-width);
-  padding: var(--space-3) var(--space-4) var(--space-5);
-  background-color: var(--color-panel);
-  color: var(--color-text-inverse);
+  padding: var(--space-5) var(--space-4);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md), var(--shadow-inset);
   overflow-y: auto;
+}
+
+.toolbar__head {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.toolbar__title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.toolbar__subtitle {
+  font-size: 0.78rem;
+  color: var(--ink-muted);
 }
 
 .toolbar__filters {
   display: flex;
   flex-direction: column;
-  gap: var(--space-1);
-  margin-bottom: var(--space-4);
+  gap: var(--space-2);
 }
 
+/* Each generated slider lives in its own soft card. */
 .toolbar__item {
-  padding: var(--space-2) 0;
+  position: relative;
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid var(--glass-stroke);
+  transition: background var(--transition-fast), border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+.toolbar__item:hover {
+  background: rgba(255, 255, 255, 0.85);
+  border-color: var(--violet-200);
+  box-shadow: var(--shadow-xs);
 }
 
 .toolbar__label {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.78rem;
+  display: block;
+  margin-bottom: var(--space-2);
+  font-size: 0.72rem;
   font-weight: 700;
-  letter-spacing: 0.4px;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  margin-bottom: var(--space-1);
-  color: #d7d7d7;
+  color: var(--ink-soft);
 }
 
 /* The live value badge generated alongside each slider. */
 .toolbar__item output {
-  float: right;
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-3);
+  min-width: 2.5ch;
+  padding: 1px 8px;
+  text-align: center;
+  border-radius: var(--radius-pill);
+  font-size: 0.72rem;
   font-weight: 700;
-  color: var(--color-accent);
-  font-size: 0.78rem;
+  color: var(--violet-700);
+  background: var(--violet-100);
 }
 
 @media (max-width: 768px) {
-  /* Slides up as an overlay above the bottom rail when toggled. */
+  /* Slides up as a floating sheet above the bottom dock when toggled. */
   .toolbar {
     position: fixed;
-    inset: auto 0 var(--sidebar-width) 0;
+    inset: auto var(--space-3) calc(var(--rail-mobile-height) + var(--space-4)) var(--space-3);
     z-index: 45;
-    width: 100%;
-    max-height: 50vh;
-    transform: translateY(110%);
-    transition: transform var(--transition);
+    width: auto;
+    max-height: 55vh;
+    transform: translateY(120%);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform var(--transition), opacity var(--transition);
     box-shadow: var(--shadow-lg);
   }
   .toolbar.is-open {
     transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
   }
 }

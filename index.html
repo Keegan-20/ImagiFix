@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#fdba3b" />
+  <meta name="theme-color" content="#7c3aed" />
   <meta name="description" content="ImagiFix — a fast, offline-capable photo editor built with pure HTML, CSS and Vanilla JavaScript using the Canvas API." />
 
   <title>ImagiFix — Photo Editor</title>
@@ -17,16 +17,24 @@
 <body>
   <!-- ===== Header ===== -->
   <header class="app-header">
-    <h1 class="app-header__title" id="title">ImagiFix</h1>
+    <div class="app-header__brand">
+      <span class="app-header__logo" data-icon="sparkles" aria-hidden="true"></span>
+      <h1 class="app-header__title" id="title">ImagiFix</h1>
+    </div>
 
     <div class="app-header__actions">
+      <div class="app-header__history" role="group" aria-label="History">
+        <button type="button" id="undoButton" class="icon-btn" aria-label="Undo (Ctrl+Z)" data-tooltip="Undo" data-icon="undo"></button>
+        <button type="button" id="redoButton" class="icon-btn" aria-label="Redo (Ctrl+Y)" data-tooltip="Redo" data-icon="redo"></button>
+      </div>
+
       <input type="file" id="fileInput" accept="image/*" class="visually-hidden" />
-      <label for="fileInput" class="btn btn--primary">Choose Image</label>
+      <label for="fileInput" class="btn btn--primary app-header__upload">
+        <span class="btn__icon" data-icon="plus"></span>
+        <span class="btn__label">Choose Image</span>
+      </label>
 
-      <button type="button" id="undoButton" class="icon-btn" aria-label="Undo (Ctrl+Z)" title="Undo (Ctrl+Z)" data-icon="undo"></button>
-      <button type="button" id="redoButton" class="icon-btn" aria-label="Redo (Ctrl+Y)" title="Redo (Ctrl+Y)" data-icon="redo"></button>
-
-      <button type="button" id="saveButton" class="btn btn--primary btn--save" aria-label="Save image (Ctrl+S)" title="Save image (Ctrl+S)">
+      <button type="button" id="saveButton" class="btn btn--save" aria-label="Save image (Ctrl+S)" data-tooltip="Save (Ctrl+S)">
         <span class="btn__label">Save</span>
         <span class="btn__icon" data-icon="download"></span>
       </button>
@@ -37,44 +45,149 @@
   <main class="editor">
     <!-- Tool rail -->
     <nav class="sidebar" aria-label="Editing tools">
-      <button type="button" id="toolbarToggle" class="tool-btn" aria-label="Toggle adjustments" aria-controls="toolbar" title="Adjustments" data-icon="sliders"></button>
-      <button type="button" id="cropButton" class="tool-btn" aria-label="Crop" aria-pressed="false" title="Crop" data-icon="crop"></button>
-      <button type="button" id="rotateLeftButton" class="tool-btn" aria-label="Rotate left (Shift+R)" title="Rotate left" data-icon="rotateLeft"></button>
-      <button type="button" id="rotateRightButton" class="tool-btn" aria-label="Rotate right (R)" title="Rotate right" data-icon="rotateRight"></button>
-      <button type="button" id="flipHButton" class="tool-btn" aria-label="Flip horizontal (H)" aria-pressed="false" title="Flip horizontal" data-icon="flipHorizontal"></button>
-      <button type="button" id="flipVButton" class="tool-btn" aria-label="Flip vertical (V)" aria-pressed="false" title="Flip vertical" data-icon="flipVertical"></button>
+      <div class="sidebar__group">
+        <p class="sidebar__group-label">Adjust</p>
+        <button type="button" id="toolbarToggle" class="tool-btn" aria-label="Toggle adjustments" aria-controls="toolbar">
+          <span class="tool-btn__icon" data-icon="sliders"></span>
+          <span class="tool-btn__label">Filters</span>
+        </button>
+      </div>
 
-      <div class="text-tool">
-        <button type="button" id="textButton" class="tool-btn" aria-label="Add text" aria-haspopup="dialog" title="Add text" data-icon="text"></button>
+      <div class="sidebar__group">
+        <p class="sidebar__group-label">Transform</p>
+        <button type="button" id="cropButton" class="tool-btn" aria-label="Crop" aria-pressed="false">
+          <span class="tool-btn__icon" data-icon="crop"></span>
+          <span class="tool-btn__label">Crop</span>
+        </button>
+        <button type="button" id="rotateLeftButton" class="tool-btn" aria-label="Rotate left (Shift+R)">
+          <span class="tool-btn__icon" data-icon="rotateLeft"></span>
+          <span class="tool-btn__label">Rotate L</span>
+        </button>
+        <button type="button" id="rotateRightButton" class="tool-btn" aria-label="Rotate right (R)">
+          <span class="tool-btn__icon" data-icon="rotateRight"></span>
+          <span class="tool-btn__label">Rotate R</span>
+        </button>
+        <button type="button" id="flipHButton" class="tool-btn" aria-label="Flip horizontal (H)" aria-pressed="false">
+          <span class="tool-btn__icon" data-icon="flipHorizontal"></span>
+          <span class="tool-btn__label">Flip H</span>
+        </button>
+        <button type="button" id="flipVButton" class="tool-btn" aria-label="Flip vertical (V)" aria-pressed="false">
+          <span class="tool-btn__icon" data-icon="flipVertical"></span>
+          <span class="tool-btn__label">Flip V</span>
+        </button>
+      </div>
 
-        <div class="text-panel" id="textPanel" role="dialog" aria-label="Add text overlay">
-          <button type="button" id="textCloseButton" class="text-panel__close" aria-label="Close">&times;</button>
-          <label class="text-panel__label" for="textContent">Text</label>
-          <input type="text" id="textContent" placeholder="Enter text…" autocomplete="off" />
-          <div class="text-panel__row">
-            <label for="textColor">Colour</label>
-            <input type="color" id="textColor" value="#000000" />
+      <div class="sidebar__group">
+        <p class="sidebar__group-label">Insert</p>
+        <div class="text-tool">
+          <button type="button" id="textButton" class="tool-btn" aria-label="Add text" aria-haspopup="dialog">
+            <span class="tool-btn__icon" data-icon="text"></span>
+            <span class="tool-btn__label">Text</span>
+          </button>
+
+          <div class="text-panel" id="textPanel" role="dialog" aria-label="Add text overlay">
+            <button type="button" id="textCloseButton" class="text-panel__close" aria-label="Close">&times;</button>
+            <label class="text-panel__label" for="textContent">Text</label>
+            <input type="text" id="textContent" placeholder="Enter text…" autocomplete="off" />
+            <div class="text-panel__row">
+              <label for="textColor">Colour</label>
+              <input type="color" id="textColor" value="#1e1b4b" />
+            </div>
+            <div class="text-panel__row">
+              <label for="textSize">Size</label>
+              <input type="range" id="textSize" class="range" min="4" max="120" value="24" />
+              <output id="textSizeValue" for="textSize">24</output>
+            </div>
+            <button type="button" id="addTextButton" class="btn btn--primary">Add Text</button>
           </div>
-          <div class="text-panel__row">
-            <label for="textSize">Size</label>
-            <input type="range" id="textSize" class="range" min="4" max="120" value="24" />
-            <output id="textSizeValue" for="textSize">24</output>
-          </div>
-          <button type="button" id="addTextButton" class="btn btn--primary">Add Text</button>
         </div>
       </div>
     </nav>
 
     <!-- Adjustments -->
     <aside class="toolbar" id="toolbar" aria-label="Adjustments">
+      <header class="toolbar__head">
+        <h2 class="toolbar__title">Adjustments</h2>
+        <p class="toolbar__subtitle">Fine-tune your image</p>
+      </header>
       <div id="filterControls" class="toolbar__filters"><!-- generated from FILTERS config --></div>
-      <button type="button" id="resetButton" class="btn">Reset Adjustments</button>
+      <button type="button" id="resetButton" class="btn btn--soft">Reset Adjustments</button>
     </aside>
 
     <!-- Canvas -->
-    <section class="canvas-area" aria-label="Image preview">
+    <section class="canvas-area" id="canvasArea" aria-label="Image preview">
       <div id="toast" class="toast" role="status" aria-live="polite"></div>
-      <canvas id="canvas" width="980" height="600" role="img" aria-label="Editing canvas"></canvas>
+
+      <div class="canvas-stage">
+        <canvas id="canvas" width="980" height="600" role="img" aria-label="Editing canvas"></canvas>
+      </div>
+
+      <!-- Onboarding empty state / drag-and-drop upload zone -->
+      <div class="empty-state" id="emptyState">
+        <div class="empty-state__dropzone" id="dropzone">
+          <span class="empty-state__badge">Supported: <strong>JPG, PNG, WEBP</strong></span>
+
+          <!-- Illustration: stacked glass image cards, + badge, and decor -->
+          <div class="empty-state__art">
+            <svg class="empty-state__decor" viewBox="0 0 440 300" fill="none" aria-hidden="true">
+              <defs>
+                <path id="es-spk" d="M0,-9 C0,-2.52 2.52,0 9,0 C2.52,0 0,2.52 0,9 C0,2.52 -2.52,0 -9,0 C-2.52,0 0,-2.52 0,-9 Z"/>
+              </defs>
+              <!-- sparkles -->
+              <use href="#es-spk" transform="translate(190 64)" fill="#8b5cf6" opacity="0.95"/>
+              <use href="#es-spk" transform="translate(104 150) scale(0.68)" fill="#a78bfa" opacity="0.9"/>
+              <use href="#es-spk" transform="translate(384 198) scale(0.9)" fill="#a78bfa" opacity="0.95"/>
+              <use href="#es-spk" transform="translate(300 252) scale(0.6)" fill="#c4b5fd"/>
+              <!-- hollow circles -->
+              <circle cx="318" cy="90" r="8" stroke="#c4b5fd" stroke-width="2.2"/>
+              <circle cx="348" cy="150" r="5" stroke="#a78bfa" stroke-width="2"/>
+              <!-- dashed arrow: a gentle, shallow swoosh from the lower-left
+                   that points up-right into the card (head clear of the box). -->
+              <path d="M56 150 C 80 184 112 180 140 150" stroke="#a78bfa" stroke-width="2.4" stroke-dasharray="5 7" stroke-linecap="round"/>
+              <path d="M128 154 L140 150 L137 163" stroke="#a78bfa" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+
+            <div class="empty-state__cards">
+              <span class="empty-state__card empty-state__card--back" aria-hidden="true"></span>
+              <span class="empty-state__card" aria-hidden="true">
+                <svg viewBox="0 0 96 96" fill="none" aria-hidden="true">
+                  <defs>
+                    <linearGradient id="es-img" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0" stop-color="#a78bfa"/>
+                      <stop offset="1" stop-color="#6d28d9"/>
+                    </linearGradient>
+                    <linearGradient id="es-img2" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0" stop-color="#cabffa"/>
+                      <stop offset="1" stop-color="#9b7ff0"/>
+                    </linearGradient>
+                  </defs>
+                  <rect x="13" y="13" width="70" height="70" rx="14" fill="none" stroke="rgba(124,58,237,0.16)" stroke-width="2"/>
+                  <circle cx="62" cy="34" r="8" fill="url(#es-img)"/>
+                  <path d="M47 80 L65 53 L83 80 Z" fill="url(#es-img2)"/>
+                  <path d="M15 80 L39 44 L65 80 Z" fill="url(#es-img)"/>
+                </svg>
+              </span>
+              <span class="empty-state__plus" data-icon="plus" aria-hidden="true"></span>
+            </div>
+          </div>
+
+          <h2 class="empty-state__title"><em>Upload</em> <span class="empty-state__title-dark">or</span> <em>drag &amp; drop</em> <span class="empty-state__title-dark">your image</span></h2>
+          <p class="empty-state__text">Start editing in seconds. Enhance, adjust and perfect your images.</p>
+
+          <div class="empty-state__actions">
+            <label for="fileInput" class="btn empty-state__upload">
+              <span class="btn__icon" data-icon="upload"></span>
+              <span>Upload Image</span>
+            </label>
+            <button type="button" id="browseFiles" class="btn empty-state__browse">
+              <span class="btn__icon" data-icon="folder"></span>
+              <span>Browse Files</span>
+            </button>
+          </div>
+
+          <span class="empty-state__hint">or drag &amp; drop here</span>
+        </div>
+      </div>
     </section>
   </main>
 

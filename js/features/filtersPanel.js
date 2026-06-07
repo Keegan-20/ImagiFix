@@ -8,6 +8,7 @@
  */
 import { FILTERS } from '../config/constants.js';
 import { ensureImage } from './guards.js';
+import { setRangeFill } from '../ui/range.js';
 
 const formatValue = (filter, value) =>
   filter.format ? filter.format(value) : String(value);
@@ -68,6 +69,7 @@ export function initFiltersPanel({ store, history, dom }) {
       if (inputs[filter.id].value !== String(value)) {
         inputs[filter.id].value = String(value);
       }
+      setRangeFill(inputs[filter.id]);
       outputs[filter.id].textContent = formatValue(filter, value);
     });
   });

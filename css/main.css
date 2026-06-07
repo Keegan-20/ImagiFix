@@ -19,5 +19,7 @@
 @import "components/buttons.css";
 @import "components/range.css";
 @import "components/text-overlay.css";
+@import "components/empty-state.css";
 @import "components/install-popup.css";
 @import "components/toast.css";
+@import "components/tooltip.css";

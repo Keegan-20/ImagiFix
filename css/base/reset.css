@@ -11,6 +11,11 @@ html {
   -webkit-text-size-adjust: 100%;
 }
 
+body {
+  /* Guard against any stray horizontal scroll from fixed/overlay surfaces. */
+  overflow-x: hidden;
+}
+
 img,
 svg,
 canvas {
@@ -39,7 +44,7 @@ button:disabled {
 
 /* Visible, consistent keyboard focus everywhere. */
 :focus-visible {
-  outline: 3px solid var(--color-accent);
+  outline: 2px solid var(--violet-500);
   outline-offset: 2px;
   border-radius: var(--radius-sm);
 }
