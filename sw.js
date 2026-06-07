@@ -12,7 +12,7 @@
  *
  * Bump CACHE_NAME to ship a new shell.
  */
-const CACHE_NAME = 'imagifix-v1';
+const CACHE_NAME = 'imagifix-v2';
 
 const APP_SHELL = [
   './',
@@ -58,6 +58,7 @@ const APP_SHELL = [
   './js/utils/helpers.js',
   './assets/icons.js',
   './assets/images/placeholder.png',
+  './assets/images/logo-icon.png',
   './assets/images/logo-192.png',
   './assets/images/logo-512.png',
 ];

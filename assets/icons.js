@@ -39,12 +39,6 @@ export const ICONS = Object.freeze({
     '<rect x="3" y="3" width="18" height="18" rx="2.5"/>' +
     '<circle cx="8.5" cy="8.5" r="1.6"/><path d="m21 15-4.5-4.5L5 21"/>',
   ),
-  sparkles: svg(
-    '<path d="M12 3l1.7 4.5L18 9l-4.3 1.5L12 15l-1.7-4.5L6 9l4.3-1.5z" ' +
-    'fill="currentColor" stroke="none"/>' +
-    '<path d="M18.5 13.5l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z" ' +
-    'fill="currentColor" stroke="none"/>',
-  ),
   upload: svg(
     '<path d="M4 17v2a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-2"/>' +
     '<path d="M12 3v12"/><path d="m7 8 5-5 5 5"/>',

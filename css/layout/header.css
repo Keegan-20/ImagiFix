@@ -22,20 +22,11 @@
   gap: var(--space-3);
 }
 
-/* Gradient logo chip. */
+/* Brand mark. */
 .app-header__logo {
-  display: grid;
-  place-items: center;
   width: 36px;
   height: 36px;
   border-radius: var(--radius-md);
-  background: var(--grad-primary);
-  color: #fff;
-  box-shadow: var(--shadow-glow);
-}
-.app-header__logo svg {
-  width: 20px;
-  height: 20px;
 }
 
 .app-header__actions {
