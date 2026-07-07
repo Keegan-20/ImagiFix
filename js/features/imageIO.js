@@ -7,7 +7,7 @@
  * offscreen canvas so the saved file always matches what's on screen.
  */
 import { paint } from '../canvas/renderer.js';
-import { CANVAS, MAX_IMAGE_DIMENSION } from '../config/constants.js';
+import { MAX_IMAGE_DIMENSION } from '../config/constants.js';
 import { createResetPatch } from '../core/state.js';
 import { bus, EVENTS } from '../core/eventBus.js';
 import { downloadBlob } from '../utils/helpers.js';
@@ -55,21 +55,30 @@ export async function loadImageFile(file, { store, history }) {
 
 /**
  * Render current state to an offscreen canvas and download it as PNG.
+ *
+ * The canvas is sized to the *image's* rotated dimensions — not the fixed
+ * on-screen stage — so the file keeps the source's full resolution and has
+ * no transparent letterbox bars. `paint()` re-maps text/blur so the result
+ * still matches what's on screen, just at native size.
+ *
  * @param {object} state
  * @param {string} filename
  */
 export async function exportImage(state, filename) {
+  const { image, rotation } = state;
+  const quarterTurned = rotation % 180 !== 0;
   const canvas = document.createElement('canvas');
-  canvas.width = CANVAS.width;
-  canvas.height = CANVAS.height;
+  canvas.width = Math.max(1, Math.round(quarterTurned ? image.height : image.width));
+  canvas.height = Math.max(1, Math.round(quarterTurned ? image.width : image.height));
   paint(canvas.getContext('2d'), state, canvas.width, canvas.height);
 
   const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
   if (!blob) {
     bus.emit(EVENTS.TOAST, { type: 'error', message: 'Export failed.' });
-    return;
+    return false;
   }
   downloadBlob(blob, filename.endsWith('.png') ? filename : `${filename}.png`);
+  return true;
 }
 
 /**
@@ -85,16 +94,83 @@ export function initImageIO(ctx) {
     e.target.value = ''; // allow re-selecting the same file
   });
 
-  const save = () => {
-    if (!store.getState().image) {
+  // --- Save popover: inline filename field instead of a blocking prompt() ---
+  const isPanelOpen = () => dom.savePanel.classList.contains('is-open');
+
+  // The disabled button blocks clicks, but Ctrl+S arrives via the event bus —
+  // both paths funnel through here, so guard the state, not just the UI.
+  const openPanel = () => {
+    const { image, activeTool } = store.getState();
+    if (!image) {
       bus.emit(EVENTS.TOAST, { type: 'error', message: 'Select an image first.' });
       return;
     }
-    const name = prompt('Save image as:', 'imagifix-edit.png');
-    if (name === null) return; // user cancelled
-    exportImage(store.getState(), name.trim() || 'imagifix-edit.png');
+    if (activeTool === 'crop') {
+      bus.emit(EVENTS.TOAST, { type: 'error', message: 'Finish cropping first — Apply or Cancel the selection.' });
+      return;
+    }
+    if (activeTool === 'text') {
+      bus.emit(EVENTS.TOAST, { type: 'error', message: 'Place the text first, or press Esc to cancel it.' });
+      return;
+    }
+    dom.savePanel.classList.add('is-open');
+    dom.saveNameInput.focus();
+    dom.saveNameInput.select();
   };
 
-  dom.saveButton.addEventListener('click', save);
-  bus.on(EVENTS.REQUEST_SAVE, save); // keyboard shortcut entry point
+  // Focus returns to the Save button on dismissal only. After a completed
+  // save it moves away instead — otherwise a held/repeated Enter would
+  // activate the focused button and loop open → download → open → download.
+  const closePanel = (restoreFocus = true) => {
+    if (!isPanelOpen()) return;
+    dom.savePanel.classList.remove('is-open');
+    if (restoreFocus) dom.saveButton.focus();
+    else dom.saveNameInput.blur();
+  };
+
+  let exporting = false; // re-entry guard: held Enter / double-click = one file
+
+  const confirmSave = async () => {
+    if (exporting) return;
+    if (!store.getState().image) { // e.g. Ctrl+Z cleared it while the panel was open
+      closePanel();
+      return;
+    }
+    // Drop characters that are illegal in filenames, and any typed ".png" —
+    // the field already presents a fixed .png suffix.
+    const base = dom.saveNameInput.value
+      .replace(/[\\/:*?"<>|]/g, '')
+      .trim()
+      .replace(/\.png$/i, '')
+      .trim() || 'imagifix-edit';
+    dom.saveNameInput.value = base; // remembered for the next save
+    closePanel(false);
+    exporting = true;
+    try {
+      if (await exportImage(store.getState(), `${base}.png`)) {
+        bus.emit(EVENTS.TOAST, { type: 'info', message: `Saved as ${base}.png` });
+      }
+    } finally {
+      exporting = false;
+    }
+  };
+
+  dom.saveButton.addEventListener('click', () => (isPanelOpen() ? closePanel() : openPanel()));
+  bus.on(EVENTS.REQUEST_SAVE, openPanel); // keyboard shortcut entry point
+  dom.saveConfirmButton.addEventListener('click', confirmSave);
+  dom.saveCancelButton.addEventListener('click', closePanel);
+
+  dom.savePanel.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      confirmSave();
+    } else if (e.key === 'Escape') {
+      closePanel();
+    }
+  });
+
+  // Clicking anywhere else dismisses the popover.
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('#savePanel') && !e.target.closest('#saveButton')) closePanel();
+  });
 }

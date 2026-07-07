@@ -11,7 +11,7 @@ import { ensureImage } from '../features/guards.js';
 export function initControls({ store, history, dom }) {
   // Controls that only make sense with an image loaded.
   const gated = [
-    dom.saveButton, dom.resetButton, dom.cropButton,
+    dom.resetButton, dom.cropButton,
     dom.rotateLeftBtn, dom.rotateRightBtn, dom.flipHBtn, dom.flipVBtn,
     dom.textButton, dom.addTextButton,
   ];
@@ -22,9 +22,18 @@ export function initControls({ store, history, dom }) {
   };
   setEnabled(false);
 
-  // Flip the gate the moment an image appears (or is cleared).
+  // Save is gated harder: it also locks while a canvas tool is mid-operation
+  // (crop selection pending, text waiting for placement) so an uncommitted
+  // edit can't be half-exported.
+  const syncSave = (s) => {
+    dom.saveButton.disabled = !s.image || s.activeTool !== null;
+  };
+  syncSave(store.getState());
+
+  // Flip the gates the moment an image appears/clears or a tool arms/exits.
   store.subscribe((s, prev) => {
     if (!!s.image !== !!prev.image) setEnabled(!!s.image);
+    if (!!s.image !== !!prev.image || s.activeTool !== prev.activeTool) syncSave(s);
   });
 
   // Undo/redo availability is announced by the history module.

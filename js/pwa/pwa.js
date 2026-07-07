@@ -3,7 +3,7 @@
  * install prompt (captured from `beforeinstallprompt`, surfaced on our terms).
  */
 export function initPWA(dom) {
-  // Register the worker after load so it never competes with first paint.
+  // im Registering the worker after load so it never competes with first paint.
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker

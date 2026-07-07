@@ -59,9 +59,6 @@ export const MOBILE_BREAKPOINT = 768;
 /** Hard cap so a huge upload can't lock up the main thread on decode. */
 export const MAX_IMAGE_DIMENSION = 8192;
 
-/** Service-worker cache name. Bump the version to invalidate the app shell. */
-export const CACHE_NAME = 'imagifix-v1';
-
 /**
  * Keyboard shortcuts. `combo` is matched case-insensitively against a
  * normalised "ctrl+shift+key" string built in ui/shortcuts.js.

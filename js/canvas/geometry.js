@@ -2,6 +2,7 @@
  * Pure geometry helpers — no DOM, no canvas state. These do all the
  * "where does it go" maths so the renderer and the crop tool stay readable.
  */
+import { clamp, toRadians } from '../utils/helpers.js';
 
 /**
  * Contain-fit a source rectangle inside a box, preserving aspect ratio and
@@ -41,6 +42,69 @@ export function getDrawSize(imgW, imgH, rotation, canvasW, canvasH) {
   const boxH = quarterTurned ? canvasW : canvasH;
   const { scale } = fitContain(imgW, imgH, boxW, boxH);
   return { width: imgW * scale, height: imgH * scale, scale };
+}
+
+/**
+ * The axis-aligned bounding box the image occupies on the canvas after
+ * rotation + contain-fit — i.e. the visible picture, letterbox excluded.
+ * The crop tool confines its selection to this box.
+ *
+ * @returns {{ x:number, y:number, width:number, height:number, scale:number }}
+ */
+export function getImageBox(imgW, imgH, rotation, canvasW, canvasH) {
+  const { width, height, scale } = getDrawSize(imgW, imgH, rotation, canvasW, canvasH);
+  const quarterTurned = rotation % 180 !== 0;
+  const boxW = quarterTurned ? height : width;
+  const boxH = quarterTurned ? width : height;
+  return {
+    x: (canvasW - boxW) / 2,
+    y: (canvasH - boxH) / 2,
+    width: boxW,
+    height: boxH,
+    scale,
+  };
+}
+
+/**
+ * Map a canvas-space rectangle back to *source image* pixel coordinates by
+ * inverting the renderer's transform (translate → rotate → flip → fit-scale).
+ * This is what lets the crop tool cut from the original image at full
+ * resolution instead of from the scaled-down composite.
+ *
+ * @param {{x:number,y:number,width:number,height:number}} rect  canvas coords
+ * @param {number} imgW  source image width
+ * @param {number} imgH  source image height
+ * @param {{rotation:number, flipH:boolean, flipV:boolean}} transform
+ * @param {number} canvasW
+ * @param {number} canvasH
+ * @returns {{ x:number, y:number, width:number, height:number }} integer
+ *   source-space rect, clamped to the image bounds.
+ */
+export function canvasRectToImageRect(rect, imgW, imgH, transform, canvasW, canvasH) {
+  const { rotation, flipH, flipV } = transform;
+  const { scale } = getDrawSize(imgW, imgH, rotation, canvasW, canvasH);
+  const rad = toRadians(-rotation);
+  const cos = Math.cos(rad);
+  const sin = Math.sin(rad);
+
+  // Inverse of: translate(centre) → rotate(θ) → scale(flip) → draw centred.
+  const invert = (cx, cy) => {
+    const dx = cx - canvasW / 2;
+    const dy = cy - canvasH / 2;
+    let rx = dx * cos - dy * sin;
+    let ry = dx * sin + dy * cos;
+    if (flipH) rx = -rx;
+    if (flipV) ry = -ry;
+    return { x: rx / scale + imgW / 2, y: ry / scale + imgH / 2 };
+  };
+
+  const a = invert(rect.x, rect.y);
+  const b = invert(rect.x + rect.width, rect.y + rect.height);
+  const x0 = Math.round(clamp(Math.min(a.x, b.x), 0, imgW));
+  const y0 = Math.round(clamp(Math.min(a.y, b.y), 0, imgH));
+  const x1 = Math.round(clamp(Math.max(a.x, b.x), 0, imgW));
+  const y1 = Math.round(clamp(Math.max(a.y, b.y), 0, imgH));
+  return { x: x0, y: y0, width: x1 - x0, height: y1 - y0 };
 }
 
 /** Normalise any angle into the [0, 360) range. */

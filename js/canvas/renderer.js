@@ -4,14 +4,18 @@
  * `paint()` is a pure draw from a state snapshot, reused by both the live
  * canvas and the exporter (so export can never drift from what's on screen —
  * the original code duplicated this logic, which is how the save bug crept in).
+ * It is resolution-independent: state coordinates (text position/size, blur
+ * radius) live in the on-screen reference space (CANVAS), and are re-mapped
+ * when painting at any other size — e.g. a full-resolution export.
  *
  * `createRenderer()` adds the live concerns: a clear stage when empty (the
- * HTML empty-state overlay handles onboarding), the crop selection overlay,
- * and rAF-coalesced repaints.
+ * HTML empty-state overlay handles onboarding), the crop selection overlay
+ * (dimmed surround, rule-of-thirds grid, resize handles), and rAF-coalesced
+ * repaints.
  */
 import { CANVAS } from '../config/constants.js';
 import { buildFilterString } from './filters.js';
-import { getDrawSize } from './geometry.js';
+import { getDrawSize, getImageBox } from './geometry.js';
 import { toRadians, rafThrottle } from '../utils/helpers.js';
 
 /**
@@ -29,28 +33,46 @@ export function paint(ctx, state, width, height) {
   ctx.clearRect(0, 0, width, height);
   if (!image) return;
 
-  const { width: drawW, height: drawH } = getDrawSize(
+  const { width: drawW, height: drawH, scale } = getDrawSize(
     image.width, image.height, rotation, width, height,
   );
 
+  // Ratio between this target and the on-screen reference canvas — keeps
+  // px-denominated state (text, blur) visually identical at any resolution.
+  // On the live canvas the ratio is exactly 1 and everything maps 1:1.
+  const ref = getImageBox(image.width, image.height, rotation, CANVAS.width, CANVAS.height);
+  const k = scale / ref.scale;
+
   ctx.save();
-  ctx.filter = buildFilterString(filters);
+  ctx.filter = buildFilterString(filters, k);
   ctx.translate(width / 2, height / 2);
   ctx.rotate(toRadians(rotation));
   ctx.scale(flipH ? -1 : 1, flipV ? -1 : 1);
   ctx.drawImage(image, -drawW / 2, -drawH / 2, drawW, drawH);
   ctx.restore();
 
-  // Text overlay sits on top, unaffected by image filters, in canvas space.
+  // Text overlay sits on top, unaffected by image filters. Its stored
+  // position is in reference-canvas space, anchored to the image box.
   if (text?.content) {
+    const tgt = getImageBox(image.width, image.height, rotation, width, height);
     ctx.save();
     ctx.filter = 'none';
     ctx.fillStyle = text.color;
-    ctx.font = `${text.size}px Arial, sans-serif`;
+    ctx.font = `${text.size * k}px Arial, sans-serif`;
     ctx.textBaseline = 'top';
-    ctx.fillText(text.content, text.x, text.y);
+    ctx.fillText(text.content, (text.x - ref.x) * k + tgt.x, (text.y - ref.y) * k + tgt.y);
     ctx.restore();
   }
+}
+
+/** The eight resize-handle centre points of a rectangle. */
+export function getHandlePoints(rect) {
+  const { x, y, width: w, height: h } = rect;
+  return {
+    nw: [x, y],          n: [x + w / 2, y],          ne: [x + w, y],
+    w:  [x, y + h / 2],                              e:  [x + w, y + h / 2],
+    sw: [x, y + h],      s: [x + w / 2, y + h],      se: [x + w, y + h],
+  };
 }
 
 /**
@@ -65,24 +87,72 @@ export function createRenderer(canvas, getState) {
   canvas.width = CANVAS.width;
   canvas.height = CANVAS.height;
 
+  /**
+   * Size the canvas backing store to the image's on-screen aspect (capped at
+   * the CANVAS stage bounds) so the stage hugs the picture — no white
+   * letterbox bars around a cropped/rotated image, matching the
+   * letterbox-free export. Falls back to the full stage when empty.
+   */
+  function fitCanvas() {
+    const { image, rotation } = getState();
+    let w = CANVAS.width;
+    let h = CANVAS.height;
+    if (image) {
+      const quarterTurned = rotation % 180 !== 0;
+      const iw = quarterTurned ? image.height : image.width;
+      const ih = quarterTurned ? image.width : image.height;
+      const scale = Math.min(CANVAS.width / iw, CANVAS.height / ih);
+      w = Math.max(1, Math.round(iw * scale));
+      h = Math.max(1, Math.round(ih * scale));
+    }
+    if (canvas.width !== w) canvas.width = w;
+    if (canvas.height !== h) canvas.height = h;
+  }
+
   function drawCropOverlay(rect) {
-    // Dim everything, then punch a clear window over the selection.
     ctx.save();
-    ctx.fillStyle = 'rgba(30, 27, 75, 0.55)';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.clearRect(rect.x, rect.y, rect.width, rect.height);
-    // Re-draw the selected slice at full clarity inside the window.
-    ctx.save();
+
+    // Dim everything *outside* the selection: even-odd fill punches a window
+    // through the scrim, leaving the selected pixels untouched underneath.
+    ctx.fillStyle = 'rgba(15, 12, 41, 0.55)';
     ctx.beginPath();
+    ctx.rect(0, 0, canvas.width, canvas.height);
     ctx.rect(rect.x, rect.y, rect.width, rect.height);
-    ctx.clip();
-    paint(ctx, getState(), canvas.width, canvas.height);
-    ctx.restore();
-    // Marching-ants border.
-    ctx.setLineDash([6, 4]);
-    ctx.strokeStyle = '#7c3aed';
+    ctx.fill('evenodd');
+
+    // Rule-of-thirds composition grid (skipped when the box is tiny).
+    if (rect.width > 48 && rect.height > 48) {
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      for (let i = 1; i <= 2; i += 1) {
+        const gx = rect.x + (rect.width * i) / 3;
+        const gy = rect.y + (rect.height * i) / 3;
+        ctx.moveTo(gx, rect.y);
+        ctx.lineTo(gx, rect.y + rect.height);
+        ctx.moveTo(rect.x, gy);
+        ctx.lineTo(rect.x + rect.width, gy);
+      }
+      ctx.stroke();
+    }
+
+    // Selection border.
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.95)';
     ctx.lineWidth = 2;
     ctx.strokeRect(rect.x, rect.y, rect.width, rect.height);
+
+    // Resize handles — white squares with the brand accent ring.
+    const HS = 12;
+    ctx.fillStyle = '#ffffff';
+    ctx.strokeStyle = '#7c3aed';
+    ctx.lineWidth = 2;
+    for (const [hx, hy] of Object.values(getHandlePoints(rect))) {
+      ctx.beginPath();
+      ctx.rect(hx - HS / 2, hy - HS / 2, HS, HS);
+      ctx.fill();
+      ctx.stroke();
+    }
+
     ctx.restore();
   }
 
@@ -101,5 +171,5 @@ export function createRenderer(canvas, getState) {
   /** rAF-coalesced repaint — safe to call on every input event. */
   const scheduleRender = rafThrottle(render);
 
-  return { render, scheduleRender, ctx };
+  return { render, scheduleRender, fitCanvas, ctx };
 }

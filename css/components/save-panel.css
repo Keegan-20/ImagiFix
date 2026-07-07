@@ -1,0 +1,87 @@
+/* ===== Save popover (off the header Save button) =====
+   Inline filename field + Download, replacing the old blocking prompt(). */
+
+.save-tool {
+  position: relative;
+}
+
+/* The button's hover tooltip would poke out from behind the open popover. */
+.save-tool:has(.save-panel.is-open) [data-tooltip]::after {
+  display: none;
+}
+
+.save-panel {
+  position: absolute;
+  top: calc(100% + var(--space-2));
+  right: 0;
+  z-index: 60;
+  width: 272px;
+  display: none;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: var(--glass-bg-strong);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  color: var(--ink);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  transform-origin: right top;
+  animation: save-panel-in var(--transition) var(--ease-out);
+}
+.save-panel.is-open {
+  display: flex;
+}
+
+@keyframes save-panel-in {
+  from { opacity: 0; transform: translateY(-6px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .save-panel { animation: none; }
+}
+
+.save-panel__label {
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+}
+
+.save-panel__field {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+.save-panel__field input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.5rem 0.7rem;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid var(--violet-200);
+  border-radius: var(--radius-sm);
+  outline: none;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+.save-panel__field input:focus-visible {
+  border-color: var(--violet-500);
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
+}
+
+/* Fixed extension chip after the name field. */
+.save-panel__ext {
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--ink-muted);
+}
+
+.save-panel__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+}
+
+.save-panel__btn {
+  padding: 0.5rem 0.9rem;
+  font-size: 0.8rem;
+}

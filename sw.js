@@ -12,7 +12,7 @@
  *
  * Bump CACHE_NAME to ship a new shell.
  */
-const CACHE_NAME = 'imagifix-v2';
+const CACHE_NAME = 'imagifix-v4';
 
 const APP_SHELL = [
   './',
@@ -31,8 +31,12 @@ const APP_SHELL = [
   './css/components/buttons.css',
   './css/components/range.css',
   './css/components/text-overlay.css',
+  './css/components/empty-state.css',
   './css/components/install-popup.css',
   './css/components/toast.css',
+  './css/components/tooltip.css',
+  './css/components/crop-bar.css',
+  './css/components/save-panel.css',
   // scripts
   './js/main.js',
   './js/config/constants.js',

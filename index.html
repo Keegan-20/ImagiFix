@@ -34,10 +34,28 @@
         <span class="btn__label">Choose Image</span>
       </label>
 
-      <button type="button" id="saveButton" class="btn btn--save" aria-label="Save image (Ctrl+S)" data-tooltip="Save (Ctrl+S)">
-        <span class="btn__label">Save</span>
-        <span class="btn__icon" data-icon="download"></span>
-      </button>
+      <div class="save-tool">
+        <button type="button" id="saveButton" class="btn btn--save" aria-label="Save image (Ctrl+S)" data-tooltip="Save (Ctrl+S)" aria-haspopup="dialog">
+          <span class="btn__label">Save</span>
+          <span class="btn__icon" data-icon="download"></span>
+        </button>
+
+        <!-- Save popover — inline filename field, replaces the blocking prompt() -->
+        <div class="save-panel" id="savePanel" role="dialog" aria-label="Save image as">
+          <label class="save-panel__label" for="saveName">File name</label>
+          <div class="save-panel__field">
+            <input type="text" id="saveName" value="imagifix-edit" autocomplete="off" spellcheck="false" />
+            <span class="save-panel__ext">.png</span>
+          </div>
+          <div class="save-panel__actions">
+            <button type="button" id="saveCancelButton" class="btn save-panel__btn">Cancel</button>
+            <button type="button" id="saveConfirmButton" class="btn btn--primary save-panel__btn">
+              <span class="btn__icon" data-icon="download"></span>
+              <span>Download</span>
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   </header>
 
@@ -120,6 +138,25 @@
 
       <div class="canvas-stage">
         <canvas id="canvas" width="980" height="600" role="img" aria-label="Editing canvas"></canvas>
+      </div>
+
+      <!-- Crop action bar — shown while the crop tool is active -->
+      <div class="crop-bar" id="cropBar" role="toolbar" aria-label="Crop options" hidden>
+        <div class="crop-bar__ratios" role="group" aria-label="Aspect ratio">
+          <button type="button" class="crop-bar__ratio" data-ratio="free" aria-pressed="true">Free</button>
+          <button type="button" class="crop-bar__ratio" data-ratio="original" aria-pressed="false">Original</button>
+          <button type="button" class="crop-bar__ratio" data-ratio="1:1" aria-pressed="false">1:1</button>
+          <button type="button" class="crop-bar__ratio" data-ratio="4:3" aria-pressed="false">4:3</button>
+          <button type="button" class="crop-bar__ratio" data-ratio="16:9" aria-pressed="false">16:9</button>
+        </div>
+        <output class="crop-bar__size" id="cropSizeReadout" aria-label="Crop output size">—</output>
+        <div class="crop-bar__actions">
+          <button type="button" id="cropCancelButton" class="btn crop-bar__btn">Cancel</button>
+          <button type="button" id="cropApplyButton" class="btn btn--primary crop-bar__btn">
+            <span class="btn__icon" data-icon="crop"></span>
+            <span>Apply</span>
+          </button>
+        </div>
       </div>
 
       <!-- Onboarding empty state / drag-and-drop upload zone -->

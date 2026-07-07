@@ -36,6 +36,10 @@ export function createDom() {
     // header
     fileInput: byId('fileInput'),
     saveButton: byId('saveButton'),
+    savePanel: byId('savePanel'),
+    saveNameInput: byId('saveName'),
+    saveConfirmButton: byId('saveConfirmButton'),
+    saveCancelButton: byId('saveCancelButton'),
     undoButton: byId('undoButton'),
     redoButton: byId('redoButton'),
     // sidebar tools
@@ -58,6 +62,12 @@ export function createDom() {
     toolbar: byId('toolbar'),
     filterControls: byId('filterControls'),
     resetButton: byId('resetButton'),
+    // crop bar
+    cropBar: byId('cropBar'),
+    cropApplyButton: byId('cropApplyButton'),
+    cropCancelButton: byId('cropCancelButton'),
+    cropSizeReadout: byId('cropSizeReadout'),
+    cropRatioButtons: $$('.crop-bar__ratio'),
     // canvas
     canvas: byId('canvas'),
     canvasArea: byId('canvasArea'),

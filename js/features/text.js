@@ -4,7 +4,8 @@
  * arbitrated through `state.activeTool` so crop and text never fight over the
  * same click.
  */
-import { getCanvasPoint } from '../canvas/geometry.js';
+import { getCanvasPoint, getImageBox } from '../canvas/geometry.js';
+import { CANVAS } from '../config/constants.js';
 import { bus, EVENTS } from '../core/eventBus.js';
 import { ensureImage } from './guards.js';
 
@@ -22,7 +23,21 @@ export function initText({ store, history, dom }) {
 
   const place = (event) => {
     if (store.getState().activeTool !== 'text') return;
-    const { x, y } = getCanvasPoint(dom.canvas, event);
+    const state = store.getState();
+    const live = getCanvasPoint(dom.canvas, event);
+    // The live canvas hugs the image, but text coordinates are stored in the
+    // fixed CANVAS reference space that paint() maps from — convert before
+    // storing so the glyphs land exactly where the user clicked.
+    const liveBox = getImageBox(
+      state.image.width, state.image.height, state.rotation,
+      dom.canvas.width, dom.canvas.height,
+    );
+    const refBox = getImageBox(
+      state.image.width, state.image.height, state.rotation,
+      CANVAS.width, CANVAS.height,
+    );
+    const x = ((live.x - liveBox.x) / liveBox.scale) * refBox.scale + refBox.x;
+    const y = ((live.y - liveBox.y) / liveBox.scale) * refBox.scale + refBox.y;
     store.setState({
       text: {
         content: dom.textContent.value.trim(),

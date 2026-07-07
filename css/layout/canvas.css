@@ -43,6 +43,10 @@
 
 #canvas.canvas--crop {
   cursor: crosshair;
+  /* The rounded corners don't receive pointer events, which would make the
+     selection's corner handles dead zones now that the canvas hugs the
+     image — square them off while cropping. */
+  border-radius: 0;
 }
 #canvas.canvas--placing {
   cursor: text;

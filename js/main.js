@@ -33,6 +33,12 @@ function boot() {
   const renderer = createRenderer(dom.canvas, store.getState);
   const history = createHistory(store);
 
+  // Resize the canvas to hug the image the moment it changes. Registered
+  // *before* every other subscriber (Set preserves insertion order) so tools
+  // that read canvas dimensions synchronously always see the new size.
+  store.subscribe((s, prev) => {
+    if (s.image !== prev.image || s.rotation !== prev.rotation) renderer.fitCanvas();
+  });
   // The single reactive edge: any state change schedules a repaint.
   store.subscribe(renderer.scheduleRender);
 
