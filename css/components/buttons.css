@@ -143,13 +143,16 @@
 .tool-btn:active:not(:disabled) {
   transform: translateY(0) scale(0.96);
 }
-/* Active toggle state (crop armed, flip on, panel open). */
-.tool-btn[aria-pressed="true"] {
+/* Active toggle state (crop armed, flip on, panel open). Panel triggers report
+   that state with aria-expanded rather than aria-pressed. */
+.tool-btn[aria-pressed="true"],
+.tool-btn[aria-expanded="true"] {
   background: var(--grad-primary);
   color: #fff;
   box-shadow: var(--shadow-glow);
 }
-.tool-btn[aria-pressed="true"] .tool-btn__label {
+.tool-btn[aria-pressed="true"] .tool-btn__label,
+.tool-btn[aria-expanded="true"] .tool-btn__label {
   color: rgba(255, 255, 255, 0.95);
 }
 

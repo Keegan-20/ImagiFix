@@ -14,6 +14,10 @@ import { bus, EVENTS } from '../core/eventBus.js';
 export function createHistory(store) {
   /** @type {object[]} */ let past = [];
   /** @type {object[]} */ let future = [];
+  /** True while a snapshot is being pushed back into the store. Tools that
+   *  auto-commit when they lose the canvas need to tell "the user moved on"
+   *  apart from "history rewound underneath me". */
+  let restoring = false;
 
   /** Capture the committed (non-transient) slice of state. */
   const snapshot = () => {
@@ -24,22 +28,25 @@ export function createHistory(store) {
       rotation: s.rotation,
       flipH: s.flipH,
       flipV: s.flipV,
-      text: { ...s.text },
+      texts: s.texts.map((t) => ({ ...t })),
     };
   };
 
   /** Push a snapshot back into the store, clearing any live crop selection. */
   const apply = (snap) => {
+    restoring = true;
     store.setState({
       image: snap.image,
       filters: { ...snap.filters },
       rotation: snap.rotation,
       flipH: snap.flipH,
       flipV: snap.flipV,
-      text: { ...snap.text },
+      texts: snap.texts.map((t) => ({ ...t })),
+      activeTextId: null,
       activeTool: null,
       crop: { rect: null },
     });
+    restoring = false;
   };
 
   const announce = () =>
@@ -77,5 +84,5 @@ export function createHistory(store) {
     announce();
   };
 
-  return { record, reset, undo, redo, canUndo, canRedo };
+  return { record, reset, undo, redo, canUndo, canRedo, isRestoring: () => restoring };
 }

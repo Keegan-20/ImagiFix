@@ -4,15 +4,18 @@
  * Strategy:
  *  - Precache the full app shell on install (HTML, CSS, every JS module,
  *    icons, manifest) so the editor works fully offline.
- *  - Stale-while-revalidate at runtime: serve from cache instantly, refresh
- *    the cache in the background.
+ *  - Code (JS/CSS) is network-first: a stale module is worse than a slow one,
+ *    and stale-while-revalidate served the *previous* build on every reload.
+ *    Falls back to cache when offline, which is the whole point of the PWA.
+ *  - Everything else is stale-while-revalidate: serve from cache instantly,
+ *    refresh the cache in the background.
  *  - Navigation requests fall back to the cached index.html when offline.
  *  - Old caches are pruned on activate; skipWaiting + clients.claim make a
  *    new version take over promptly.
  *
  * Bump CACHE_NAME to ship a new shell.
  */
-const CACHE_NAME = 'imagifix-v4';
+const CACHE_NAME = 'imagifix-v12';
 
 const APP_SHELL = [
   './',
@@ -35,7 +38,7 @@ const APP_SHELL = [
   './css/components/install-popup.css',
   './css/components/toast.css',
   './css/components/tooltip.css',
-  './css/components/crop-bar.css',
+  './css/components/canvas-bar.css',
   './css/components/save-panel.css',
   // scripts
   './js/main.js',
@@ -53,10 +56,12 @@ const APP_SHELL = [
   './js/features/crop.js',
   './js/features/history.js',
   './js/features/guards.js',
+  './js/features/dropzone.js',
   './js/ui/dom.js',
   './js/ui/controls.js',
+  './js/ui/panels.js',
+  './js/ui/range.js',
   './js/ui/shortcuts.js',
-  './js/ui/responsive.js',
   './js/ui/toast.js',
   './js/pwa/pwa.js',
   './js/utils/helpers.js',
@@ -100,7 +105,23 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Assets: stale-while-revalidate.
+  // App code: network-first, so a reload always runs the current build.
+  if (/\.(?:js|css)$/.test(new URL(request.url).pathname)) {
+    event.respondWith(
+      fetch(request)
+        .then((response) => {
+          if (response && response.status === 200) {
+            const copy = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
+          }
+          return response;
+        })
+        .catch(() => caches.match(request)),
+    );
+    return;
+  }
+
+  // Everything else: stale-while-revalidate.
   event.respondWith(
     caches.match(request).then((cached) => {
       const network = fetch(request)

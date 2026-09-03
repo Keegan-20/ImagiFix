@@ -81,6 +81,8 @@
   --header-height: 64px;
   --sidebar-width: 92px;
   --toolbar-width: 284px;
+  /* Matches --toolbar-width so the two panels swap into the same footprint. */
+  --text-panel-width: 284px;
   --rail-mobile-height: 72px;
 
   /* === Typography ===

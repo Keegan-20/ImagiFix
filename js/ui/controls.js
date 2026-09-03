@@ -1,7 +1,7 @@
 /**
  * Cross-cutting UI wiring that isn't owned by a single feature: enabling
- * controls once an image exists, undo/redo button state, the global reset,
- * and the text-panel open/close behaviour.
+ * controls once an image exists, undo/redo button state and the global reset.
+ * Side panels (Adjustments / text) are arbitrated in ui/panels.js.
  */
 import { $$ } from './dom.js';
 import { createResetPatch } from '../core/state.js';
@@ -53,20 +53,5 @@ export function initControls({ store, history, dom }) {
     store.setState(createResetPatch());
     history.record();
     bus.emit(EVENTS.TOAST, { type: 'info', message: 'Adjustments reset.' });
-  });
-
-  // Text panel open/close.
-  dom.textButton.addEventListener('click', (e) => {
-    e.stopPropagation();
-    if (!ensureImage(store)) return;
-    dom.textPanel.classList.toggle('is-open');
-  });
-  dom.textCloseButton.addEventListener('click', () => {
-    dom.textPanel.classList.remove('is-open');
-  });
-  document.addEventListener('click', (e) => {
-    if (!e.target.closest('#textPanel') && !e.target.closest('#textButton')) {
-      dom.textPanel.classList.remove('is-open');
-    }
   });
 }

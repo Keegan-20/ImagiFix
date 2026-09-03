@@ -25,7 +25,7 @@ It runs fully offline as a Progressive Web App.
 | ✂️ | **Crop** | Drag-select on canvas (mouse **or** touch via Pointer Events) |
 | 🔄 | **Rotate** | 90° left / right |
 | 🪞 | **Flip** | Horizontal / vertical |
-| 🅰️ | **Text overlay** | Click-to-place, custom colour & size |
+| 🅰️ | **Text overlay** | Live draggable overlay — colour & size, reopen any time to reposition, Done / Cancel |
 | ↩️ | **Undo / Redo** | Lightweight state snapshots, not pixel buffers |
 | 💾 | **Save** | Exports a PNG of the exact composited result |
 | 📲 | **PWA** | Installable, works offline, smart caching |

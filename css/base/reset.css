@@ -49,6 +49,12 @@ button:disabled {
   border-radius: var(--radius-sm);
 }
 
+/* The `hidden` attribute has to outrank component display rules — a .btn sets
+   display:inline-flex, which would otherwise override the UA's [hidden]. */
+[hidden] {
+  display: none !important;
+}
+
 /* Accessible hidden — present for AT, invisible on screen. */
 .visually-hidden {
   position: absolute;

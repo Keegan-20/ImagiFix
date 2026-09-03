@@ -1,8 +1,10 @@
-/* ===== Crop action bar =====
-   Floating glass toolbar shown over the canvas while a crop is in progress:
-   aspect-ratio presets, a live output-size readout, and Apply / Cancel. */
+/* ===== Canvas action bar =====
+   Floating glass toolbar shown over the canvas while a direct-manipulation
+   tool is in progress — crop (ratio presets + size readout) and text (drag
+   hint) — always ending in the same Cancel / confirm pair, so committing an
+   edit is the same gesture whichever tool you're in. */
 
-.crop-bar {
+.canvas-bar {
   position: absolute;
   left: 50%;
   bottom: var(--space-5);
@@ -23,21 +25,21 @@
   backdrop-filter: var(--glass-blur);
   border: 1px solid var(--glass-border);
   box-shadow: var(--shadow-md);
-  animation: crop-bar-in var(--transition);
+  animation: canvas-bar-in var(--transition);
 }
 
-.crop-bar[hidden] {
+.canvas-bar[hidden] {
   display: none;
 }
 
 /* While the bar is open, reserve a strip beneath the stage for it so it
    never floats over the canvas and steals clicks aimed at the selection's
    bottom handles. The stage re-centres in the remaining space. */
-.canvas-area:has(.crop-bar:not([hidden])) {
+.canvas-area:has(.canvas-bar:not([hidden])) {
   padding-bottom: calc(var(--space-5) + 72px);
 }
 
-@keyframes crop-bar-in {
+@keyframes canvas-bar-in {
   from {
     opacity: 0;
     transform: translateX(-50%) translateY(10px);
@@ -48,8 +50,15 @@
   }
 }
 
+/* Left-hand hint text, e.g. "Drag the text to reposition it." */
+.canvas-bar__hint {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--ink-muted);
+}
+
 /* Segmented aspect-ratio presets. */
-.crop-bar__ratios {
+.canvas-bar__ratios {
   display: flex;
   gap: 2px;
   padding: 3px;
@@ -57,7 +66,7 @@
   background: rgba(124, 58, 237, 0.08);
 }
 
-.crop-bar__ratio {
+.canvas-bar__ratio {
   padding: 7px 12px;
   border-radius: var(--radius-pill);
   font-size: 0.76rem;
@@ -69,17 +78,17 @@
   transition: background var(--transition-fast), color var(--transition-fast),
     box-shadow var(--transition-fast);
 }
-.crop-bar__ratio:hover {
+.canvas-bar__ratio:hover {
   color: var(--violet-700);
 }
-.crop-bar__ratio[aria-pressed="true"] {
+.canvas-bar__ratio[aria-pressed="true"] {
   background: var(--grad-primary);
   color: #fff;
   box-shadow: var(--shadow-sm);
 }
 
 /* Live output size, e.g. "1920 × 1080 px". */
-.crop-bar__size {
+.canvas-bar__size {
   min-width: 108px;
   text-align: center;
   font-size: 0.78rem;
@@ -88,26 +97,36 @@
   color: var(--ink-muted);
 }
 
-.crop-bar__actions {
+.canvas-bar__actions {
   display: flex;
   gap: var(--space-2);
 }
 
-.crop-bar__btn {
+.canvas-bar__btn {
   padding: 0.5rem 1rem;
   font-size: 0.8rem;
+}
+.canvas-bar__btn--danger {
+  color: var(--color-danger);
+}
+.canvas-bar__btn--danger:hover:not(:disabled) {
+  background: var(--color-danger);
+  color: #fff;
 }
 
 @media (max-width: 768px) {
   /* Clear the fixed bottom tool dock. */
-  .crop-bar {
+  .canvas-bar {
     bottom: calc(var(--rail-mobile-height) + var(--space-4));
     gap: var(--space-2);
   }
-  .crop-bar__size {
+  .canvas-bar__size {
     min-width: 0;
   }
-  .canvas-area:has(.crop-bar:not([hidden])) {
+  .canvas-bar__hint {
+    display: none; /* the toast already carries the instruction on mobile */
+  }
+  .canvas-area:has(.canvas-bar:not([hidden])) {
     padding-bottom: calc(var(--rail-mobile-height) + var(--space-4) + 88px);
   }
 }

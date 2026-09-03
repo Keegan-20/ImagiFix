@@ -65,7 +65,7 @@
     <nav class="sidebar" aria-label="Editing tools">
       <div class="sidebar__group">
         <p class="sidebar__group-label">Adjust</p>
-        <button type="button" id="toolbarToggle" class="tool-btn" aria-label="Toggle adjustments" aria-controls="toolbar">
+        <button type="button" id="toolbarToggle" class="tool-btn" aria-label="Toggle adjustments" aria-controls="toolbar" aria-expanded="true">
           <span class="tool-btn__icon" data-icon="sliders"></span>
           <span class="tool-btn__label">Filters</span>
         </button>
@@ -97,28 +97,10 @@
 
       <div class="sidebar__group">
         <p class="sidebar__group-label">Insert</p>
-        <div class="text-tool">
-          <button type="button" id="textButton" class="tool-btn" aria-label="Add text" aria-haspopup="dialog">
-            <span class="tool-btn__icon" data-icon="text"></span>
-            <span class="tool-btn__label">Text</span>
-          </button>
-
-          <div class="text-panel" id="textPanel" role="dialog" aria-label="Add text overlay">
-            <button type="button" id="textCloseButton" class="text-panel__close" aria-label="Close">&times;</button>
-            <label class="text-panel__label" for="textContent">Text</label>
-            <input type="text" id="textContent" placeholder="Enter text…" autocomplete="off" />
-            <div class="text-panel__row">
-              <label for="textColor">Colour</label>
-              <input type="color" id="textColor" value="#1e1b4b" />
-            </div>
-            <div class="text-panel__row">
-              <label for="textSize">Size</label>
-              <input type="range" id="textSize" class="range" min="4" max="120" value="24" />
-              <output id="textSizeValue" for="textSize">24</output>
-            </div>
-            <button type="button" id="addTextButton" class="btn btn--primary">Add Text</button>
-          </div>
-        </div>
+        <button type="button" id="textButton" class="tool-btn" aria-label="Add text" aria-haspopup="dialog" aria-expanded="false" aria-controls="textPanel">
+          <span class="tool-btn__icon" data-icon="text"></span>
+          <span class="tool-btn__label">Text</span>
+        </button>
       </div>
     </nav>
 
@@ -132,6 +114,30 @@
       <button type="button" id="resetButton" class="btn btn--soft">Reset Adjustments</button>
     </aside>
 
+    <!-- Add Text — shares the Adjustments slot: both are launched from the
+         rail beside it and only one shows at a time. It must live outside
+         .sidebar, which sets overflow-y + backdrop-filter and would both clip
+         an absolute child and become the containing block for a fixed one. -->
+    <div class="text-panel" id="textPanel" role="dialog" aria-label="Add text overlay">
+      <button type="button" id="textCloseButton" class="text-panel__close" aria-label="Close text panel">&times;</button>
+      <div class="text-panel__head">
+        <h2 class="text-panel__title">Add Text</h2>
+        <p class="text-panel__subtitle">Type it, style it, then click the image to place it.</p>
+      </div>
+      <label class="text-panel__label" for="textContent">Text</label>
+      <input type="text" id="textContent" placeholder="Enter text…" autocomplete="off" />
+      <div class="text-panel__row">
+        <label for="textColor">Colour</label>
+        <input type="color" id="textColor" value="#1e1b4b" />
+      </div>
+      <div class="text-panel__row">
+        <label for="textSize">Size</label>
+        <input type="range" id="textSize" class="range" min="4" max="120" value="24" />
+        <output id="textSizeValue" for="textSize">24</output>
+      </div>
+      <button type="button" id="addTextButton" class="btn btn--primary">Add Text</button>
+    </div>
+
     <!-- Canvas -->
     <section class="canvas-area" id="canvasArea" aria-label="Image preview">
       <div id="toast" class="toast" role="status" aria-live="polite"></div>
@@ -141,20 +147,33 @@
       </div>
 
       <!-- Crop action bar — shown while the crop tool is active -->
-      <div class="crop-bar" id="cropBar" role="toolbar" aria-label="Crop options" hidden>
-        <div class="crop-bar__ratios" role="group" aria-label="Aspect ratio">
-          <button type="button" class="crop-bar__ratio" data-ratio="free" aria-pressed="true">Free</button>
-          <button type="button" class="crop-bar__ratio" data-ratio="original" aria-pressed="false">Original</button>
-          <button type="button" class="crop-bar__ratio" data-ratio="1:1" aria-pressed="false">1:1</button>
-          <button type="button" class="crop-bar__ratio" data-ratio="4:3" aria-pressed="false">4:3</button>
-          <button type="button" class="crop-bar__ratio" data-ratio="16:9" aria-pressed="false">16:9</button>
+      <div class="canvas-bar" id="cropBar" role="toolbar" aria-label="Crop options" hidden>
+        <div class="canvas-bar__ratios" role="group" aria-label="Aspect ratio">
+          <button type="button" class="canvas-bar__ratio" data-ratio="free" aria-pressed="true">Free</button>
+          <button type="button" class="canvas-bar__ratio" data-ratio="original" aria-pressed="false">Original</button>
+          <button type="button" class="canvas-bar__ratio" data-ratio="1:1" aria-pressed="false">1:1</button>
+          <button type="button" class="canvas-bar__ratio" data-ratio="4:3" aria-pressed="false">4:3</button>
+          <button type="button" class="canvas-bar__ratio" data-ratio="16:9" aria-pressed="false">16:9</button>
         </div>
-        <output class="crop-bar__size" id="cropSizeReadout" aria-label="Crop output size">—</output>
-        <div class="crop-bar__actions">
-          <button type="button" id="cropCancelButton" class="btn crop-bar__btn">Cancel</button>
-          <button type="button" id="cropApplyButton" class="btn btn--primary crop-bar__btn">
+        <output class="canvas-bar__size" id="cropSizeReadout" aria-label="Crop output size">—</output>
+        <div class="canvas-bar__actions">
+          <button type="button" id="cropCancelButton" class="btn canvas-bar__btn">Cancel</button>
+          <button type="button" id="cropApplyButton" class="btn btn--primary canvas-bar__btn">
             <span class="btn__icon" data-icon="crop"></span>
             <span>Apply</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Text action bar — shown while a text overlay is being positioned -->
+      <div class="canvas-bar" id="textBar" role="toolbar" aria-label="Text placement" hidden>
+        <p class="canvas-bar__hint">Type a label and press Add Text · click a label to move or edit it</p>
+        <div class="canvas-bar__actions">
+          <button type="button" id="textRemoveButton" class="btn canvas-bar__btn canvas-bar__btn--danger" disabled>Remove</button>
+          <button type="button" id="textCancelButton" class="btn canvas-bar__btn">Cancel</button>
+          <button type="button" id="textApplyButton" class="btn btn--primary canvas-bar__btn">
+            <span class="btn__icon" data-icon="check"></span>
+            <span>Done</span>
           </button>
         </div>
       </div>

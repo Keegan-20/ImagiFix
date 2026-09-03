@@ -44,7 +44,7 @@ export const FILTER_DEFAULTS = Object.freeze(
   Object.fromEntries(FILTERS.map((f) => [f.id, f.default])),
 );
 
-/** Default text-overlay descriptor. */
+/** Style an overlay starts with before the panel supplies its own values. */
 export const TEXT_DEFAULTS = Object.freeze({
   content: '',
   color: '#000000',
@@ -52,6 +52,9 @@ export const TEXT_DEFAULTS = Object.freeze({
   x: 0,
   y: 0,
 });
+
+/** Offset each stacked overlay so a second one isn't hidden under the first. */
+export const TEXT_CASCADE = 18;
 
 /** Below this viewport width the app switches to its compact mobile layout. */
 export const MOBILE_BREAKPOINT = 768;

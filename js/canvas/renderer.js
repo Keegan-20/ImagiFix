@@ -10,8 +10,8 @@
  *
  * `createRenderer()` adds the live concerns: a clear stage when empty (the
  * HTML empty-state overlay handles onboarding), the crop selection overlay
- * (dimmed surround, rule-of-thirds grid, resize handles), and rAF-coalesced
- * repaints.
+ * (dimmed surround, rule-of-thirds grid, resize handles), the text selection
+ * box, and rAF-coalesced repaints.
  */
 import { CANVAS } from '../config/constants.js';
 import { buildFilterString } from './filters.js';
@@ -28,7 +28,7 @@ import { toRadians, rafThrottle } from '../utils/helpers.js';
  * @param {number} height  target height
  */
 export function paint(ctx, state, width, height) {
-  const { image, filters, rotation, flipH, flipV, text } = state;
+  const { image, filters, rotation, flipH, flipV, texts } = state;
 
   ctx.clearRect(0, 0, width, height);
   if (!image) return;
@@ -51,18 +51,78 @@ export function paint(ctx, state, width, height) {
   ctx.drawImage(image, -drawW / 2, -drawH / 2, drawW, drawH);
   ctx.restore();
 
-  // Text overlay sits on top, unaffected by image filters. Its stored
-  // position is in reference-canvas space, anchored to the image box.
-  if (text?.content) {
+  // Text overlays sit on top, unaffected by image filters, painted in array
+  // order. Their stored positions are in reference-canvas space, anchored to
+  // the image box.
+  if (texts?.length) {
     const tgt = getImageBox(image.width, image.height, rotation, width, height);
     ctx.save();
     ctx.filter = 'none';
-    ctx.fillStyle = text.color;
-    ctx.font = `${text.size * k}px Arial, sans-serif`;
     ctx.textBaseline = 'top';
-    ctx.fillText(text.content, (text.x - ref.x) * k + tgt.x, (text.y - ref.y) * k + tgt.y);
+    for (const text of texts) {
+      if (!text.content) continue;
+      ctx.fillStyle = text.color;
+      ctx.font = textFont(text.size * k);
+      ctx.fillText(text.content, (text.x - ref.x) * k + tgt.x, (text.y - ref.y) * k + tgt.y);
+    }
     ctx.restore();
   }
+}
+
+/** The overlay's font, shared by paint() and the hit-test so they agree. */
+const textFont = (size) => `${size}px Arial, sans-serif`;
+
+/**
+ * Where one text overlay lands on a target canvas, and how big it is.
+ *
+ * Text position/size are stored in the reference-canvas space anchored to the
+ * image box; this resolves them against a concrete canvas so the tool can
+ * hit-test, drag and outline exactly the glyphs that get painted.
+ *
+ * @param {object} text  the overlay to measure (one entry of `state.texts`)
+ * @returns {{x:number, y:number, width:number, height:number, k:number,
+ *   box:{x:number,y:number,width:number,height:number}}|null} null when there's
+ *   nothing to draw.
+ */
+export function getTextRect(ctx, state, width, height, text) {
+  const { image, rotation } = state;
+  if (!image || !text?.content) return null;
+
+  const ref = getImageBox(image.width, image.height, rotation, CANVAS.width, CANVAS.height);
+  const box = getImageBox(image.width, image.height, rotation, width, height);
+  const k = box.scale / ref.scale;
+  const size = text.size * k;
+
+  ctx.save();
+  ctx.font = textFont(size);
+  const measured = ctx.measureText(text.content).width;
+  ctx.restore();
+
+  return {
+    x: (text.x - ref.x) * k + box.x,
+    y: (text.y - ref.y) * k + box.y,
+    width: measured,
+    // textBaseline is 'top', so the glyphs occupy roughly one em below y.
+    // Cap height varies by font; 1.15em is a forgiving grab target.
+    height: size * 1.15,
+    k,
+    box,
+  };
+}
+
+/**
+ * Inverse of the above: a point on a target canvas → reference-space text
+ * coordinates, which is what each overlay's `x`/`y` stores.
+ */
+export function toTextSpace(point, state, width, height) {
+  const { image, rotation } = state;
+  const ref = getImageBox(image.width, image.height, rotation, CANVAS.width, CANVAS.height);
+  const box = getImageBox(image.width, image.height, rotation, width, height);
+  const k = box.scale / ref.scale;
+  return {
+    x: (point.x - box.x) / k + ref.x,
+    y: (point.y - box.y) / k + ref.y,
+  };
 }
 
 /** The eight resize-handle centre points of a rectangle. */
@@ -156,6 +216,45 @@ export function createRenderer(canvas, getState) {
     ctx.restore();
   }
 
+  /**
+   * Selection box around the live text overlay. Deliberately quieter than the
+   * crop overlay — nothing is dimmed, because the point is to judge the text
+   * against the picture, not to frame a region.
+   */
+  function drawTextOverlay(rect) {
+    const PAD = 6;
+    const x = rect.x - PAD;
+    const y = rect.y - PAD;
+    const w = rect.width + PAD * 2;
+    const h = rect.height + PAD * 2;
+
+    ctx.save();
+    // Dark under-stroke first so the box stays visible on light artwork.
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = 'rgba(15, 12, 41, 0.35)';
+    ctx.setLineDash([6, 4]);
+    ctx.strokeRect(x, y, w, h);
+    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = '#ffffff';
+    ctx.strokeRect(x, y, w, h);
+
+    // Corner ticks — a grab affordance without implying resize handles.
+    ctx.setLineDash([]);
+    ctx.strokeStyle = '#7c3aed';
+    ctx.lineWidth = 2.5;
+    const T = Math.min(10, w / 3, h / 3);
+    ctx.beginPath();
+    for (const [cx, cy, sx, sy] of [
+      [x, y, 1, 1], [x + w, y, -1, 1], [x, y + h, 1, -1], [x + w, y + h, -1, -1],
+    ]) {
+      ctx.moveTo(cx + sx * T, cy);
+      ctx.lineTo(cx, cy);
+      ctx.lineTo(cx, cy + sy * T);
+    }
+    ctx.stroke();
+    ctx.restore();
+  }
+
   /** Paint the current state immediately. */
   function render() {
     const state = getState();
@@ -166,6 +265,11 @@ export function createRenderer(canvas, getState) {
     }
     paint(ctx, state, canvas.width, canvas.height);
     if (state.crop?.rect) drawCropOverlay(state.crop.rect);
+    if (state.activeTool === 'text' && state.activeTextId) {
+      const active = state.texts.find((t) => t.id === state.activeTextId);
+      const rect = active && getTextRect(ctx, state, canvas.width, canvas.height, active);
+      if (rect) drawTextOverlay(rect);
+    }
   }
 
   /** rAF-coalesced repaint — safe to call on every input event. */

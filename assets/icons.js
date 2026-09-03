@@ -35,6 +35,7 @@ export const ICONS = Object.freeze({
   ),
   text: svg('<path d="M4 7V5h16v2"/><path d="M12 5v14"/><path d="M9 19h6"/>'),
   plus: svg('<path d="M12 5v14"/><path d="M5 12h14"/>'),
+  check: svg('<path d="m5 13 4.5 4.5L19 7"/>'),
   image: svg(
     '<rect x="3" y="3" width="18" height="18" rx="2.5"/>' +
     '<circle cx="8.5" cy="8.5" r="1.6"/><path d="m21 15-4.5-4.5L5 21"/>',

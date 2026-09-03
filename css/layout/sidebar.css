@@ -35,10 +35,6 @@
   color: var(--ink-muted);
 }
 
-.text-tool {
-  position: relative;
-}
-
 @media (max-width: 768px) {
   /* Collapses into a floating horizontal dock pinned to the bottom. */
   .sidebar {

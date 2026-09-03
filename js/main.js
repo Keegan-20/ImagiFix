@@ -13,7 +13,7 @@ import { createRenderer } from './canvas/renderer.js';
 import { createDom, renderIcons } from './ui/dom.js';
 import { initToast } from './ui/toast.js';
 import { initControls } from './ui/controls.js';
-import { initResponsive } from './ui/responsive.js';
+import { createPanels } from './ui/panels.js';
 import { initShortcuts } from './ui/shortcuts.js';
 import { initRangeFills } from './ui/range.js';
 import { createHistory } from './features/history.js';
@@ -42,7 +42,8 @@ function boot() {
   // The single reactive edge: any state change schedules a repaint.
   store.subscribe(renderer.scheduleRender);
 
-  const ctx = { store, history, dom };
+  const panels = createPanels({ store, dom });
+  const ctx = { store, history, dom, panels };
 
   initToast(dom);
   initImageIO(ctx);
@@ -51,16 +52,13 @@ function boot() {
   initText(ctx);
   const crop = initCrop(ctx);
   initControls(ctx);
-  initResponsive(ctx);
   initDropzone(ctx);
   initRangeFills(); // paint slider fills (after all .range inputs exist)
 
-  // Esc: back out of the active tool / close the text panel.
+  // Esc: back out of the active tool, discarding an in-progress text overlay.
   const cancel = () => {
-    const { activeTool } = store.getState();
-    if (activeTool === 'crop') crop.cancel();
-    else if (activeTool === 'text') store.setState({ activeTool: null });
-    dom.textPanel.classList.remove('is-open');
+    if (store.getState().activeTool === 'crop') crop.cancel();
+    panels.closeText({ restoreFocus: true, commit: false });
   };
 
   initShortcuts({

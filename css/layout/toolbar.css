@@ -77,6 +77,12 @@
   background: var(--violet-100);
 }
 
+/* Desktop: yields the column entirely (to the text panel, or the Filters
+   toggle) so the canvas reclaims the space. Mobile uses .is-open instead. */
+.toolbar.is-hidden {
+  display: none;
+}
+
 @media (max-width: 768px) {
   /* Slides up as a floating sheet above the bottom dock when toggled. */
   .toolbar {

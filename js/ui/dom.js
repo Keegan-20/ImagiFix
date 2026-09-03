@@ -58,6 +58,11 @@ export function createDom() {
     textSizeValue: byId('textSizeValue'),
     addTextButton: byId('addTextButton'),
     textCloseButton: byId('textCloseButton'),
+    // text action bar
+    textBar: byId('textBar'),
+    textApplyButton: byId('textApplyButton'),
+    textCancelButton: byId('textCancelButton'),
+    textRemoveButton: byId('textRemoveButton'),
     // toolbar
     toolbar: byId('toolbar'),
     filterControls: byId('filterControls'),
@@ -67,7 +72,7 @@ export function createDom() {
     cropApplyButton: byId('cropApplyButton'),
     cropCancelButton: byId('cropCancelButton'),
     cropSizeReadout: byId('cropSizeReadout'),
-    cropRatioButtons: $$('.crop-bar__ratio'),
+    cropRatioButtons: $$('.canvas-bar__ratio'),
     // canvas
     canvas: byId('canvas'),
     canvasArea: byId('canvasArea'),

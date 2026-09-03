@@ -48,8 +48,11 @@
      image — square them off while cropping. */
   border-radius: 0;
 }
-#canvas.canvas--placing {
-  cursor: text;
+/* Text placement: the overlays are the targets — text.js swaps the cursor to
+   `move` while the pointer is over one. Corners are squared off so glyphs
+   parked near them stay grabbable. */
+#canvas.canvas--text {
+  border-radius: 0;
 }
 
 @media (max-width: 768px) {

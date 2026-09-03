@@ -47,4 +47,6 @@ export const EVENTS = Object.freeze({
   HISTORY_CHANGED: 'history:changed',
   REQUEST_SAVE: 'request:save',
   TOAST: 'ui:toast',
+  /** The text panel opened/closed; payload { open, commit } (commit=false means discard). */
+  TEXT_PANEL: 'text:panel',
 });
